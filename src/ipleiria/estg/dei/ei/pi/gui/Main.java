@@ -16,6 +16,8 @@ public class Main extends Application {
         primaryStage.setTitle("Picking");
         Screen screen = Screen.getPrimary();
         Rectangle2D bounds = screen.getVisualBounds();
+        primaryStage.setMinWidth(650);
+        primaryStage.setMinHeight(450);
         primaryStage.setScene(new Scene(root, bounds.getWidth()*0.75, bounds.getHeight()*0.75));
         primaryStage.show();
     }
