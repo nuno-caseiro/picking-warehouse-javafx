@@ -19,13 +19,13 @@ public abstract class GraphSearch<F extends NodeCollection, S extends State> {
         this.explored = new HashSet<>();
     }
 
-    protected List<S> graphSearch(Problem<S> problem) throws NoSolutionFoundException {
+    protected List<SearchNode<S>> graphSearch(SearchProblem<S> problem) throws NoSolutionFoundException {
         frontier.clear();
         explored.clear();
-        frontier.add(new SearchNode(problem.getInitialState()));
+        frontier.add(new SearchNode<>(problem.getInitialState()));
 
         while (!frontier.isEmpty()) {
-            SearchNode searchNode = frontier.poll();
+            SearchNode<S> searchNode = frontier.poll();
 
             if (problem.isGoal(searchNode.getState().getIdentifier())) {
                 return computeSolution(searchNode);
@@ -38,13 +38,13 @@ public abstract class GraphSearch<F extends NodeCollection, S extends State> {
         throw new NoSolutionFoundException("No solution found from " + problem.getInitialState().toString() + " to " + problem.getGoalState().toString());
     }
 
-    public abstract void addSuccessorsToFrontier(List<S> successors, SearchNode parent, S goalState);
+    public abstract void addSuccessorsToFrontier(List<S> successors, SearchNode<S> parent, S goalState);
 
-    private List<S> computeSolution(SearchNode searchNode) {
-        List<S> solution = new ArrayList<>();
+    private List<SearchNode<S>> computeSolution(SearchNode<S> searchNode) {
+        List<SearchNode<S>> solution = new ArrayList<>();
 
         while (searchNode != null) {
-            solution.add(0, (S) searchNode.getState()); // TODO check
+            solution.add(0, searchNode); // TODO add generic to SearchNode
             searchNode = searchNode.getParent();
         }
 

@@ -2,37 +2,37 @@ package ipleiria.estg.dei.ei.pi.model.search;
 
 import ipleiria.estg.dei.ei.pi.model.State;
 
-public class SearchNode implements Comparable<SearchNode> {
+public class SearchNode<S extends State> implements Comparable<SearchNode<? extends State>> {
 
-    private SearchNode parent;
+    private SearchNode<S> parent;
     private double f; // g + h
     private double cost; // cost of the path from the start node to this node
-    private State state; // graph node
+    private S state; // graph node
 
-    public SearchNode(State state) {
+    public SearchNode(S state) {
         this(null, 0, 0, state);
     }
 
-    public SearchNode(SearchNode parent, double f, double cost, State state) {
+    public SearchNode(SearchNode<S> parent, double f, double cost, S state) {
         this.parent = parent;
         this.f = f;
         this.cost = cost;
         this.state = state;
     }
 
-    public SearchNode getParent() {
-        return parent;
+    public SearchNode<S> getParent() {
+        return this.parent;
     }
 
     public double getF() {
-        return f;
+        return this.f;
     }
 
     public double getCost() {
-        return cost;
+        return this.cost;
     }
 
-    public State getState() {
+    public S getState() {
         return state;
     }
 

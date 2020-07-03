@@ -1,6 +1,6 @@
 package ipleiria.estg.dei.ei.pi.model;
 
-public abstract class Node extends State {
+public class Node extends State {
 
     protected int line;
     protected int column;

@@ -5,11 +5,11 @@ import ipleiria.estg.dei.ei.pi.model.Node;
 
 import java.util.List;
 
-public class PickingProblem extends Problem<Node> {
+public class PickingSearchProblem extends SearchProblem<Node> {
 
     private Graph graph;
 
-    public PickingProblem(Node initialState, Node goalState, Graph graph) {
+    public PickingSearchProblem(Node initialState, Node goalState, Graph graph) {
         super(initialState, goalState);
         this.graph = graph;
     }

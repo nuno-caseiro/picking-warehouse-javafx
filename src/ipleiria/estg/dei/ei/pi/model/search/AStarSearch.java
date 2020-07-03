@@ -11,14 +11,14 @@ public class AStarSearch<S extends State> extends InformedSearch<S> {
     }
 
     @Override
-    public void addSuccessorsToFrontier(List<S> successors, SearchNode parent, S goalState) {
+    public void addSuccessorsToFrontier(List<S> successors, SearchNode<S> parent, S goalState) {
         double g;
 
         for (S s : successors) {
             g = parent.getCost() + s.getCostFromPreviousState();
 
             if (!this.frontier.containsNode(s.getIdentifier()) && !this.explored.contains(s.getIdentifier())) {
-                this.frontier.add(new SearchNode(parent, g, g + this.heuristic.compute(s, goalState), s));
+                this.frontier.add(new SearchNode<>(parent, g, g + this.heuristic.compute(s, goalState), s));
             }
         }
     }

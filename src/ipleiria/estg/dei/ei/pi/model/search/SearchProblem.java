@@ -4,12 +4,12 @@ import ipleiria.estg.dei.ei.pi.model.State;
 
 import java.util.List;
 
-public abstract class Problem<S extends State> {
+public abstract class SearchProblem<S extends State> {
 
     protected S initialState;
     protected S goalState;
 
-    public Problem(S initialState, S goalState) {
+    public SearchProblem(S initialState, S goalState) {
         this.initialState = initialState;
         this.goalState = goalState;
     }
