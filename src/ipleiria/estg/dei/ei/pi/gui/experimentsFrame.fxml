@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-
 <AnchorPane prefHeight="728.0" prefWidth="990.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ipleiria.estg.dei.ei.pi.gui.ExperimentsFrame">
    <children>
       <GridPane fx:id="parametersGrid" prefHeight="745.0" prefWidth="496.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -183,7 +182,7 @@
             <Insets bottom="1.0" />
          </opaqueInsets>
       </GridPane>
-      <TextArea fx:id="bestIndividualExperimentsArea" editable="false" layoutX="500.0" layoutY="548.0" prefHeight="160.0" prefWidth="479.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="505.0" AnchorPane.rightAnchor="5.0">
+      <TextArea fx:id="bestIndividualExperimentsArea" editable="false" layoutX="500.0" layoutY="548.0" prefHeight="166.0" prefWidth="485.0" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="505.0" AnchorPane.rightAnchor="0.0">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>

@@ -1,12 +1,16 @@
 package ipleiria.estg.dei.ei.pi.gui;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -37,6 +41,12 @@ public class MainFrame implements Initializable {
     public Button stepBackwordButton;
 
     @FXML
+    public AnchorPane simulationFrame;
+
+    @FXML
+    public AnchorPane gaFrame;
+
+    @FXML
     private Tab gaTab ;
 
     @FXML
@@ -44,6 +54,9 @@ public class MainFrame implements Initializable {
 
     @FXML
     private Tab experimentsTab;
+
+    @FXML
+    private SimulationFrameController simulationFrameController;
 
 
     @Override
@@ -63,6 +76,7 @@ public class MainFrame implements Initializable {
         ImageView stepForwardIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/nextIcon.png"));
         ImageView stepBackwardIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/backIcon.png"));
 
+
         loadLayoutButton.setGraphic(loadWarehouseIcon);
         loadPicksButton.setGraphic(loadPicksIcon);
 
@@ -77,6 +91,15 @@ public class MainFrame implements Initializable {
         startPauseButton.setGraphic(pauseIcon);
         stepForwardButton.setGraphic(stepForwardIcon);
         stepBackwordButton.setGraphic(stepBackwardIcon);
-        
+
+
+
+
+
+
+    }
+
+    public void play() throws IOException {
+        simulationFrameController.start();
     }
 }

@@ -13,9 +13,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="728.0" prefWidth="990.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ipleiria.estg.dei.ei.pi.gui.GaFrame">
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ipleiria.estg.dei.ei.pi.gui.GaFrame">
    <children>
-      <GridPane fx:id="parametersGrid" prefHeight="589.0" prefWidth="297.0" AnchorPane.bottomAnchor="139.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="parametersGrid" prefHeight="548.0" prefWidth="330.0" AnchorPane.bottomAnchor="180.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="10.0" prefWidth="141.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="152.0" minWidth="10.0" prefWidth="132.0" />
@@ -112,8 +112,8 @@
             <Insets bottom="1.0" />
          </opaqueInsets>
       </GridPane>
-      <TextArea editable="false" layoutX="-5.0" layoutY="628.0" prefHeight="140.0" prefWidth="1031.0" promptText="Best solution" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <LineChart fx:id="gaChart" layoutX="318.0" layoutY="-1.0" prefHeight="589.0" prefWidth="672.0" AnchorPane.bottomAnchor="139.0" AnchorPane.leftAnchor="318.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <TextArea editable="false" layoutX="-5.0" layoutY="628.0" promptText="Best solution" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <LineChart fx:id="gaChart" layoutX="332.0" layoutY="-1.0" prefHeight="548.0" prefWidth="658.0" AnchorPane.bottomAnchor="180.0" AnchorPane.leftAnchor="332.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <xAxis>
           <CategoryAxis side="BOTTOM" />
         </xAxis>

@@ -19,7 +19,7 @@
             <Button fx:id="stopGAButton" mnemonicParsing="false" />
             <Button fx:id="simulationButton" mnemonicParsing="false" />
             <Separator orientation="VERTICAL" />
-            <Button fx:id="startPauseButton" mnemonicParsing="false" />
+            <Button fx:id="startPauseButton" mnemonicParsing="false" onAction="#play" />
             <Button fx:id="stepForwardButton" mnemonicParsing="false" />
             <Button fx:id="stepBackwordButton" mnemonicParsing="false" />
         </items>
@@ -29,23 +29,19 @@
       <TabPane prefHeight="200.0" prefWidth="200.0" side="LEFT" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="gaTab">
-                  <AnchorPane>
-                    <fx:include fx:id="gaFrame" source="gaFrame.fxml" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" />
-                  </AnchorPane>
+              <content>
+                <fx:include fx:id="gaFrame" source="gaFrame.fxml" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" />
+              </content>
           </Tab>
             <Tab fx:id="simulationTab">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <Button layoutX="777.0" layoutY="487.0" mnemonicParsing="false" text="Button" AnchorPane.bottomAnchor="214.0" AnchorPane.rightAnchor="159.5" />
-                     </children>
-                  </AnchorPane>
-              </content>
+                <content>
+                    <fx:include fx:id="simulationFrame" source="simulationFrame.fxml" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" />
+                </content>
             </Tab>
             <Tab fx:id="experimentsTab">
-                <AnchorPane>
-                <fx:include fx:id="experimentsFrame" source="experimentsFrame.fxml"  AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"/>
-                </AnchorPane>
+                <content>
+                    <fx:include fx:id="experimentsFrame" source="experimentsFrame.fxml" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" />
+                </content>
             </Tab>
         </tabs>
       </TabPane>
