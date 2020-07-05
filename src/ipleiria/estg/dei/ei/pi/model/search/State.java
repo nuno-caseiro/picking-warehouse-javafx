@@ -1,4 +1,4 @@
-package ipleiria.estg.dei.ei.pi.model;
+package ipleiria.estg.dei.ei.pi.model.search;
 
 public abstract class State {
 

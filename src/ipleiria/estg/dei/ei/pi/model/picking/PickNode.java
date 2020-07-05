@@ -1,4 +1,4 @@
-package ipleiria.estg.dei.ei.pi.model;
+package ipleiria.estg.dei.ei.pi.model.picking;
 
 import ipleiria.estg.dei.ei.pi.utils.PickLocation;
 

@@ -1,7 +1,7 @@
-package ipleiria.estg.dei.ei.pi.model.geneticAlgorithm;
+package ipleiria.estg.dei.ei.pi.model.picking;
 
-import ipleiria.estg.dei.ei.pi.model.Node;
-import ipleiria.estg.dei.ei.pi.model.PickNode;
+import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.*;
+import ipleiria.estg.dei.ei.pi.utils.exceptions.NoSolutionFoundException;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -35,6 +35,10 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
         }
     }
 
+    public PickingIndividual(PickingIndividual pickingIndividual) {
+        super(pickingIndividual);
+    }
+
     @Override
     public void computeFitness() {
         this.paths = new ArrayList<>();
@@ -54,13 +58,13 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
             pickingAgentPath.addAgentInitialPosition(agent);
 
             if (i >= this.genome.length || this.genome[i] < 0) { // WHEN THE FIRST ELEMENT OF THE GENOME IS NEGATIVE OR THERE ARE 2 CONSECUTIVE NEGATIVE ELEMENTS IN THE GENOME
-//                computePath(agentPath, agent, this.environment.getNode(offloadArea));
+                computePath(pickingAgentPath, agent, offloadArea);
                 this.paths.add(pickingAgentPath);
                 i++;
                 continue;
             }
 
-//            computePath(agentPath, agent, picks.get(this.genome[i] - 1));
+            computePath(pickingAgentPath, agent, picks.get(this.genome[i] - 1));
 
 //            weightOnTopOfRestrictionPick = 0;
 //            restrictionPickCapacity = picks.get(this.genome[i] - 1).getCapacity();
@@ -86,12 +90,12 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
 //                    computePath(agentPath, picks.get(this.genome[i] - 1), picks.get(this.genome[i + 1] - 1));
 //                }
 
-//                computePath(agentPath, picks.get(this.genome[i] - 1), picks.get(this.genome[i + 1] - 1));
+                computePath(pickingAgentPath, picks.get(this.genome[i] - 1), picks.get(this.genome[i + 1] - 1));
 
                 i++;
             }
 
-//            computePath(agentPath, picks.get(this.genome[i] - 1), offloadArea);
+            computePath(pickingAgentPath, picks.get(this.genome[i] - 1), offloadArea);
             this.paths.add(pickingAgentPath);
             i = i + 2;
         }
@@ -108,8 +112,26 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
 //        detectAndPenalizeCollisions();
     }
 
-    public static class PickingIndividualFactory implements Factory<PickingIndividual, PickingGAProblem> {
+    public void computePath(PickingAgentPath agentPath, Node initialNode, Node goalNode) {
+        try {
+            agentPath.addPath(this.problem.getSearchMethod().graphSearch(new PickingSearchProblem(initialNode, goalNode, this.problem.getGraph())), goalNode);
+        } catch (NoSolutionFoundException exception) {
+            System.out.println(exception.getMessage());
+        }
+    }
 
+    /** returns 1 if this is better than individual (this.fitness < individual.getFitness()), returns -1 if this is worst than individual (this.fitness > individual.getFitness()), else returns 0 */
+    @Override
+    public int compareTo(Individual<? extends GAProblem> individual) {
+        return Double.compare(individual.getFitness(), this.fitness);
+    }
+
+    @Override
+    public PickingIndividual clone() {
+        return new PickingIndividual(this);
+    }
+
+    public static class PickingIndividualFactory implements Factory<PickingIndividual, PickingGAProblem> {
         @Override
         public PickingIndividual newIndividual(PickingGAProblem problem) {
             return new PickingIndividual(problem);

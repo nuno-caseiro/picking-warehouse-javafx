@@ -1,4 +1,6 @@
-package ipleiria.estg.dei.ei.pi.model;
+package ipleiria.estg.dei.ei.pi.model.picking;
+
+import ipleiria.estg.dei.ei.pi.model.search.State;
 
 public class Node extends State {
 

@@ -1,7 +1,5 @@
 package ipleiria.estg.dei.ei.pi.model.search;
 
-import ipleiria.estg.dei.ei.pi.model.State;
-
 import java.util.List;
 
 public class AStarSearch<S extends State> extends InformedSearch<S> {

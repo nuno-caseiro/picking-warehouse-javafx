@@ -1,7 +1,5 @@
 package ipleiria.estg.dei.ei.pi.model.search;
 
-import ipleiria.estg.dei.ei.pi.model.State;
-
 public class SearchNode<S extends State> implements Comparable<SearchNode<? extends State>> {
 
     private SearchNode<S> parent;

@@ -12,14 +12,20 @@ public abstract class IntVectorIndividual<P extends GAProblem> extends Individua
         super(problem);
     }
 
+    public IntVectorIndividual(IntVectorIndividual<P> original) {
+        super(original);
+        this.genome = new int[original.genome.length];
+        System.arraycopy(original.genome, 0, genome, 0, genome.length);
+    }
+
     @Override
     public int getNumGenes() {
         return this.genome.length;
     }
 
     public int getIndexOf(int value) throws ValueNotFoundException {
-        for (int i = 0; i < genome.length; i++) {
-            if (genome[i] == value) {
+        for (int i = 0; i < this.genome.length; i++) {
+            if (this.genome[i] == value) {
                 return i;
             }
         }
@@ -28,11 +34,11 @@ public abstract class IntVectorIndividual<P extends GAProblem> extends Individua
     }
 
     public int getGene(int index) {
-        return genome[index];
+        return this.genome[index];
     }
 
     public void setGene(int index, int newValue) {
-        genome[index] = newValue;
+        this.genome[index] = newValue;
     }
 
     public void swapGenes(IntVectorIndividual<P> other, int index) {

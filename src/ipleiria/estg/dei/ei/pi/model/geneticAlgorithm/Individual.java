@@ -9,6 +9,11 @@ public abstract class Individual<P extends GAProblem> implements Comparable<Indi
         this.problem = problem;
     }
 
+    public Individual(Individual<P> original) {
+        this.problem = original.problem;
+        this.fitness = original.fitness;
+    }
+
     public double getFitness() {
         return fitness;
     }
@@ -19,9 +24,6 @@ public abstract class Individual<P extends GAProblem> implements Comparable<Indi
 
 //    public abstract void swapGenes(Individual<P> other, int g);
 
-    /** returns 1 if this is better than individual (this.fitness < individual.getFitness()), returns -1 if this is worst than individual (this.fitness > individual.getFitness()), else returns 0 */
     @Override
-    public int compareTo(Individual<? extends GAProblem> individual) {
-        return Double.compare(individual.getFitness(), this.fitness);
-    }
+    public abstract Individual<P> clone();
 }

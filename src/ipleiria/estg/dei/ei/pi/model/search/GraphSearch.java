@@ -1,6 +1,5 @@
 package ipleiria.estg.dei.ei.pi.model.search;
 
-import ipleiria.estg.dei.ei.pi.model.State;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.NoSolutionFoundException;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public abstract class GraphSearch<F extends NodeCollection, S extends State> {
         this.explored = new HashSet<>();
     }
 
-    protected List<SearchNode<S>> graphSearch(SearchProblem<S> problem) throws NoSolutionFoundException {
+    public List<SearchNode<S>> graphSearch(SearchProblem<S> problem) throws NoSolutionFoundException {
         frontier.clear();
         explored.clear();
         frontier.add(new SearchNode<>(problem.getInitialState()));
@@ -34,6 +33,7 @@ public abstract class GraphSearch<F extends NodeCollection, S extends State> {
             explored.add(searchNode.getState().getIdentifier());
             addSuccessorsToFrontier(problem.getSuccessors(), searchNode, problem.getGoalState());
         }
+
 
         throw new NoSolutionFoundException("No solution found from " + problem.getInitialState().toString() + " to " + problem.getGoalState().toString());
     }
