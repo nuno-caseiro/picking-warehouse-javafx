@@ -1,20 +1,20 @@
 package ipleiria.estg.dei.ei.pi.gui;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Tab;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 
-import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.ResourceBundle;
 
-public class MainFrame implements Initializable {
+public class MainFrameController implements Initializable {
 
     @FXML
     public Button loadLayoutButton;
@@ -41,10 +41,13 @@ public class MainFrame implements Initializable {
     public Button stepBackwordButton;
 
     @FXML
-    public AnchorPane simulationFrame;
+    public StackPane simulationFrame;
 
     @FXML
     public AnchorPane gaFrame;
+
+    @FXML
+    public Slider slider;
 
     @FXML
     private Tab gaTab ;
@@ -61,6 +64,8 @@ public class MainFrame implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        simulationFrameController.init(this);
+
         ImageView loadWarehouseIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/loadWarehouseLayoutIcon.png"));
         ImageView loadPicksIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/loadPicksIcon.png"));
 
@@ -91,9 +96,17 @@ public class MainFrame implements Initializable {
         stepForwardButton.setGraphic(stepForwardIcon);
         stepBackwordButton.setGraphic(stepBackwardIcon);
 
+
     }
+
 
     public void play() {
         simulationFrameController.start();
+        slider.setMax(simulationFrameController.st.getTotalDuration().toMillis());
+    }
+
+
+    public void playFromSlider(){
+        simulationFrameController.startFromSlider(slider.getValue());
     }
 }

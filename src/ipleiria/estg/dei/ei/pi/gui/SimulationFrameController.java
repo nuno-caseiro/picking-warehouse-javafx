@@ -1,25 +1,31 @@
 package ipleiria.estg.dei.ei.pi.gui;
 
 import javafx.animation.*;
-import javafx.fxml.FXML;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
-import javax.sound.midi.Soundbank;
 import java.net.URL;
 import java.util.*;
 
 public class SimulationFrameController implements Initializable {
 
-    public AnchorPane simulationPane;
+    public StackPane simulationPane;
+    public Group group1 = new Group();
+
 
     HashMap<String, Rectangle> picks = new HashMap<>();
     HashMap<String, StackPane> nodes = new HashMap<>();
@@ -33,6 +39,15 @@ public class SimulationFrameController implements Initializable {
     public List<Timeline> timeLines = new ArrayList<>();
 
     public SequentialTransition st;
+    public boolean stFirst = false;
+
+
+
+    private MainFrameController main;
+
+    public void init(MainFrameController mainFrameController){
+        main= mainFrameController;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -49,6 +64,7 @@ public class SimulationFrameController implements Initializable {
         a1a.setLayoutX(70);
         a1a.setLayoutY(50);
         a1a.toFront();
+
 
         Text text2 = new Text("A2");
         a2a.getChildren().addAll(a2,text2);
@@ -68,16 +84,16 @@ public class SimulationFrameController implements Initializable {
         createEdge(nodes.get("250-50"),nodes.get("250-150"));
 
         for (String s : picks.keySet()) {
-            simulationPane.getChildren().add(picks.get(s));
+            group1.getChildren().add(picks.get(s));
             System.out.println("----"+s+"-----");
         }
 
         for (String s : nodes.keySet()) {
-            simulationPane.getChildren().add(nodes.get(s));
+            group1.getChildren().add(nodes.get(s));
         }
 
-        simulationPane.getChildren().add(a1a);
-        simulationPane.getChildren().add(a2a);
+        group1.getChildren().add(a1a);
+        group1.getChildren().add(a2a);
 
         KeyFrame k = new KeyFrame(Duration.millis(1000),new KeyValue(a1a.layoutXProperty(),nodes.get("150-50").getLayoutX()), new KeyValue(a2a.layoutXProperty(),nodes.get("150-150").getLayoutX()));
         addTimeLine(k);
@@ -88,13 +104,15 @@ public class SimulationFrameController implements Initializable {
         addTimeLine(new KeyFrame(Duration.millis(1000),new KeyValue(a1a.layoutXProperty(),nodes.get("150-150").getLayoutX())));
 
 
+        simulationPane.getChildren().add(group1);
 
     }
 
     public void createEdge(StackPane node1, StackPane node2){
         Line l = new Line(node1.getLayoutX()+10,node1.getLayoutY()+10,node2.getLayoutX()+10,node2.getLayoutY()+10);
+
         createPicks(l);
-        simulationPane.getChildren().add(l);
+        group1.getChildren().add(l);
     }
 
     public void createPicks(Line l){
@@ -109,8 +127,10 @@ public class SimulationFrameController implements Initializable {
             rR.setFill(Color.WHITE);
             picks.put((int)rL.getX()+"-"+(int)rL.getY(),rL);
             picks.put((int)rR.getX()+"-"+(int)rR.getY(),rR);
+
         }
     }
+
 
     public void createNode(String textToNode, int x, int y, int radius, Color color){
         Text text = new Text(textToNode);
@@ -122,25 +142,43 @@ public class SimulationFrameController implements Initializable {
         nodes.put(x+"-"+y,stackPane);
     }
 
-    public void addNodesToFrame(){
-
-    }
-
     public void setEmptyPick(String position){
         picks.get(position).setFill(Color.WHITE);
     }
 
-    public void addTimeLine(KeyFrame kv){
+    public void addTimeLine(KeyFrame kv) {
         Timeline t= new Timeline();
         t.getKeyFrames().addAll(kv);
+
+        t.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                main.slider.setValue(st.getCurrentTime().toMillis());
+            }
+        });
+
+
         timeLines.add(t);
     }
 
-
-
     public void start() {
-        st= new SequentialTransition();
-        st.getChildren().addAll(timeLines);
+        if(!stFirst){
+            st= new SequentialTransition();
+            st.getChildren().addAll(timeLines);
+            stFirst=true;
+        }
+        if(st.getStatus() == Animation.Status.PAUSED || st.getStatus() ==Animation.Status.STOPPED){
+            st.play();
+        }else{
+            st.pause();
+        }
+    }
+
+    public void startFromSlider(Double time){
+        st.jumpTo(Duration.millis(time));
         st.play();
     }
+
+
+
 }
