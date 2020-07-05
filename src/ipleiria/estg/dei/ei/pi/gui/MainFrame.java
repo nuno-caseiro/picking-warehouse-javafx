@@ -76,7 +76,6 @@ public class MainFrame implements Initializable {
         ImageView stepForwardIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/nextIcon.png"));
         ImageView stepBackwardIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/backIcon.png"));
 
-
         loadLayoutButton.setGraphic(loadWarehouseIcon);
         loadPicksButton.setGraphic(loadPicksIcon);
 
@@ -92,14 +91,9 @@ public class MainFrame implements Initializable {
         stepForwardButton.setGraphic(stepForwardIcon);
         stepBackwordButton.setGraphic(stepBackwardIcon);
 
-
-
-
-
-
     }
 
-    public void play() throws IOException {
+    public void play() {
         simulationFrameController.start();
     }
 }
