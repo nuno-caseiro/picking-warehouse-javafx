@@ -1,5 +1,6 @@
 package ipleiria.estg.dei.ei.pi.gui;
 
+import ipleiria.estg.dei.ei.pi.controller.Controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -24,6 +25,8 @@ public class Main extends Application {
         primaryStage.setMinHeight(788);
         primaryStage.setScene(new Scene(root, bounds.getWidth()*0.75, bounds.getHeight()*0.75));
         primaryStage.show();
+
+        Controller controller = new Controller();
 
     }
 
