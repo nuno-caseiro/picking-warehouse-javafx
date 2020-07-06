@@ -21,7 +21,7 @@
             <Separator orientation="VERTICAL" />
             <Button fx:id="startPauseButton" mnemonicParsing="false" onAction="#play" />
             <Button fx:id="stepForwardButton" mnemonicParsing="false" />
-            <Button fx:id="stepBackwordButton" mnemonicParsing="false" />
+            <Button fx:id="stepBackwardButton" mnemonicParsing="false" />
             <Slider fx:id="slider" onMouseReleased="#playFromSlider" prefHeight="16.0" prefWidth="210.0" />
         </items>
       </ToolBar>

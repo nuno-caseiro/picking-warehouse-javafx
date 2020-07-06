@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.ChoiceBox?>
@@ -41,7 +40,7 @@
                   <Insets left="10.0" />
                </padding>
             </Label>
-            <TextField fx:id="seedGaField" promptText="1" GridPane.columnIndex="1" />
+            <TextField fx:id="seedGaField" promptText="1" text="1" GridPane.columnIndex="1" />
             <Label text="Population size:" GridPane.rowIndex="1">
                <padding>
                   <Insets left="10.0" />
@@ -87,12 +86,12 @@
                   <Insets left="10.0" />
                </padding>
             </Label>
-            <TextField fx:id="popSizeField" promptText="100" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <TextField fx:id="generationsField" promptText="100" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="tournamentSizeField" promptText="4" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <TextField fx:id="selectivePressureField" promptText="2" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <TextField fx:id="recombinationProbField" promptText="0.7" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <TextField fx:id="mutationProbField" promptText="0.2" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <TextField fx:id="popSizeField" promptText="100" text="100" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="generationsField" promptText="100" text="100" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="tournamentSizeField" promptText="4" text="4" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="selectivePressureField" promptText="2" text="2" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <TextField fx:id="recombinationProbField" promptText="0.7" text="0.7" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <TextField fx:id="mutationProbField" promptText="0.2" text="0.2" GridPane.columnIndex="1" GridPane.rowIndex="9" />
             <Label text="Collisions handling " GridPane.rowIndex="10">
                <padding>
                   <Insets left="10.0" />
@@ -109,10 +108,10 @@
                </GridPane.margin>
             </Label>
             <TextField fx:id="agentsCapacityField" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-            <ChoiceBox fx:id="selectionMethodFieldselection" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <ChoiceBox fx:id="selectionMethodFieldSelection" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <ChoiceBox fx:id="recombinationMethodField" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <ChoiceBox fx:id="mutationMethodField" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-            <ChoiceBox fx:id="collisionsHandlingFieldcollisions" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+            <ChoiceBox fx:id="collisionsHandlingFieldCollisions" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
             <ChoiceBox fx:id="weightLimitationField" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="11" />
          </children>
          <opaqueInsets>
@@ -120,9 +119,9 @@
          </opaqueInsets>
       </GridPane>
       <TextArea editable="false" layoutX="-5.0" layoutY="628.0" prefHeight="166.0" prefWidth="990.0" promptText="Best solution" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <LineChart fx:id="gaChart" layoutX="332.0" layoutY="-1.0" prefHeight="562.0" prefWidth="658.0" title="Evolution" AnchorPane.bottomAnchor="166.0" AnchorPane.leftAnchor="332.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <LineChart fx:id="gaChart" createSymbols="false" layoutX="332.0" layoutY="-1.0" legendVisible="false" prefHeight="562.0" prefWidth="658.0" title="Evolution" AnchorPane.bottomAnchor="166.0" AnchorPane.leftAnchor="332.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <xAxis>
-          <CategoryAxis label="generation" prefHeight="20.0" prefWidth="581.0" side="BOTTOM" />
+          <NumberAxis label="generation" prefHeight="39.0" prefWidth="581.0" side="BOTTOM" />
         </xAxis>
         <yAxis>
           <NumberAxis label="fitness" prefHeight="514.0" prefWidth="47.0" side="LEFT" />

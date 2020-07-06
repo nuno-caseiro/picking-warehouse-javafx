@@ -62,4 +62,6 @@ public class Population<I extends Individual<? extends GAProblem>, P extends GAP
     public int getSize() {
         return this.individuals.size();
     }
+
+
 }

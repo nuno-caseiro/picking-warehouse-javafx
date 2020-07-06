@@ -1,7 +1,5 @@
 package ipleiria.estg.dei.ei.pi.gui;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -9,45 +7,43 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-
 import java.net.URL;
-import java.time.Duration;
 import java.util.ResourceBundle;
 
 public class MainFrameController implements Initializable {
 
     @FXML
-    public Button loadLayoutButton;
+    private Button loadLayoutButton;
 
     @FXML
-    public Button loadPicksButton;
+    private Button loadPicksButton;
 
     @FXML
-    public Button runGaButton;
+    private Button runGaButton;
 
     @FXML
-    public Button stopGAButton;
+    private Button stopGAButton;
 
     @FXML
-    public Button simulationButton;
+    private Button simulationButton;
 
     @FXML
-    public Button startPauseButton;
+    private Button startPauseButton;
 
     @FXML
-    public Button stepForwardButton;
+    private Button stepForwardButton;
 
     @FXML
-    public Button stepBackwordButton;
+    private Button stepBackwardButton;
 
     @FXML
-    public StackPane simulationFrame;
+    private StackPane simulationFrame;
 
     @FXML
-    public AnchorPane gaFrame;
+    private AnchorPane gaFrame;
 
     @FXML
-    public Slider slider;
+    private Slider slider;
 
     @FXML
     private Tab gaTab ;
@@ -71,6 +67,7 @@ public class MainFrameController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         simulationFrameController.init(this);
+
 
         ImageView loadWarehouseIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/loadWarehouseLayoutIcon.png"));
         ImageView loadPicksIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/loadPicksIcon.png"));
@@ -100,7 +97,7 @@ public class MainFrameController implements Initializable {
 
         startPauseButton.setGraphic(pauseIcon);
         stepForwardButton.setGraphic(stepForwardIcon);
-        stepBackwordButton.setGraphic(stepBackwardIcon);
+        stepBackwardButton.setGraphic(stepBackwardIcon);
 
 
     }
@@ -119,4 +116,39 @@ public class MainFrameController implements Initializable {
         simulationFrameController.startFromSlider(slider.getValue());
     }
 
+    public Button getLoadLayoutButton() {
+        return loadLayoutButton;
+    }
+
+    public Button getLoadPicksButton() {
+        return loadPicksButton;
+    }
+
+    public Button getStopGAButton() {
+        return stopGAButton;
+    }
+
+    public Button getSimulationButton() {
+        return simulationButton;
+    }
+
+    public Button getStartPauseButton() {
+        return startPauseButton;
+    }
+
+    public Button getStepForwardButton() {
+        return stepForwardButton;
+    }
+
+    public Button getStepBackwardButton() {
+        return stepBackwardButton;
+    }
+
+    public Slider getSlider() {
+        return slider;
+    }
+
+    public GaFrameController getGaFrameController() {
+        return gaFrameController;
+    }
 }

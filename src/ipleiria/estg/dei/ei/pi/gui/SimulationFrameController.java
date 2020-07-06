@@ -145,7 +145,7 @@ public class SimulationFrameController implements Initializable {
         t.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                main.slider.setValue(st.getCurrentTime().toMillis());
+                main.getSlider().setValue(st.getCurrentTime().toMillis());
             }
         });
 
