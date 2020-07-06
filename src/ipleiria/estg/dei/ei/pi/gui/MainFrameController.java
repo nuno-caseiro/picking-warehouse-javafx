@@ -61,6 +61,12 @@ public class MainFrameController implements Initializable {
     @FXML
     private SimulationFrameController simulationFrameController;
 
+    @FXML
+    private GaFrameController gaFrameController;
+
+    @FXML
+    private ExperimentsFrameController experimentsFrameController;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -99,6 +105,9 @@ public class MainFrameController implements Initializable {
 
     }
 
+    public Button getRunGaButton() {
+        return runGaButton;
+    }
 
     public void play() {
         simulationFrameController.start();
@@ -109,4 +118,5 @@ public class MainFrameController implements Initializable {
     public void playFromSlider(){
         simulationFrameController.startFromSlider(slider.getValue());
     }
+
 }

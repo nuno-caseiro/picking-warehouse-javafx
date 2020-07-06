@@ -12,7 +12,11 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("mainFrame.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("mainFrame.fxml"));
+        Parent root = fxmlLoader.load();
+
+        MainFrameController mainFrameController = fxmlLoader.getController();
+
         primaryStage.setTitle("Picking");
         Screen screen = Screen.getPrimary();
         Rectangle2D bounds = screen.getVisualBounds();
@@ -20,8 +24,8 @@ public class Main extends Application {
         primaryStage.setMinHeight(788);
         primaryStage.setScene(new Scene(root, bounds.getWidth()*0.75, bounds.getHeight()*0.75));
         primaryStage.show();
-    }
 
+    }
 
     public static void main(String[] args) {
         launch(args);

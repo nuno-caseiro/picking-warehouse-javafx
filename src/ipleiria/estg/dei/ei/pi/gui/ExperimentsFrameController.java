@@ -10,10 +10,13 @@ import javafx.scene.layout.RowConstraints;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ExperimentsFrame implements Initializable {
+public class ExperimentsFrameController implements Initializable {
 
     @FXML
     public TextArea popSizeArea;
+
+    @FXML
+    public TextArea generationsArea;
 
     @FXML
     public Button removeButton;
@@ -24,12 +27,12 @@ public class ExperimentsFrame implements Initializable {
     @FXML
     public GridPane editingParametersPane;
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         addButton.prefHeightProperty().bind(editingParametersPane.heightProperty());
         addButton.prefHeightProperty().bind(editingParametersPane.heightProperty());
         removeButton.prefHeightProperty().bind(editingParametersPane.heightProperty());
         removeButton.prefWidthProperty().bind(editingParametersPane.widthProperty());
+
     }
 }

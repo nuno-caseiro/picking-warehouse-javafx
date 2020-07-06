@@ -1,13 +1,10 @@
 package ipleiria.estg.dei.ei.pi.gui;
 
 import javafx.animation.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -15,9 +12,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
-
 import java.net.URL;
 import java.util.*;
 
@@ -25,7 +20,6 @@ public class SimulationFrameController implements Initializable {
 
     public StackPane simulationPane;
     public Group group1 = new Group();
-
 
     HashMap<String, Rectangle> picks = new HashMap<>();
     HashMap<String, StackPane> nodes = new HashMap<>();
@@ -40,8 +34,6 @@ public class SimulationFrameController implements Initializable {
 
     public SequentialTransition st;
     public boolean stFirst = false;
-
-
 
     private MainFrameController main;
 
