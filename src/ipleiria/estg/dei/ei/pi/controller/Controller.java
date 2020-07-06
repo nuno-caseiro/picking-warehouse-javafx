@@ -43,6 +43,7 @@ public class Controller {
 
     private void loadWarehouseLayout() {
         try {
+            this.environment.addEnvironmentListener(this.mainFrame.getSimulationFrameController());
             this.environment.loadLayout(JsonParser.parseReader(new FileReader("src/ipleiria/estg/dei/ei/pi/dataSets/WarehouseLayout.json")).getAsJsonObject());
         } catch (InvalidNodeException | FileNotFoundException e) {
             e.printStackTrace();

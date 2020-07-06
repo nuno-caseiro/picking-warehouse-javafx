@@ -26,6 +26,12 @@ public class PickingGraph extends Graph<Node> {
     public PickingGraph() {
     }
 
+    public List<Node> getDecisionNodes() {
+        return decisionNodes;
+    }
+
+
+
     public ArrayList<PickNode> getPicks() {
         return picks;
     }

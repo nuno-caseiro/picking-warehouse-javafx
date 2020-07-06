@@ -35,6 +35,8 @@
             <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="42.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="42.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="42.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="14.0" minHeight="0.0" prefHeight="14.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
@@ -93,12 +95,12 @@
                   <Insets left="10.0" />
                </padding>
             </Label>
-            <Label text="Number of agents:" GridPane.rowIndex="12">
+            <Label text="Number of agents:" GridPane.rowIndex="14">
                <padding>
                   <Insets left="10.0" />
                </padding>
             </Label>
-            <Label text="Number of picks:" GridPane.rowIndex="13">
+            <Label text="Number of picks:" GridPane.rowIndex="15">
                <padding>
                   <Insets left="10.0" />
                </padding>
@@ -158,12 +160,12 @@
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="numberAgentsArea" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="12">
+            <TextArea fx:id="numberAgentsArea" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="14">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="numberPicksArea" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="13">
+            <TextArea fx:id="numberPicksArea" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="15">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
@@ -178,12 +180,32 @@
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <Label text="Agents capacity: " GridPane.rowIndex="14">
+            <Label text="Agents capacity: " GridPane.rowIndex="16">
                <padding>
                   <Insets left="10.0" />
                </padding>
             </Label>
-            <TextArea fx:id="agentsCapacityArea" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="14">
+            <TextArea fx:id="agentsCapacityArea" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="16">
+               <GridPane.margin>
+                  <Insets right="5.0" top="10.0" />
+               </GridPane.margin>
+            </TextArea>
+            <Label text="Time weights:" GridPane.rowIndex="12">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </Label>
+            <Label text="Collision weights" GridPane.rowIndex="13">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </Label>
+            <TextArea fx:id="timeWeightsArea" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="12">
+               <GridPane.margin>
+                  <Insets right="5.0" top="10.0" />
+               </GridPane.margin>
+            </TextArea>
+            <TextArea fx:id="colisionWeightsArea" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="13">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>

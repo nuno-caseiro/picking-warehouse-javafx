@@ -30,7 +30,7 @@ public class ExperimentsFrameController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         addButton.prefHeightProperty().bind(editingParametersPane.heightProperty());
-        addButton.prefHeightProperty().bind(editingParametersPane.heightProperty());
+        addButton.prefWidthProperty().bind(editingParametersPane.prefWidthProperty());
         removeButton.prefHeightProperty().bind(editingParametersPane.heightProperty());
         removeButton.prefWidthProperty().bind(editingParametersPane.widthProperty());
 

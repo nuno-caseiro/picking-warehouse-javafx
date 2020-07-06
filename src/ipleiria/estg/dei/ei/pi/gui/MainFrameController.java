@@ -151,4 +151,8 @@ public class MainFrameController implements Initializable {
     public GaFrameController getGaFrameController() {
         return gaFrameController;
     }
+
+    public SimulationFrameController getSimulationFrameController() {
+        return simulationFrameController;
+    }
 }
