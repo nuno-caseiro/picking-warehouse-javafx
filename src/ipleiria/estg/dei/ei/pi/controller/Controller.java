@@ -17,6 +17,7 @@ import ipleiria.estg.dei.ei.pi.model.picking.PickingGAProblem;
 import ipleiria.estg.dei.ei.pi.model.picking.PickingIndividual;
 import ipleiria.estg.dei.ei.pi.model.picking.PickingManhattanDistance;
 import ipleiria.estg.dei.ei.pi.model.search.AStarSearch;
+import ipleiria.estg.dei.ei.pi.utils.WeightLimitation;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
 
 import java.io.FileNotFoundException;
@@ -69,7 +70,7 @@ public class Controller {
 
         geneticAlgorithm.addGAListener(mainFrame.getGaFrameController());
 
-        PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(this.environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance())));
+        PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(this.environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), WeightLimitation.Picks));
 
         System.out.println(individual.getFitness());
         System.out.println(Arrays.toString(individual.getGenome()));

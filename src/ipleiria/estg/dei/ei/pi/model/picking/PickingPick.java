@@ -2,16 +2,16 @@ package ipleiria.estg.dei.ei.pi.model.picking;
 
 import ipleiria.estg.dei.ei.pi.utils.PickLocation;
 
-public class PickNode extends Node {
+public class PickingPick extends Node {
 
     private PickLocation pickLocation;
-    private double wight;
+    private double weight;
     private double capacity;
 
-    public PickNode(int identifier, double costFromPreviousState, int line, int column, PickLocation pickLocation, double wight, double capacity) {
+    public PickingPick(int identifier, double costFromPreviousState, int line, int column, PickLocation pickLocation, double weight, double capacity) {
         super(identifier, costFromPreviousState, line, column);
         this.pickLocation = pickLocation;
-        this.wight = wight;
+        this.weight = weight;
         this.capacity = capacity;
     }
 
@@ -19,8 +19,8 @@ public class PickNode extends Node {
         return pickLocation;
     }
 
-    public double getWight() {
-        return wight;
+    public double getWeight() {
+        return weight;
     }
 
     public double getCapacity() {

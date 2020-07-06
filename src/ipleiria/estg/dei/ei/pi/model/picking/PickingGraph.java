@@ -3,14 +3,10 @@ package ipleiria.estg.dei.ei.pi.model.picking;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import ipleiria.estg.dei.ei.pi.utils.EdgeDirection;
 import ipleiria.estg.dei.ei.pi.utils.PickLocation;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,15 +14,15 @@ import java.util.List;
 public class PickingGraph extends Graph<Node> {
 
     private List<Node> decisionNodes;
-    private ArrayList<Node> agents;
+    private ArrayList<PickingAgent> agents;
     private Node offloadArea;
-    private ArrayList<PickNode> picks;
+    private ArrayList<PickingPick> picks;
     private HashMap<String, EdgeDirection> subEdges;
 
     public PickingGraph() {
     }
 
-    public ArrayList<PickNode> getPicks() {
+    public ArrayList<PickingPick> getPicks() {
         return picks;
     }
 
@@ -34,7 +30,7 @@ public class PickingGraph extends Graph<Node> {
         return this.picks.size();
     }
 
-    public ArrayList<Node> getAgents() {
+    public ArrayList<PickingAgent> getAgents() {
         return agents;
     }
 
@@ -147,7 +143,7 @@ public class PickingGraph extends Graph<Node> {
         for (JsonElement elementAgent : jsonAgents) {
             jsonAgent = elementAgent.getAsJsonObject();
 
-            addAgent(jsonAgent.get("edgeNumber").getAsInt(), jsonAgent.get("line").getAsInt(), jsonAgent.get("column").getAsInt()); // TODO ?
+            addAgent(jsonAgent.get("edgeNumber").getAsInt(), jsonAgent.get("line").getAsInt(), jsonAgent.get("column").getAsInt(), jsonAgent.get("capacity").getAsDouble()); // TODO ?
         }
     }
 
@@ -167,21 +163,22 @@ public class PickingGraph extends Graph<Node> {
 
             addPick(jsonPick.get("edgeNumber").getAsInt(), jsonPick.get("line").getAsInt(), jsonPick.get("column").getAsInt(), jsonPick.get("location").getAsInt(), jsonPick.get("weight").getAsDouble(), jsonPick.get("capacity").getAsDouble());
         }
-        System.out.println(111);
     }
 
     private void generateRandomPicksAndAgents() {
         // TODO ?
     }
 
-    private void addAgent(int edgeNumber, int line, int column) throws InvalidNodeException {
-        this.agents.add(addNode(edgeNumber, line, column));
+    private void addAgent(int edgeNumber, int line, int column, double capacity) throws InvalidNodeException {
+        Node node = addNode(edgeNumber, line, column);
+
+        this.agents.add(new PickingAgent(node.getIdentifier(), 0, node.getLine(), node.getColumn(), capacity));
     }
 
     private void addPick(int edgeNumber, int line, int column, int location, double weight, double capacity) throws InvalidNodeException {
         Node node = addNode(edgeNumber, line, column);
 
-        this.picks.add(new PickNode(node.getIdentifier(), 0, node.getLine(), node.getColumn(), location == -1 ? PickLocation.LEFT: PickLocation.RIGHT, weight, capacity));
+        this.picks.add(new PickingPick(node.getIdentifier(), 0, node.getLine(), node.getColumn(), location == -1 ? PickLocation.LEFT: PickLocation.RIGHT, weight, capacity));
 
     }
 
