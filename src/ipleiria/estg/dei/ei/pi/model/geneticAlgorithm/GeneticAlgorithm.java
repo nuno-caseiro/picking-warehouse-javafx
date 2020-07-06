@@ -53,7 +53,7 @@ public class GeneticAlgorithm<I extends Individual<? extends GAProblem>, P exten
 
         fireRunEnded();
 
-        return bestInRun;
+        return this.bestInRun;
     }
 
     private boolean stopCondition(int t) {

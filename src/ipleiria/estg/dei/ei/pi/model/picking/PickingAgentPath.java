@@ -25,6 +25,7 @@ public class PickingAgentPath {
     }
 
     public void addPath(List<SearchNode<Node>> path, Node node) {
+//        path.remove(0);
 
         for (SearchNode<Node> searchNode : path) {
             this.path.add(new PathNode(searchNode.getState().getIdentifier(), searchNode.getState().getLine(), searchNode.getState().getColumn(), this.value + searchNode.getCost(), PickLocation.NONE));

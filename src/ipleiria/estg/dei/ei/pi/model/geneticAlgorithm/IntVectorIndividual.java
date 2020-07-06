@@ -33,6 +33,10 @@ public abstract class IntVectorIndividual<P extends GAProblem> extends Individua
         throw new ValueNotFoundException("Could not find " + value + " in " + Arrays.toString(this.genome));
     }
 
+    public int[] getGenome() {
+        return genome;
+    }
+
     public int getGene(int index) {
         return this.genome[index];
     }

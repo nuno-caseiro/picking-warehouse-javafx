@@ -31,7 +31,7 @@ public abstract class GraphSearch<F extends NodeCollection, S extends State> {
             }
 
             explored.add(searchNode.getState().getIdentifier());
-            addSuccessorsToFrontier(problem.getSuccessors(), searchNode, problem.getGoalState());
+            addSuccessorsToFrontier(problem.getSuccessors(searchNode.getState().getIdentifier()), searchNode, problem.getGoalState());
         }
 
 

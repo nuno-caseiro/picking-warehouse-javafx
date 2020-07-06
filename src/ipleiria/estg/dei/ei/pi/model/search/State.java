@@ -11,10 +11,14 @@ public abstract class State {
     }
 
     public int getIdentifier() {
-        return identifier;
+        return this.identifier;
     }
 
     public double getCostFromPreviousState() {
-        return costFromPreviousState;
+        return this.costFromPreviousState;
+    }
+
+    public void setCostFromPreviousState(double costFromPreviousState) {
+        this.costFromPreviousState = costFromPreviousState;
     }
 }

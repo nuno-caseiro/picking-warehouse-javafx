@@ -37,6 +37,16 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
 
     public PickingIndividual(PickingIndividual pickingIndividual) {
         super(pickingIndividual);
+        this.paths = pickingIndividual.paths;
+        this.time = pickingIndividual.time;
+    }
+
+    public List<PickingAgentPath> getPaths() {
+        return paths;
+    }
+
+    public double getTime() {
+        return time;
     }
 
     @Override

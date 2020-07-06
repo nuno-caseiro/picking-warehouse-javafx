@@ -16,7 +16,7 @@ public class AStarSearch<S extends State> extends InformedSearch<S> {
             g = parent.getCost() + s.getCostFromPreviousState();
 
             if (!this.frontier.containsNode(s.getIdentifier()) && !this.explored.contains(s.getIdentifier())) {
-                this.frontier.add(new SearchNode<>(parent, g, g + this.heuristic.compute(s, goalState), s));
+                this.frontier.add(new SearchNode<>(parent, g + this.heuristic.compute(s, goalState), g,  s));
             }
         }
     }

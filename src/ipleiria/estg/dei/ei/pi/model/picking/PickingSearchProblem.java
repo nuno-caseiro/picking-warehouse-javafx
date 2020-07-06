@@ -6,9 +6,9 @@ import java.util.List;
 
 public class PickingSearchProblem extends SearchProblem<Node> {
 
-    private Graph graph;
+    private PickingGraph graph;
 
-    public PickingSearchProblem(Node initialState, Node goalState, Graph graph) {
+    public PickingSearchProblem(Node initialState, Node goalState, PickingGraph graph) {
         super(initialState, goalState);
         this.graph = graph;
     }
@@ -19,7 +19,7 @@ public class PickingSearchProblem extends SearchProblem<Node> {
     }
 
     @Override
-    public List<Node> getSuccessors() {
-        return this.graph.getSuccessors();
+    public List<Node> getSuccessors(int identifier) {
+        return this.graph.getSuccessors(identifier);
     }
 }

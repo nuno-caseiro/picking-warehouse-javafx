@@ -22,5 +22,5 @@ public abstract class SearchProblem<S extends State> {
 
     public abstract boolean isGoal(int identifier);
 
-    public abstract List<S> getSuccessors();
+    public abstract List<S> getSuccessors(int identifier);
 }
