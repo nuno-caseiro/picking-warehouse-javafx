@@ -21,7 +21,7 @@ public class GeneticAlgorithm<I extends Individual<? extends GAProblem>, P exten
     private int t;
     private boolean stopped;
     private I bestInRun;
-    private final List<GAListener> listeners;
+    private final List<GAListener<I, P>> listeners;
 
     public GeneticAlgorithm(Factory<I, P> individualFactory, SelectionMethod<I, P> selection, Recombination<I, P> recombination, Mutation<I, P> mutation, int populationSize, int maxGenerations, Random rand) {
         this.individualFactory = individualFactory;
@@ -38,7 +38,7 @@ public class GeneticAlgorithm<I extends Individual<? extends GAProblem>, P exten
         this.t = 0;
         this.population = new Population<>(this.populationSize, this.individualFactory, problem);
         this.bestInRun = this.population.evaluate();
-        fireGenerationEnded();
+        fireGenerationEnded(this);
 
         while (!stopCondition(t)) {
             Population<I, P> populationAux = this.selection.run(this.population);
@@ -48,10 +48,10 @@ public class GeneticAlgorithm<I extends Individual<? extends GAProblem>, P exten
             I bestInGen = this.population.evaluate();
             computeBestInRun(bestInGen);
             t++;
-            fireGenerationEnded();
+            fireGenerationEnded(this);
         }
 
-        fireRunEnded();
+        fireRunEnded(this);
 
         return this.bestInRun;
     }
@@ -66,22 +66,22 @@ public class GeneticAlgorithm<I extends Individual<? extends GAProblem>, P exten
         }
     }
 
-    public void fireGenerationEnded() {
-//        for (GAListener listener : listeners) {
-//            listener.generationEnded(e);
-//        }
+    public void fireGenerationEnded(GeneticAlgorithm<I, P> geneticAlgorithm) {
+        for (GAListener<I, P> listener : listeners) {
+            listener.generationEnded(geneticAlgorithm);
+        }
 //        if (e.isStopped()) {
 //            stop();
 //        }
     }
 
-    public void fireRunEnded() {
-//        for (GAListener listener : listeners) {
-//            listener.runEnded(e);
-//        }
+    public void fireRunEnded(GeneticAlgorithm<I, P> geneticAlgorithm) {
+        for (GAListener<I, P> listener : listeners) {
+            listener.runEnded(geneticAlgorithm);
+        }
     }
 
-    public synchronized void addGAListener(GAListener listener) {
+    public synchronized void addGAListener(GAListener<I, P> listener) {
         if (!this.listeners.contains(listener)) {
             this.listeners.add(listener);
         }
