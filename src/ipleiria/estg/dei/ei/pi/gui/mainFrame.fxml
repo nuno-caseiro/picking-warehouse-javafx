@@ -1,36 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ipleiria.estg.dei.ei.pi.gui.MainFrameController">
    <top>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
-          <Button mnemonicParsing="false" text="Button" />
+          <Button fx:id="loadLayoutButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" />
+            <Button fx:id="loadPicksButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" />
+            <Separator orientation="VERTICAL" />
+            <Button fx:id="runGaButton" mnemonicParsing="false" />
+            <Button fx:id="stopGAButton" mnemonicParsing="false" />
+            <Button fx:id="simulationButton" mnemonicParsing="false" />
+            <Separator orientation="VERTICAL" />
+            <Button fx:id="startPauseButton" mnemonicParsing="false" onAction="#play" />
+            <Button fx:id="stepForwardButton" mnemonicParsing="false" />
+            <Button fx:id="stepBackwordButton" mnemonicParsing="false" />
+            <Slider fx:id="slider" onMouseReleased="#playFromSlider" prefHeight="16.0" prefWidth="210.0" />
         </items>
       </ToolBar>
    </top>
    <center>
-      <TabPane prefHeight="200.0" prefWidth="200.0" side="LEFT" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane prefHeight="200.0" prefWidth="200.0" side="LEFT" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Untitled Tab 1">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
+          <Tab fx:id="gaTab">
+              <content>
+                <fx:include fx:id="gaFrame" source="gaFrame.fxml" />
+              </content>
           </Tab>
-          <Tab text="Untitled Tab 2">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
-          </Tab>
-            <Tab text="Untitled Tab" >
-            <fx:include source=""        
+            <Tab fx:id="simulationTab">
+                <content>
+                    <fx:include fx:id="simulationFrame" source="simulationFrame.fxml" />
+                </content>
+            </Tab>
+            <Tab fx:id="experimentsTab">
+                <content>
+                    <fx:include fx:id="experimentsFrame" source="experimentsFrame.fxml" />
+                </content>
             </Tab>
         </tabs>
       </TabPane>
