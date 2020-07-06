@@ -114,8 +114,7 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
                 agentCapacity(agentPath, previousPick, nextPick, offloadArea, agent);
                 break;
             case Both:
-                agentCapacity(agentPath, previousPick, nextPick, offloadArea, agent);
-                pickCapacity(agentPath, previousPick, nextPick, offloadArea);
+                picksAndAgentCapacity(agentPath, previousPick, nextPick, offloadArea, agent);
                 break;
             default:
                 computePath(agentPath, previousPick, nextPick);
@@ -153,6 +152,29 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
             this.weightOnAgent = nextPick.getWeight();
             this.weightOnTopOfRestrictionPick = 0;
             this.restrictionPickCapacity = nextPick.getCapacity();
+        } else {
+            computePath(agentPath, previousPick, nextPick);
+        }
+    }
+
+    private void picksAndAgentCapacity(PickingAgentPath agentPath, PickingPick previousPick, PickingPick nextPick, Node offloadArea, PickingAgent agent) {
+        if ((this.weightOnTopOfRestrictionPick + nextPick.getWeight()) > this.restrictionPickCapacity || this.weightOnAgent > agent.getCapacity()) {
+            this.numberTimesOffload++;
+            computePath(agentPath, previousPick, offloadArea);
+            computePath(agentPath, offloadArea, nextPick);
+
+            this.weightOnAgent = nextPick.getWeight();
+            this.weightOnTopOfRestrictionPick = 0;
+            this.restrictionPickCapacity = nextPick.getCapacity();
+        } else {
+            this.weightOnTopOfRestrictionPick += nextPick.getWeight();
+
+            if ((this.restrictionPickCapacity - this.weightOnTopOfRestrictionPick) > nextPick.getCapacity()) {
+                this.restrictionPickCapacity = nextPick.getCapacity();
+                this.weightOnTopOfRestrictionPick = 0;
+            }
+
+            computePath(agentPath, previousPick, nextPick);
         }
     }
 
