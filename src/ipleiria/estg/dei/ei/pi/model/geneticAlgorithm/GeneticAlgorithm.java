@@ -60,6 +60,18 @@ public class GeneticAlgorithm<I extends Individual<? extends GAProblem>, P exten
         return this.stopped || t == this.maxGenerations;
     }
 
+    public I getBestInRun() {
+        return bestInRun;
+    }
+
+    public Population<I, P> getPopulation() {
+        return population;
+    }
+
+    public int getT() {
+        return t;
+    }
+
     private void computeBestInRun (I bestInGen){
         if (bestInGen.compareTo(this.bestInRun) > 0) {
             this.bestInRun = (I) bestInGen.clone();

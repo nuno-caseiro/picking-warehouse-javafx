@@ -26,7 +26,7 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, bounds.getWidth()*0.75, bounds.getHeight()*0.75));
         primaryStage.show();
 
-        Controller controller = new Controller();
+        Controller controller = new Controller(mainFrameController);
 
     }
 
