@@ -7,6 +7,7 @@ import ipleiria.estg.dei.ei.pi.model.picking.PickingIndividual;
 import ipleiria.estg.dei.ei.pi.utils.MutationMethod;
 import ipleiria.estg.dei.ei.pi.utils.RecombinationMethod;
 import ipleiria.estg.dei.ei.pi.utils.SelectionMethod;
+import ipleiria.estg.dei.ei.pi.utils.WeightLimitation;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
@@ -47,7 +48,7 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
     @FXML
     public ChoiceBox<String> collisionsHandlingFieldCollisions;
     @FXML
-    public ChoiceBox<String> weightLimitationField;
+    public ChoiceBox<WeightLimitation> weightLimitationField;
     @FXML
     public LineChart<Number,Number> gaChart;
 
@@ -64,6 +65,10 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
 
         mutationMethodField.getItems().addAll(MutationMethod.values());
         mutationMethodField.setValue(mutationMethodField.getItems().get(0));
+
+
+        weightLimitationField.getItems().addAll(WeightLimitation.values());
+        weightLimitationField.setValue(weightLimitationField.getItems().get(0));
 
         seriesBestIndividual = new XYChart.Series<>();
         seriesAverageFitness = new XYChart.Series<>();
@@ -120,7 +125,7 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
         return collisionsHandlingFieldCollisions;
     }
 
-    public ChoiceBox<String> getWeightLimitationField() {
+    public ChoiceBox<WeightLimitation> getWeightLimitationField() {
         return weightLimitationField;
     }
 

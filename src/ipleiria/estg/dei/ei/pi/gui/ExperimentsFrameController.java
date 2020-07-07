@@ -1,19 +1,15 @@
 package ipleiria.estg.dei.ei.pi.gui;
 
+import ipleiria.estg.dei.ei.pi.model.experiments.ParameterGUI;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ExperimentsFrameController implements Initializable {
 
@@ -58,7 +54,7 @@ public class ExperimentsFrameController implements Initializable {
     @FXML
     public TextArea bestIndividualExperimentsArea;
     @FXML
-    public ListView selectExpInput;
+    public ListView<String> selectExpInput;
     @FXML
     public TextField intExpInput;
     @FXML
@@ -66,24 +62,13 @@ public class ExperimentsFrameController implements Initializable {
     @FXML
     public Button runExperimentsButton;
     @FXML
-    public ListView atualParameters;
+    public ListView<String> actualParameters;
+    @FXML
+    public Label labelEditingParameter;
 
-    private List<String> populationSizes;
-    private List<String> maxGenerations;
-    private List<String> selectionMethods;
-    private List<String> tournamentSizeValues;
-    private List<String> selectivePressureValues;
-    private List<String> recombinationMethods;
-    private List<String> recombinationProbabilities;
-    private List<String> mutationMethods;
-    private List<String> mutationProbabilities;
-    private List<String> collisionsHandling;
-    private List<String> weightLimitations;
-    private List<String> timeWeightValues;
-    private List<String> collisionsWeightsValues;
-    private List<String> numberAgentsValues;
-    private List<String> numberPicksValues;
-
+    private String actualParameterField;
+    private ParameterGUI actualParameterGUI;
+    private HashMap<String,ParameterGUI> parameters;
     private HashMap<String,Object> availableParameters;
 
 
@@ -93,6 +78,8 @@ public class ExperimentsFrameController implements Initializable {
         addButton.prefWidthProperty().bind(editingParametersPane.prefWidthProperty());
         removeButton.prefHeightProperty().bind(editingParametersPane.heightProperty());
         removeButton.prefWidthProperty().bind(editingParametersPane.widthProperty());
+        editingParametersPane.setVisible(false);
+        parameters= new HashMap<>();
 
         availableParameters= new HashMap<>();
         List<String> values = new LinkedList<>();
@@ -117,32 +104,128 @@ public class ExperimentsFrameController implements Initializable {
         values.add("Type 3");
         availableParameters.put("CollisionsHandling",values);
         values = new LinkedList<>();
-        values.add("Type 1");
-        values.add("Type 2");
+        values.add("Picks");
+        values.add("Agent");
+        values.add("Both");
+        availableParameters.put("WeightLimitations",values);
 
+        parameters.put("nrRunsArea",new ParameterGUI("nrRunsArea",nRrunsArea,intExpInput));
+        parameters.put("popSizeArea",new ParameterGUI("population size",popSizeArea,intExpInput));
+        parameters.put("generationsArea",new ParameterGUI("# of generations",generationsArea,intExpInput));
+        parameters.put("selectionMethodArea",new ParameterGUI("selection method",selectionMethodArea,selectExpInput));
+        parameters.put("tournamentSizeArea",new ParameterGUI("tournament size",tournamentSizeArea,intExpInput));
+        parameters.put("selectivePressureArea",new ParameterGUI("selective pressure",selectivePressureArea,decimalExpInput));
+        parameters.put("recombinationMethodArea",new ParameterGUI("recombination method",recombinationMethodArea,selectExpInput));
+        parameters.put("recombinationProbArea",new ParameterGUI("recombination probability",recombinationProbArea,decimalExpInput));
+        parameters.put("mutationMethodArea",new ParameterGUI("mutation method",mutationMethodArea,selectExpInput));
+        parameters.put("mutationProbArea",new ParameterGUI("mutation probability",mutationProbArea,decimalExpInput));
+        parameters.put("collisionsHandlingArea",new ParameterGUI("collisions handling",collisionsHandlingArea,selectExpInput));
+        parameters.put("weightLimitationArea",new ParameterGUI("weight limitation",weightLimitationArea,selectExpInput));
+        parameters.put("timeWeightsArea",new ParameterGUI("time weight",timeWeightsArea,intExpInput));
+        parameters.put("collisionWeightsArea",new ParameterGUI("collisions weight",colisionWeightsArea,intExpInput));
+        parameters.put("numberAgentsArea",new ParameterGUI("number of agents",numberAgentsArea,intExpInput));
+        parameters.put("numberPicksArea",new ParameterGUI("number of picks",numberPicksArea,intExpInput));
 
-        populationSizes = new LinkedList<>();
-        maxGenerations = new LinkedList<>();
-        selectionMethods = new LinkedList<>();
-        tournamentSizeValues = new LinkedList<>();
-        selectivePressureValues = new LinkedList<>();
-        recombinationMethods= new LinkedList<>();
-        recombinationProbabilities = new LinkedList<>();
-        mutationMethods= new LinkedList<>();
-        mutationProbabilities= new LinkedList<>();
-        collisionsHandling= new LinkedList<>();
-        weightLimitations= new LinkedList<>();
-        timeWeightValues= new LinkedList<>();
-        collisionsHandling= new LinkedList<>();
-        collisionsWeightsValues= new LinkedList<>();
-        numberAgentsValues= new LinkedList<>();
-        numberPicksValues= new LinkedList<>();
+        selectExpInput.setViewOrder(-1);
     }
 
-    public void showEditParameters(){
 
+
+    public void showEditParameters(Event event){
+        editingParametersPane.setVisible(true);
+        actualParameterField=((Control)event.getSource()).getId();
+        actualParameterGUI= parameters.get(actualParameterField);
+        actualParameters.getItems().clear();
+        selectExpInput.getItems().clear();
+        labelEditingParameter.setText("Editing "+ actualParameterGUI.getId());
+        if(actualParameterGUI.getControl().getId().equals(selectExpInput.getId())) {
+            selectExpInput.setViewOrder(-1);
+            intExpInput.setViewOrder(0);
+            decimalExpInput.setViewOrder(0);
+            switch (actualParameterField){
+                case "selectionMethodArea":
+                    selectExpInput.getItems().addAll((Collection<? extends String>) availableParameters.get("Selection"));
+                    break;
+                case "recombinationMethodArea":
+                    selectExpInput.getItems().addAll((Collection<? extends String>) availableParameters.get("Recombination"));
+                    break;
+                case "mutationMethodArea":
+                    selectExpInput.getItems().addAll((Collection<? extends String>) availableParameters.get("Mutation"));
+                    break;
+                case "collisionsHandlingArea":
+                    selectExpInput.getItems().addAll((Collection<? extends String>) availableParameters.get("CollisionsHandling"));
+                    break;
+                case "weightLimitationArea":
+                    selectExpInput.getItems().addAll((Collection<? extends String>) availableParameters.get("WeightLimitations"));
+                    break;
+            }
+            actualParameters.getItems().addAll(actualParameterGUI.getParameters());
+        }
+
+        if(actualParameterGUI.getControl().getId().equals(intExpInput.getId())) {
+            selectExpInput.setViewOrder(0);
+            intExpInput.setViewOrder(-1);
+            decimalExpInput.setViewOrder(0);
+            actualParameters.getItems().addAll(actualParameterGUI.getParameters());
+        }
+        if(actualParameterGUI.getControl().getId().equals(decimalExpInput.getId())) {
+            selectExpInput.setViewOrder(0);
+            intExpInput.setViewOrder(0);
+            decimalExpInput.setViewOrder(-1);
+            actualParameters.getItems().addAll(actualParameterGUI.getParameters());
+        }
     }
 
+    public void add(){
+        if(actualParameterGUI.getControl().getId().equals(selectExpInput.getId())){
+            if(!actualParameterGUI.getParameters().contains(selectExpInput.getSelectionModel().getSelectedItem()) && selectExpInput.getSelectionModel().getSelectedItem()!=null){
+                actualParameterGUI.getParameters().add(selectExpInput.getSelectionModel().getSelectedItem());
+            }
+            updateActualItems();
+        }
+        if(actualParameterGUI.getControl().getId().equals(intExpInput.getId())) {
+            if(!actualParameterGUI.getParameters().contains(intExpInput.getText().trim()) && !intExpInput.getText().trim().isEmpty()){
+                actualParameterGUI.getParameters().add(intExpInput.getText().trim());
+            }
+            updateActualItems();
+        }
+        if(actualParameterGUI.getControl().getId().equals(decimalExpInput.getId())) {
+            if(!actualParameterGUI.getParameters().contains(decimalExpInput.getText().trim()) && !decimalExpInput.getText().trim().isEmpty() ){
+                actualParameterGUI.getParameters().add(decimalExpInput.getText().trim());
+            }
+            updateActualItems();
+        }
+        intExpInput.clear();
+        decimalExpInput.clear();
+        actualParameterGUI.getTextArea().setText(listsToString(actualParameterGUI.getParameters()));
+    }
+
+    public void remove(){
+        actualParameterGUI.getParameters().remove(actualParameters.getSelectionModel().getSelectedItem());
+        updateActualItems();
+        actualParameterGUI.getTextArea().setText(listsToString(actualParameterGUI.getParameters()));
+    }
+
+    public void updateActualItems(){
+        actualParameters.getItems().clear();
+        if(actualParameterGUI.getParameters().size()!=0){
+        actualParameters.getItems().addAll(actualParameterGUI.getParameters());
+
+        }
+    }
+
+    private String listsToString(List<String> list){
+        StringBuilder sb = new StringBuilder();
+        int i=0;
+        for (String o : list) {
+            sb.append(o);
+            if(list.size()>1 && i!=list.size()-1){
+                sb.append(", ");
+            }
+            i++;
+        }
+        return sb.toString();
+    }
 
     public Button getRunExperimentsButton() {
         return runExperimentsButton;
