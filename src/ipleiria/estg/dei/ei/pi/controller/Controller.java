@@ -39,6 +39,19 @@ public class Controller {
         this.mainFrame.getLoadLayoutButton().setOnAction(e -> loadWarehouseLayout());
         this.mainFrame.getLoadPicksButton().setOnAction(e -> loadPicks());
         this.mainFrame.getRunGaButton().setOnAction(e -> runGA());
+        this.mainFrame.getSimulationButton().setOnAction(e->simulate());
+        this.mainFrame.getExperimentsFrameController().getRunExperimentsButton().setOnAction(e->runExperiments());
+
+    }
+
+    private void runExperiments() {
+
+    }
+
+
+    private void simulate() {
+        this.mainFrame.getSimulationFrameController().start(environment.getBestInRun());
+        //this.mainFrame.getSlider().setMax(this.mainFrame.getSimulationFrameController().st.getTotalDuration().toMillis());
     }
 
     private void loadWarehouseLayout() {
@@ -71,6 +84,7 @@ public class Controller {
         geneticAlgorithm.addGAListener(mainFrame.getGaFrameController());
 
         PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(this.environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance())));
+        environment.setBestInRun(individual);
 
         System.out.println(individual.getFitness());
         System.out.println(Arrays.toString(individual.getGenome()));

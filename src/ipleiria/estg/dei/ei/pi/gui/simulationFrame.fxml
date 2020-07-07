@@ -4,5 +4,4 @@
 
 
 <?import javafx.scene.layout.StackPane?>
-
-<StackPane fx:id="simulationPane" prefHeight="728.0" prefWidth="990.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ipleiria.estg.dei.ei.pi.gui.SimulationFrameController" />
+<AnchorPane fx:id="simulationPane" prefHeight="728.0" prefWidth="990.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ipleiria.estg.dei.ei.pi.gui.SimulationFrameController" />

@@ -27,6 +27,14 @@ public class Environment<I extends Individual<? extends GAProblem>> {
         return graph;
     }
 
+    public I getBestInRun() {
+        return bestInRun;
+    }
+
+    public void setBestInRun(I bestInRun) {
+        this.bestInRun = bestInRun;
+    }
+
     public void loadLayout(JsonObject jsonObject) throws InvalidNodeException {
         this.graph.createGraphFromFile(jsonObject);
         fireCreateEnvironment();
@@ -34,6 +42,7 @@ public class Environment<I extends Individual<? extends GAProblem>> {
 
     public void loadPicks(JsonObject jsonObject) throws InvalidNodeException {
         this.graph.importPicks(jsonObject);
+        fireCreateSimulationPicks();
     }
 
     public synchronized void addEnvironmentListener(EnvironmentListener l) {
@@ -50,7 +59,7 @@ public class Environment<I extends Individual<? extends GAProblem>> {
 
     public void fireCreateEnvironment() {
         for (EnvironmentListener listener : environmentListeners) {
-            listener.createEnvironment(graph.getDecisionNodes(),graph.getPicks(),graph.getEdges(),graph.getAgents());
+            listener.createEnvironment(graph.getDecisionNodes(),graph.getEdges(),graph.getAgents());
         }
     }
 
@@ -62,7 +71,7 @@ public class Environment<I extends Individual<? extends GAProblem>> {
 
     public void fireCreateSimulationPicks() {
         for (EnvironmentListener listener : environmentListeners) {
-            listener.createSimulationPicks();
+            listener.createSimulationPicks(graph.getPicks());
         }
     }
 }

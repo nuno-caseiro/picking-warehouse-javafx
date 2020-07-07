@@ -7,9 +7,9 @@ public interface EnvironmentListener {
 
     void updateEnvironment();
 
-    void createEnvironment(List<Node> decisionNodes, List<PickNode> pickNodes, HashMap<Integer,Edge<Node>> edges, List<Node> agents);
+    void createEnvironment(List<Node> decisionNodes, HashMap<Integer,Edge<Node>> edges, List<Node> agents);
 
     //void createSimulation();
 
-    void createSimulationPicks();
+    void createSimulationPicks(List<PickNode> pickNodes);
 }

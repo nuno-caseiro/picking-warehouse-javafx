@@ -36,7 +36,6 @@
             <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="42.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="42.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="42.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="14.0" minHeight="0.0" prefHeight="14.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
@@ -180,16 +179,6 @@
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <Label text="Agents capacity: " GridPane.rowIndex="16">
-               <padding>
-                  <Insets left="10.0" />
-               </padding>
-            </Label>
-            <TextArea fx:id="agentsCapacityArea" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="16">
-               <GridPane.margin>
-                  <Insets right="5.0" top="10.0" />
-               </GridPane.margin>
-            </TextArea>
             <Label text="Time weights:" GridPane.rowIndex="12">
                <GridPane.margin>
                   <Insets left="10.0" />
@@ -233,7 +222,7 @@
           <RowConstraints maxHeight="170.98944091796875" minHeight="10.0" prefHeight="49.669921875" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ListView prefHeight="160.0" prefWidth="190.0" GridPane.rowIndex="2" />
+            <ListView fx:id="atualParameters" prefHeight="160.0" prefWidth="190.0" GridPane.rowIndex="2" />
             <ListView fx:id="selectExpInput" prefHeight="160.0" prefWidth="190.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Button fx:id="removeButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="214.0" text="Remover" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
             <Button fx:id="addButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="218.0" text="Adicionar" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
