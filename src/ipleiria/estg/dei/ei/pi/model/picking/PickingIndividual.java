@@ -214,6 +214,7 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
 
         for (PickingAgentPath agentPath : this.paths) {
             agentPath.populateNodePairsMap();
+            agentPath.setTimeWithPenalization(agentPath.getValue());
         }
 
         // NODE COLLISIONS
@@ -222,7 +223,7 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
                 for (PathNode node : this.paths.get(i).getPath()) {
                     if (this.paths.get(j).getPath().containsNodeAtTime(node.getIdentifier(), node.getTime())) {
                         this.numberOfCollisions++;
-                        handleNodeCollisions(node);
+                        handleNodeCollisions(node, this.paths.get(i), this.paths.get(j));
                     }
                 }
             }
@@ -241,7 +242,7 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
                             for (TimePair timePair : pairs) {
                                 if (rangesOverlap(path.get(k).getTime(), path.get(k + 1).getTime(), timePair.getNode1Time(), timePair.getNode2Time())) {
                                     this.numberOfCollisions++;
-                                    handleAisleCollision(path.get(k), path.get(k + 1), timePair.getNode1Time());
+                                    handleAisleCollisions(path.get(k), this.paths.get(i), path.get(k + 1), timePair.getNode1Time(), this.paths.get(j));
                                 }
                             }
                         }
@@ -255,59 +256,37 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
         }
     }
 
-    private void handleNodeCollisions(PathNode node) {
-        switch (this.problem.getCollisionsHandling()) {
-            case Type2:
-                this.fitness += handleType2NodeCollision(node);
-                break;
-            case Type3:
-//                handleType3NodeCollision(node);
-                break;
-        }
-    }
+    private void handleNodeCollisions(PathNode node, PickingAgentPath agent1, PickingAgentPath agent2) {
 
-    private double handleType2NodeCollision(PathNode node) {
         if (this.problem.getGraph().getDecisionNodesMap().containsKey(node.getIdentifier())) {
-            return 1;
+
+            handleCollisionType(1, agent1, 1, agent2);
         } else {
             Edge<Node> e = this.problem.getGraph().getAisleNodeEdge().get(node.getIdentifier());
 
-            int distanceToNode1 = Math.abs(node.getLine() - e.getNode1().getLine()) + Math.abs(node.getColumn() - e.getNode1().getColumn());
-            int distanceToNode2 = Math.abs(node.getLine() - e.getNode2().getLine()) + Math.abs(node.getColumn() - e.getNode2().getColumn());
+            int agent1Distance = 0;
+            int agent2Distance = 0;
 
-            return Math.min(distanceToNode1, distanceToNode2) + 1;
+
+
+            handleCollisionType(agent1Distance, agent1, agent2Distance, agent2);
         }
     }
 
-//    private double handleType3NodeCollision(PathNode node){
-//
-//    }
-
-    private void handleAisleCollision(PathNode node1, PathNode node2, double node2Time) {
-        switch (this.problem.getCollisionsHandling()) {
-            case Type2:
-                this.fitness += handleType2AisleCollision(node1, node2, node2Time);
-                break;
-            case Type3:
-//                handleType3AisleCollision();
-                break;
-        }
-    }
-
-    private double handleType2AisleCollision(PathNode node1, PathNode node2, double node2Time) {
-        int n1Distance = 0;
-        int n2Distance = 0;
+    private void handleAisleCollisions(PathNode node1, PickingAgentPath agent1, PathNode node2, double node2Time, PickingAgentPath agent2) {
+        int agent1Distance = 0;
+        int agent2Distance = 0;
         double timeDifference = Math.abs(node1.getTime() - node2Time);
 
         if (node1.getTime() < node2Time) {
-            n1Distance += timeDifference;
+            agent1Distance += timeDifference;
         } else {
-            n2Distance += timeDifference;
+            agent2Distance += timeDifference;
         }
 
         int distance = (int) ((Math.abs(node1.getLine() - node2.getLine()) + Math.abs(node1.getColumn() - node2.getColumn())) - timeDifference) / 2;
-        n1Distance += distance;
-        n2Distance += distance;
+        agent1Distance += distance;
+        agent2Distance += distance;
 
 
         if (!this.problem.getDecisionNodesMap().containsKey(node1.getIdentifier()) || !this.problem.getDecisionNodesMap().containsKey(node2.getIdentifier())) {
@@ -318,16 +297,37 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
                 e = this.problem.getAisleNodeEdge().get(node2.getIdentifier());
             }
 
-            n1Distance += Math.min((Math.abs(node1.getLine() - e.getNode1().getLine()) + Math.abs(node1.getColumn() - e.getNode1().getColumn())), (Math.abs(node1.getLine() - e.getNode2().getLine()) + Math.abs(node1.getColumn() - e.getNode2().getColumn())));
-            n2Distance += Math.min((Math.abs(node2.getLine() - e.getNode1().getLine()) + Math.abs(node2.getColumn() - e.getNode1().getColumn())), (Math.abs(node2.getLine() - e.getNode2().getLine()) + Math.abs(node2.getColumn() - e.getNode2().getColumn())));
+
         }
 
-        return Math.min(n1Distance, n2Distance) + 1;
+        handleCollisionType(agent1Distance, agent1, agent2Distance, agent2);
     }
 
-//    private double handleType3AisleCollision(){
-//
-//    }
+    private void handleCollisionType(int agent1Distance, PickingAgentPath agent1, int agent2Distance, PickingAgentPath agent2) {
+        int distance;
+        switch (this.problem.getCollisionsHandling()) {
+            case Type2:
+                distance = Math.min(agent1Distance, agent2Distance) + 1;
+                break;
+            case Type3:
+
+                if (agent1.getTimeWithPenalization() + agent1Distance < agent2.getTimeWithPenalization() + agent2Distance) {
+                    agent1.addPenalization(agent1Distance);
+                    distance = agent1Distance;
+                } else {
+                    agent2.addPenalization(agent2Distance);
+                    distance = agent2Distance;
+                }
+                distance += 1;
+
+                break;
+            default:
+                distance = 0;
+                break;
+        }
+
+        this.fitness += distance;
+    }
 
     private boolean isEdgeOneWay(int node1, int node2) {
         if (this.problem.getGraph().getSubEdges().containsKey(node1 + "-" + node2)) {

@@ -11,6 +11,7 @@ public class PickingAgentPath {
 
     private NodePathList path;
     private double value;
+    private double timeWithPenalization;
 
     public PickingAgentPath() {
         this.path = new NodePathList();
@@ -41,6 +42,18 @@ public class PickingAgentPath {
         if (path.size() >= 1) {
             this.value += path.get(path.size() - 1).getCost();
         }
+    }
+
+    public double getTimeWithPenalization() {
+        return timeWithPenalization;
+    }
+
+    public void addPenalization(double value) {
+        this.timeWithPenalization += value;
+    }
+
+    public void setTimeWithPenalization(double timeWithPenalization) {
+        this.timeWithPenalization = timeWithPenalization;
     }
 
     public void addAgentInitialPosition(Node node) {

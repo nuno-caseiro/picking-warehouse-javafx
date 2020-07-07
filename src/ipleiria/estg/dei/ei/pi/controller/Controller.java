@@ -69,7 +69,7 @@ public class Controller {
 
         geneticAlgorithm.addGAListener(mainFrame.getGaFrameController());
 
-        PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(this.environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), WeightLimitation.Picks, CollisionsHandling.Type2));
+        PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(this.environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), WeightLimitation.Picks, CollisionsHandling.Type3));
 
         System.out.println(individual.getFitness());
         System.out.println(individual.getNumberOfCollisions());
