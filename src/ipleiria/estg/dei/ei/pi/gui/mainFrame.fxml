@@ -19,7 +19,7 @@
             <Button fx:id="stopGAButton" mnemonicParsing="false" />
             <Button fx:id="simulationButton" mnemonicParsing="false" />
             <Separator orientation="VERTICAL" />
-            <Button fx:id="startPauseButton" mnemonicParsing="false" onAction="#play" />
+            <Button fx:id="startPauseButton" mnemonicParsing="false" />
             <Button fx:id="stepForwardButton" mnemonicParsing="false" />
             <Button fx:id="stepBackwardButton" mnemonicParsing="false" />
             <Slider fx:id="slider" onMouseReleased="#playFromSlider" prefHeight="16.0" prefWidth="210.0" />
