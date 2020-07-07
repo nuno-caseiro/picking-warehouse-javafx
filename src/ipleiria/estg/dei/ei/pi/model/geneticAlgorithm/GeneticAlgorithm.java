@@ -3,6 +3,7 @@ package ipleiria.estg.dei.ei.pi.model.geneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.Mutation;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.recombination.Recombination;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.SelectionMethod;
+import ipleiria.estg.dei.ei.pi.utils.exceptions.ValueNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class GeneticAlgorithm<I extends Individual<? extends GAProblem>, P exten
         this.listeners = new ArrayList<>(3);
     }
 
-    public I run(P problem) {
+    public I run(P problem) throws ValueNotFoundException {
         this.t = 0;
         this.population = new Population<>(this.populationSize, this.individualFactory, problem);
         this.bestInRun = this.population.evaluate();

@@ -36,6 +36,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     private HashMap<String, Rectangle> picks = new HashMap<>();
     private HashMap<Integer, StackPane> nodes = new HashMap<>();
     private HashMap<Integer, StackPane> agents = new HashMap<>();
+    private StackPane offLoad;
 
     public List<Timeline> timeLines = new ArrayList<>();
 
@@ -96,8 +97,8 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     }
 
     public void createLayout(){
-        for (Node decisionNode : graphDecisionNodes) {
-            createNode(decisionNode);
+        for (int i = 0; i < graphDecisionNodes.size(); i++) {
+            createNode(graphDecisionNodes.get(i));
         }
 
         for (Integer integer : graphEdges.keySet()) {
@@ -154,10 +155,24 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         stackPane.getChildren().addAll(circle,text);
         stackPane.setLayoutY(node.getLine()*PADDING);
         stackPane.setLayoutX(node.getColumn()*PADDING);
-        stackPane.setViewOrder(-1.0);
+
 
         this.simulationPane.getChildren().add(stackPane);
-        //TODO offload cor diferente
+
+    }
+
+    public void createOffLoad(Node node){
+        Text text = new Text(String.valueOf(node.getIdentifier()));
+        Circle circle;
+        StackPane stackPane = new StackPane();
+        circle = new Circle(NODE_SIZE, Color.BLACK);
+        circle.setStroke(Color.BLACK);
+        stackPane.getChildren().addAll(circle,text);
+        stackPane.setLayoutY(node.getLine()*PADDING);
+        stackPane.setLayoutX(node.getColumn()*PADDING);
+        stackPane.setViewOrder(-1.0);
+        offLoad=stackPane;
+        this.simulationPane.getChildren().add(stackPane);
     }
 
 
@@ -176,11 +191,27 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         timeLines.add(t);
     }
 
-    public void start(PickingIndividual individual) {
 
+
+    public void start(PickingIndividual individual) {
+        int max=0;
         for (PickingAgentPath path : individual.getPaths()) {
-            
+            if(max<path.getPath().size()){
+                max=path.getPath().size();
+            }
         }
+
+        for (int i = 0; i < max; i++) {
+            ParallelTransition p = new ParallelTransition();
+            for (int i1 = 0; i1 < individual.getPaths().size(); i1++) {
+                if(i<individual.getPaths().get(i1).getPath().size()){
+
+                }
+
+            }
+
+            }
+
 
         KeyFrame k = new KeyFrame(Duration.millis(1000),new KeyValue(agents.get(37).layoutYProperty(),nodes.get(7).getLayoutY()));
         KeyFrame k1 = new KeyFrame(Duration.millis(500),new KeyValue(agents.get(38).layoutYProperty(),nodes.get(15).getLayoutY()));
@@ -216,11 +247,12 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     }
 
     @Override
-    public void createEnvironment(List<Node> decisionNodes, HashMap<Integer,Edge<Node>> edges, List<PickingAgent> agents) {
+    public void createEnvironment(List<Node> decisionNodes, HashMap<Integer,Edge<Node>> edges, List<PickingAgent> agents, Node offLoad) {
         this.graphDecisionNodes= decisionNodes;
         this.graphEdges=edges;
         this.graphAgents=agents;
         createLayout();
+        createOffLoad(offLoad);
     }
 
 

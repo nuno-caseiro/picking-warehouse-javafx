@@ -5,10 +5,10 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAListener;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.picking.PickingGAProblem;
 import ipleiria.estg.dei.ei.pi.model.picking.PickingIndividual;
-import ipleiria.estg.dei.ei.pi.utils.MutationMethod;
-import ipleiria.estg.dei.ei.pi.utils.RecombinationMethod;
-import ipleiria.estg.dei.ei.pi.utils.SelectionMethod;
-import ipleiria.estg.dei.ei.pi.utils.WeightLimitation;
+import ipleiria.estg.dei.ei.pi.utils.*;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
@@ -47,11 +47,15 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
     @FXML
     public ChoiceBox<MutationMethod> mutationMethodField;
     @FXML
-    public ChoiceBox<String> collisionsHandlingFieldCollisions;
+    public ChoiceBox<CollisionsHandling> collisionsHandlingFieldCollisions;
     @FXML
     public ChoiceBox<WeightLimitation> weightLimitationField;
     @FXML
     public LineChart<Number,Number> gaChart;
+    @FXML
+    public TextField timeWeightField;
+    @FXML
+    public TextField collisionWeightField;
 
     private XYChart.Series<Number,Number> seriesBestIndividual;
     private XYChart.Series<Number,Number> seriesAverageFitness;
@@ -70,11 +74,35 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
         weightLimitationField.getItems().addAll(WeightLimitation.values());
         weightLimitationField.setValue(weightLimitationField.getItems().get(0));
 
+        collisionsHandlingFieldCollisions.getItems().addAll(CollisionsHandling.values());
+        collisionsHandlingFieldCollisions.setValue(collisionsHandlingFieldCollisions.getItems().get(0));
+
         seriesBestIndividual = new XYChart.Series<>();
         seriesAverageFitness = new XYChart.Series<>();
         gaChart.getData().add(seriesBestIndividual);
         gaChart.getData().add(seriesAverageFitness);
 
+        collisionsHandlingFieldCollisions.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                if(t1.intValue()!=0){
+                    timeWeightField.setDisable(true);
+                    collisionWeightField.setDisable(true);
+                }else{
+                    timeWeightField.setDisable(false);
+                    collisionWeightField.setDisable(false);
+                }
+            }
+        });
+
+    }
+
+    public CollisionsHandling getCollisionsHandlingValue(){
+        return CollisionsHandling.valueOf(collisionsHandlingFieldCollisions.getSelectionModel().getSelectedItem().toString());
+    }
+
+    public WeightLimitation getWeightLimitationValue(){
+        return WeightLimitation.valueOf(weightLimitationField.getSelectionModel().getSelectedItem().toString());
     }
 
     public int getSeedGaField() {
@@ -121,7 +149,7 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
         return mutationMethodField.getValue();
     }
 
-    public ChoiceBox<String> getCollisionsHandlingFieldCollisions() {
+    public ChoiceBox<CollisionsHandling> getCollisionsHandlingFieldCollisions() {
         return collisionsHandlingFieldCollisions;
     }
 
@@ -137,10 +165,18 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
         return seriesAverageFitness;
     }
 
+
+
     @Override
     public void generationEnded(GeneticAlgorithm<PickingIndividual, PickingGAProblem> geneticAlgorithm) {
-        this.seriesBestIndividual.getData().add(new XYChart.Data<>(geneticAlgorithm.getT(),geneticAlgorithm.getBestInRun().getFitness()));
-        this.seriesAverageFitness.getData().add(new XYChart.Data<>(geneticAlgorithm.getT(),geneticAlgorithm.getPopulation().getAverageFitness()));
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                seriesBestIndividual.getData().add(new XYChart.Data<>(geneticAlgorithm.getT(),geneticAlgorithm.getBestInRun().getFitness()));
+                seriesAverageFitness.getData().add(new XYChart.Data<>(geneticAlgorithm.getT(),geneticAlgorithm.getPopulation().getAverageFitness()));
+
+            }
+        });
     }
 
     @Override

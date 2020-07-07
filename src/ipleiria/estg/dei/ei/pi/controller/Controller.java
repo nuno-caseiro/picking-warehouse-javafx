@@ -10,10 +10,9 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.MutationInsert;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.MutationInversion;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.MutationScramble;
-import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.recombination.Recombination;
-import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.recombination.RecombinationOX;
-import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.recombination.RecombinationOX1;
-import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.recombination.RecombinationPartialMapped;
+import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.recombination.*;
+import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.RankBased;
+import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.SelectionMethod;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.Tournament;
 import ipleiria.estg.dei.ei.pi.model.picking.*;
 import ipleiria.estg.dei.ei.pi.model.search.AStarSearch;
@@ -22,6 +21,7 @@ import ipleiria.estg.dei.ei.pi.utils.PickLocation;
 import ipleiria.estg.dei.ei.pi.utils.WeightLimitation;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
 
+import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Arrays;
@@ -31,6 +31,7 @@ public class Controller {
 
     private Environment<PickingIndividual> environment;
     private MainFrameController mainFrame;
+    private SwingWorker<Void, Void> worker;
 
     public Controller(MainFrameController mainFrameController) {
         this.environment = new Environment<>();
@@ -48,13 +49,32 @@ public class Controller {
     }
 
     private void runExperiments() {
-        
-        ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(this.mainFrame.getExperimentsFrameController());
-        while (experimentsFactory.hasMoreExperiments()){
+        worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                try{
+                    mainFrame.getExperimentsFrameController().getProgressBar().setProgress(0);
+                    mainFrame.getExperimentsFrameController().setRunsProgress(0);
+                    ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(mainFrame.getExperimentsFrameController());
+                    mainFrame.getExperimentsFrameController().setAllRuns(experimentsFactory.getCountAllRuns());
+                    while (experimentsFactory.hasMoreExperiments()){
+                        Experiment experiment = experimentsFactory.nextExperiment(environment.getGraph());
+                        experiment.run();
+                    }
+                }catch (Exception e) {
+                    e.printStackTrace(System.err);
+                }
+                return null;
+            }
 
-                Experiment experiment = experimentsFactory.nextExperiment(environment.getGraph());
-                experiment.run();
-        }
+            @Override
+            protected void done() {
+                super.done();
+
+                System.out.println("done experiments");
+            }
+        };
+        worker.execute();
     }
 
 
@@ -81,25 +101,54 @@ public class Controller {
     }
 
     private void runGA() {
-        mainFrame.getGaFrameController().getSeriesBestIndividual().getData().clear();
-        mainFrame.getGaFrameController().getSeriesAverageFitness().getData().clear();
 
+        mainFrame.getRunGaButton().setDisable(true);
         GeneticAlgorithm<PickingIndividual, PickingGAProblem> geneticAlgorithm = new GeneticAlgorithm<>(new PickingIndividual.PickingIndividualFactory(),
-                new Tournament<>(mainFrame.getGaFrameController().getPopSizeField(), mainFrame.getGaFrameController().getTournamentSizeField()),
+                getSelectionMethod(),
                 getRecombinationMethod(),
                 getMutationMethod(),
                 mainFrame.getGaFrameController().getPopSizeField(), mainFrame.getGaFrameController().getGenerationsField(), new Random(mainFrame.getGaFrameController().getSeedGaField()));
 
         geneticAlgorithm.addGAListener(mainFrame.getGaFrameController());
 
-        PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(this.environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), WeightLimitation.Picks, CollisionsHandling.Type3));
-        environment.setBestInRun(individual);
+        worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                try{
+                    mainFrame.getGaFrameController().getSeriesBestIndividual().getData().clear();
+                    mainFrame.getGaFrameController().getSeriesAverageFitness().getData().clear();
+                    PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), mainFrame.getGaFrameController().getWeightLimitationValue(), mainFrame.getGaFrameController().getCollisionsHandlingValue()));
+                    environment.setBestInRun(individual);
+                    System.out.println(individual.getFitness());
+                    System.out.println(individual.getNumberOfCollisions());
+                    System.out.println(individual.getNumberTimesOffload());
+                    System.out.println(Arrays.toString(individual.getGenome()));
+                }catch (Exception e) {
+                    e.printStackTrace(System.err);
+                }
+                return null;
+            }
 
-        System.out.println(individual.getFitness());
-        System.out.println(individual.getNumberOfCollisions());
-        System.out.println(individual.getNumberTimesOffload());
-        System.out.println(Arrays.toString(individual.getGenome()));
+            @Override
+            protected void done() {
+                super.done();
+                mainFrame.getRunGaButton().setDisable(false);
+            }
+        };
+        worker.execute();
     }
+
+
+    private SelectionMethod<PickingIndividual, PickingGAProblem> getSelectionMethod() {
+        switch (mainFrame.getGaFrameController().selectionMethodFieldSelection.getValue()) {
+            case Tournament:
+                return new Tournament<>(mainFrame.getGaFrameController().getPopSizeField(),mainFrame.getGaFrameController().getTournamentSizeField());
+            case Rank:
+                return new RankBased<>(mainFrame.getGaFrameController().getPopSizeField(),mainFrame.getGaFrameController().getSelectivePressureField());
+        }
+        return null;
+    }
+
 
     private Recombination<PickingIndividual, PickingGAProblem> getRecombinationMethod() {
 
@@ -110,12 +159,11 @@ public class Controller {
                 return new RecombinationOX<>(mainFrame.getGaFrameController().getRecombinationProbField());
             case OX1:
                 return new RecombinationOX1<>(mainFrame.getGaFrameController().getRecombinationProbField());
-            /*case CX:
+            case CX:
                 return new RecombinationCX<>(mainFrame.getGaFrameController().getRecombinationProbField());
-                break;*/
-            default:
-                return null;
         }
+        return null;
+
     }
 
     private Mutation<PickingIndividual, PickingGAProblem> getMutationMethod(){
@@ -126,10 +174,11 @@ public class Controller {
                 return new MutationInversion<>(mainFrame.getGaFrameController().getMutationProbField());
             case Scramble:
                 return new MutationScramble<>(mainFrame.getGaFrameController().getMutationProbField());
-            default:
-                return null;
         }
+        return null;
     }
+
+
 
 
 }

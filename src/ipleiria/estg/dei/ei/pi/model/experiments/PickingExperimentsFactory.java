@@ -7,10 +7,8 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.MutationInsert;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.MutationInversion;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.MutationScramble;
-import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.recombination.Recombination;
-import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.recombination.RecombinationOX;
-import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.recombination.RecombinationOX1;
-import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.recombination.RecombinationPartialMapped;
+import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.recombination.*;
+import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.RankBased;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.SelectionMethod;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.Tournament;
 import ipleiria.estg.dei.ei.pi.model.picking.PickingGAProblem;
@@ -18,6 +16,7 @@ import ipleiria.estg.dei.ei.pi.model.picking.PickingGraph;
 import ipleiria.estg.dei.ei.pi.model.picking.PickingIndividual;
 import ipleiria.estg.dei.ei.pi.model.picking.PickingManhattanDistance;
 import ipleiria.estg.dei.ei.pi.model.search.AStarSearch;
+import ipleiria.estg.dei.ei.pi.utils.CollisionsHandling;
 import ipleiria.estg.dei.ei.pi.utils.WeightLimitation;
 
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
     private Mutation<PickingIndividual, PickingGAProblem> mutation;
     private PickingGAProblem problem;
     private Experiment<PickingExperimentsFactory,PickingGAProblem> experiment;
-    private String collisionsHandling;
+    private CollisionsHandling collisionsHandling;
     private WeightLimitation weightLimitation;
     private int timeWeight;
     private int collisionsWeight;
@@ -50,7 +49,7 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
     public GeneticAlgorithm generateGAInstance(int seed) {
 
         GeneticAlgorithm<PickingIndividual,PickingGAProblem> ga = new GeneticAlgorithm<>(new PickingIndividual.PickingIndividualFactory(),selection,recombination,mutation,populationSize,maxGenerations,new Random(seed));
-
+        ga.addGAListener(experimentsController);
         for (ExperimentListener statistic : statistics) {
             ga.addGAListener((GAListener) statistic);
         }
@@ -73,8 +72,8 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
             int tournamentSize = Integer.parseInt(getParameterValue("Tournament size"));
             selection = new Tournament<>(populationSize, tournamentSize);
         }else{
-            //double selectivePressure= Double.parseDouble(getParameterValue("Selective pressure"));
-           // selection = new RankBased(populationSize,selectivePressure);
+            double selectivePressure= Double.parseDouble(getParameterValue("Selective pressure"));
+            selection = new RankBased<>(populationSize,selectivePressure);
         }
 
         //RECOMBINATION
@@ -90,8 +89,7 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
                 recombination = new RecombinationOX<>(recombinationProbability);
                 break;
             case "CX":
-                //TODO
-                //recombination = new RecombinationCX(recombinationProbability);
+                recombination = new RecombinationCX<>(recombinationProbability);
                 break;
         }
 
@@ -109,13 +107,13 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
                 break;
         }
 
-        collisionsHandling = getParameterValue("Collisions handling");
+        collisionsHandling = CollisionsHandling.valueOf(getParameterValue("Collisions handling"));
         weightLimitation = WeightLimitation.valueOf(getParameterValue("Weight limitation"));
         timeWeight= Integer.parseInt(getParameterValue("Time weight"));
         collisionsWeight= Integer.parseInt(getParameterValue("Collisions weight"));
 
 
-        problem = new PickingGAProblem(pickingGraph,new AStarSearch<>(new PickingManhattanDistance()), weightLimitation);
+        problem = new PickingGAProblem(pickingGraph,new AStarSearch<>(new PickingManhattanDistance()), weightLimitation,collisionsHandling);
 
         String experimentTextualRepresentation = buildExperimentTextualRepresentation();
         String experimentHeader = buildExperimentHeader();
@@ -132,6 +130,10 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
         }
 
         return experiment;
+    }
+
+    public void generateLayoutAndPicks(){
+
     }
 
     private ExperimentListener buildStatistic(
@@ -153,6 +155,8 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
         sb.append(recombination.getProbability() + "\t");
         sb.append(mutation + "\t");
         sb.append(mutation.getProbability() + "\t");
+        sb.append(nrAgents + "\t");
+        sb.append(nrPicks + "\t");
         return sb.toString();
     }
 
@@ -166,6 +170,9 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
         sb.append("Recombination prob.:" + "\t");
         sb.append("Mutation:" + "\t");
         sb.append("Mutation prob.:" + "\t");
+        sb.append("Number agents" + "\t");
+        sb.append("Number picks" + "\t");
+
         return sb.toString();
     }
 
@@ -177,7 +184,9 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
         sb.append("Recombination:" + recombination + "\r\n");
         sb.append("Recombination prob.: " + recombination.getProbability() + "\r\n");
         sb.append("Mutation:" + mutation + "\r\n");
-        sb.append("Mutation prob.: " + mutation.getProbability());
+        sb.append("Mutation prob.: " + mutation.getProbability()+ "\r\n");
+        sb.append("Number agents" + "\r\n");
+        sb.append("Number picks" + "\r\n");
         return sb.toString();
     }
 }

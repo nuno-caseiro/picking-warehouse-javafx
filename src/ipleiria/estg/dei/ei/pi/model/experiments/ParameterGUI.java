@@ -13,11 +13,12 @@ public class ParameterGUI {
     private TextArea textArea;
     private Control control;
 
-    public ParameterGUI(String id, TextArea textArea, Control control) {
+    public ParameterGUI(String id, TextArea textArea, Control control,String defaultValue) {
         this.id = id;
         this.parameters = new LinkedList<>();
         this.textArea = textArea;
         this.control = control;
+        this.parameters.add(defaultValue);
     }
 
     public String getId() {
