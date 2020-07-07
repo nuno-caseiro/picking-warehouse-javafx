@@ -2,9 +2,14 @@ package ipleiria.estg.dei.ei.pi.model.picking;
 
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.search.AStarSearch;
+import ipleiria.estg.dei.ei.pi.model.search.SearchNode;
+import ipleiria.estg.dei.ei.pi.utils.CollisionsHandling;
 import ipleiria.estg.dei.ei.pi.utils.WeightLimitation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 public class PickingGAProblem extends GAProblem {
 
@@ -15,18 +20,27 @@ public class PickingGAProblem extends GAProblem {
     private final ArrayList<PickingPick> picks;
     private final ArrayList<PickingAgent> agents;
     private final Node offloadArea;
+    private HashMap<String, List<SearchNode<Node>>> pairs;
+    private final HashMap<Integer, Edge<Node>> aisleNodeEdge;
+    private HashMap<Integer, Node> decisionNodesMap;
+    private HashMap<Integer, Edge<Node>> edges;
     private final WeightLimitation weightLimitation;
-    // Collision handling
+    private final CollisionsHandling collisionsHandling;
 
-    public PickingGAProblem(PickingGraph graph, AStarSearch<Node> searchMethod, WeightLimitation weightLimitation) {
+    public PickingGAProblem(PickingGraph graph, AStarSearch<Node> searchMethod, WeightLimitation weightLimitation, CollisionsHandling collisionsHandling) {
         this.graph = graph;
         this.searchMethod = searchMethod;
         this.weightLimitation = weightLimitation;
+        this.collisionsHandling = collisionsHandling;
         this.numberPicks = this.graph.getNumberOfPicks();
         this.numberAgent = this.graph.getNumberOfAgents();
         this.picks = this.graph.getPicks();
         this.agents = this.graph.getAgents();
         this.offloadArea = this.graph.getOffloadArea();
+        this.pairs = this.graph.getPairs();
+        this.aisleNodeEdge = this.graph.getAisleNodeEdge();
+        this.decisionNodesMap = this.graph.getDecisionNodesMap();
+        this.edges = this.graph.getEdges();
     }
 
     public int getNumberPicks() {
@@ -57,7 +71,27 @@ public class PickingGAProblem extends GAProblem {
         return offloadArea;
     }
 
+    public HashMap<String, List<SearchNode<Node>>> getPairs() {
+        return pairs;
+    }
+
     public WeightLimitation getWeightLimitation() {
         return weightLimitation;
+    }
+
+    public CollisionsHandling getCollisionsHandling() {
+        return collisionsHandling;
+    }
+
+    public HashMap<Integer, Edge<Node>> getAisleNodeEdge() {
+        return aisleNodeEdge;
+    }
+
+    public HashMap<Integer, Node> getDecisionNodesMap() {
+        return decisionNodesMap;
+    }
+
+    public HashMap<Integer, Edge<Node>> getEdges() {
+        return edges;
     }
 }

@@ -14,6 +14,7 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.recombina
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.Tournament;
 import ipleiria.estg.dei.ei.pi.model.picking.*;
 import ipleiria.estg.dei.ei.pi.model.search.AStarSearch;
+import ipleiria.estg.dei.ei.pi.utils.CollisionsHandling;
 import ipleiria.estg.dei.ei.pi.utils.PickLocation;
 import ipleiria.estg.dei.ei.pi.utils.WeightLimitation;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
@@ -62,7 +63,7 @@ public class Controller {
         }
     }
 
-    private void loadPicks() {
+    private void loadPicks() { // TODO import warehouse
         try {
             this.environment.loadPicks(JsonParser.parseReader(new FileReader("src/ipleiria/estg/dei/ei/pi/dataSets/PicksWeightCapacity.json")).getAsJsonObject());
         } catch (InvalidNodeException | FileNotFoundException e) {
@@ -82,13 +83,13 @@ public class Controller {
 
         geneticAlgorithm.addGAListener(mainFrame.getGaFrameController());
 
-        PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(this.environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), WeightLimitation.Both));
+        PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(this.environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), WeightLimitation.Picks, CollisionsHandling.Type3));
         environment.setBestInRun(individual);
 
         System.out.println(individual.getFitness());
+        System.out.println(individual.getNumberOfCollisions());
+        System.out.println(individual.getNumberTimesOffload());
         System.out.println(Arrays.toString(individual.getGenome()));
-
-
     }
 
     private Recombination<PickingIndividual, PickingGAProblem> getRecombinationMethod() {
