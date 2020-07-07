@@ -2,6 +2,7 @@ package ipleiria.estg.dei.ei.pi.model.picking;
 
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.search.AStarSearch;
+import ipleiria.estg.dei.ei.pi.utils.WeightLimitation;
 
 import java.util.ArrayList;
 
@@ -11,13 +12,16 @@ public class PickingGAProblem extends GAProblem {
     private final int numberAgent;
     private final PickingGraph graph;
     private final AStarSearch<Node> searchMethod;
-    private final ArrayList<PickNode> picks;
-    private final ArrayList<Node> agents;
+    private final ArrayList<PickingPick> picks;
+    private final ArrayList<PickingAgent> agents;
     private final Node offloadArea;
+    private final WeightLimitation weightLimitation;
+    // Collision handling
 
-    public PickingGAProblem(PickingGraph graph, AStarSearch<Node> searchMethod) {
+    public PickingGAProblem(PickingGraph graph, AStarSearch<Node> searchMethod, WeightLimitation weightLimitation) {
         this.graph = graph;
         this.searchMethod = searchMethod;
+        this.weightLimitation = weightLimitation;
         this.numberPicks = this.graph.getNumberOfPicks();
         this.numberAgent = this.graph.getNumberOfAgents();
         this.picks = this.graph.getPicks();
@@ -41,15 +45,19 @@ public class PickingGAProblem extends GAProblem {
         return searchMethod;
     }
 
-    public ArrayList<PickNode> getPicks() {
+    public ArrayList<PickingPick> getPicks() {
         return picks;
     }
 
-    public ArrayList<Node> getAgents() {
+    public ArrayList<PickingAgent> getAgents() {
         return agents;
     }
 
     public Node getOffloadArea() {
         return offloadArea;
+    }
+
+    public WeightLimitation getWeightLimitation() {
+        return weightLimitation;
     }
 }

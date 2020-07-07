@@ -25,17 +25,23 @@ public class PickingAgentPath {
     }
 
     public void addPath(List<SearchNode<Node>> path, Node node) {
-//        path.remove(0);
+        path.remove(0);
 
         for (SearchNode<Node> searchNode : path) {
             this.path.add(new PathNode(searchNode.getState().getIdentifier(), searchNode.getState().getLine(), searchNode.getState().getColumn(), this.value + searchNode.getCost(), PickLocation.NONE));
         }
 
-        if (node instanceof PickNode) { // TODO test
-            this.path.get(this.path.size() - 1).setPickLocation(((PickNode) node).getPickLocation());
+        if (node instanceof PickingPick) { // TODO test
+            if (path.size() >= 1) {
+                this.path.get(this.path.size() - 1).setPickLocation(((PickingPick) node).getPickLocation());
+            } else {
+                this.path.get(this.path.size() - 1).setPickLocation((PickLocation.BOTH));
+            }
         }
 
-        this.value += path.get(path.size() - 1).getCost();
+        if (path.size() >= 1) {
+            this.value += path.get(path.size() - 1).getCost();
+        }
     }
 
     public void addAgentInitialPosition(Node node) {

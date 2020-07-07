@@ -11,6 +11,11 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
 
     private List<PickingAgentPath> paths;
     private double time;
+    private int numberTimesOffload;
+
+    private double weightOnTopOfRestrictionPick;
+    private double restrictionPickCapacity;
+    private double weightOnAgent;
 
     public PickingIndividual(PickingGAProblem problem) {
         super(problem);
@@ -52,18 +57,15 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
     @Override
     public void computeFitness() {
         this.paths = new ArrayList<>();
-//        this.numberTimesOffload = 0;
+        this.numberTimesOffload = 0;
 
-        List<PickNode> picks = this.problem.getPicks();
-        List<Node> agents = this.problem.getAgents();
+        List<PickingPick> picks = this.problem.getPicks();
+        List<PickingAgent> agents = this.problem.getAgents();
         Node offloadArea = this.problem.getOffloadArea();
-
-//        int weightOnTopOfRestrictionPick;
-//        int restrictionPickCapacity;
 
         PickingAgentPath pickingAgentPath;
         int i = 0;
-        for (Node agent : agents) {
+        for (PickingAgent agent : agents) {
             pickingAgentPath = new PickingAgentPath();
             pickingAgentPath.addAgentInitialPosition(agent);
 
@@ -76,32 +78,13 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
 
             computePath(pickingAgentPath, agent, picks.get(this.genome[i] - 1));
 
-//            weightOnTopOfRestrictionPick = 0;
-//            restrictionPickCapacity = picks.get(this.genome[i] - 1).getCapacity();
+            this.weightOnTopOfRestrictionPick = 0;
+            this.weightOnAgent = picks.get(this.genome[i] - 1).getWeight();
+            this.restrictionPickCapacity = picks.get(this.genome[i] - 1).getCapacity();
 
             while (i < (this.genome.length - 1) && this.genome[i + 1] > 0) {
-
-//                if ((weightOnTopOfRestrictionPick + picks.get(this.genome[i + 1] - 1).getWeight()) > restrictionPickCapacity) {
-//                    this.numberTimesOffload++;
-//
-//                    computePath(agentPath, picks.get(this.genome[i] - 1), this.environment.getNode(offloadArea));
-//                    computePath(agentPath, this.environment.getNode(offloadArea), picks.get(this.genome[i + 1] - 1));
-//
-//                    weightOnTopOfRestrictionPick = 0;
-//                    restrictionPickCapacity = picks.get(this.genome[i + 1] - 1).getCapacity();
-//                } else {
-//                    weightOnTopOfRestrictionPick += picks.get(this.genome[i + 1] - 1).getWeight();
-//
-//                    if ((restrictionPickCapacity - weightOnTopOfRestrictionPick) > picks.get(this.genome[i + 1] - 1).getCapacity()) {
-//                        restrictionPickCapacity = picks.get(this.genome[i + 1] - 1).getCapacity();
-//                        weightOnTopOfRestrictionPick = 0;
-//                    }
-//
-//                    computePath(agentPath, picks.get(this.genome[i] - 1), picks.get(this.genome[i + 1] - 1));
-//                }
-
-                computePath(pickingAgentPath, picks.get(this.genome[i] - 1), picks.get(this.genome[i + 1] - 1));
-
+                this.weightOnAgent += picks.get(this.genome[i + 1] - 1).getWeight();
+                handleWeightRestrictions(pickingAgentPath, picks.get(this.genome[i] - 1), picks.get(this.genome[i + 1] - 1), offloadArea, agent);
                 i++;
             }
 
@@ -120,6 +103,79 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
 
 
 //        detectAndPenalizeCollisions();
+    }
+
+    private void handleWeightRestrictions(PickingAgentPath agentPath, PickingPick previousPick, PickingPick nextPick, Node offloadArea, PickingAgent agent) {
+        switch (this.problem.getWeightLimitation()) {
+            case Picks:
+                pickCapacity(agentPath, previousPick, nextPick, offloadArea);
+                break;
+            case Agents:
+                agentCapacity(agentPath, previousPick, nextPick, offloadArea, agent);
+                break;
+            case Both:
+                picksAndAgentCapacity(agentPath, previousPick, nextPick, offloadArea, agent);
+                break;
+            default:
+                computePath(agentPath, previousPick, nextPick);
+                break;
+        }
+    }
+
+    private void pickCapacity(PickingAgentPath agentPath, PickingPick previousPick, PickingPick nextPick, Node offloadArea) {
+        if ((this.weightOnTopOfRestrictionPick + nextPick.getWeight()) > this.restrictionPickCapacity) {
+            this.numberTimesOffload++;
+            computePath(agentPath, previousPick, offloadArea);
+            computePath(agentPath, offloadArea, nextPick);
+
+            this.weightOnAgent = nextPick.getWeight();
+            this.weightOnTopOfRestrictionPick = 0;
+            this.restrictionPickCapacity = nextPick.getCapacity();
+        } else {
+            this.weightOnTopOfRestrictionPick += nextPick.getWeight();
+
+            if ((this.restrictionPickCapacity - this.weightOnTopOfRestrictionPick) > nextPick.getCapacity()) {
+                this.restrictionPickCapacity = nextPick.getCapacity();
+                this.weightOnTopOfRestrictionPick = 0;
+            }
+
+            computePath(agentPath, previousPick, nextPick);
+        }
+    }
+
+    private void agentCapacity(PickingAgentPath agentPath, PickingPick previousPick, PickingPick nextPick, Node offloadArea, PickingAgent agent) {
+        if (this.weightOnAgent > agent.getCapacity()) {
+            this.numberTimesOffload++;
+            computePath(agentPath, previousPick, offloadArea);
+            computePath(agentPath, offloadArea, nextPick);
+
+            this.weightOnAgent = nextPick.getWeight();
+            this.weightOnTopOfRestrictionPick = 0;
+            this.restrictionPickCapacity = nextPick.getCapacity();
+        } else {
+            computePath(agentPath, previousPick, nextPick);
+        }
+    }
+
+    private void picksAndAgentCapacity(PickingAgentPath agentPath, PickingPick previousPick, PickingPick nextPick, Node offloadArea, PickingAgent agent) {
+        if ((this.weightOnTopOfRestrictionPick + nextPick.getWeight()) > this.restrictionPickCapacity || this.weightOnAgent > agent.getCapacity()) {
+            this.numberTimesOffload++;
+            computePath(agentPath, previousPick, offloadArea);
+            computePath(agentPath, offloadArea, nextPick);
+
+            this.weightOnAgent = nextPick.getWeight();
+            this.weightOnTopOfRestrictionPick = 0;
+            this.restrictionPickCapacity = nextPick.getCapacity();
+        } else {
+            this.weightOnTopOfRestrictionPick += nextPick.getWeight();
+
+            if ((this.restrictionPickCapacity - this.weightOnTopOfRestrictionPick) > nextPick.getCapacity()) {
+                this.restrictionPickCapacity = nextPick.getCapacity();
+                this.weightOnTopOfRestrictionPick = 0;
+            }
+
+            computePath(agentPath, previousPick, nextPick);
+        }
     }
 
     public void computePath(PickingAgentPath agentPath, Node initialNode, Node goalNode) {
