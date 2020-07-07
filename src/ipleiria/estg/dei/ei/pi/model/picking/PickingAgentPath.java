@@ -1,5 +1,6 @@
 package ipleiria.estg.dei.ei.pi.model.picking;
 
+import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.NodePathList;
 import ipleiria.estg.dei.ei.pi.model.search.SearchNode;
 import ipleiria.estg.dei.ei.pi.utils.PickLocation;
 
@@ -8,15 +9,15 @@ import java.util.List;
 
 public class PickingAgentPath {
 
-    private List<PathNode> path;
+    private NodePathList path;
     private double value;
 
     public PickingAgentPath() {
-        this.path = new ArrayList<>();
+        this.path = new NodePathList();
         this.value = 0;
     }
 
-    public List<PathNode> getPath() {
+    public NodePathList getPath() {
         return path;
     }
 
@@ -25,8 +26,6 @@ public class PickingAgentPath {
     }
 
     public void addPath(List<SearchNode<Node>> path, Node node) {
-        path.remove(0);
-
         for (SearchNode<Node> searchNode : path) {
             this.path.add(new PathNode(searchNode.getState().getIdentifier(), searchNode.getState().getLine(), searchNode.getState().getColumn(), this.value + searchNode.getCost(), PickLocation.NONE));
         }
@@ -46,5 +45,9 @@ public class PickingAgentPath {
 
     public void addAgentInitialPosition(Node node) {
         this.path.add(new PathNode(node.getIdentifier(), node.getLine(), node.getColumn(), 0, PickLocation.NONE));
+    }
+
+    public void populateNodePairsMap() {
+        this.path.populateNodePairsMap();
     }
 }

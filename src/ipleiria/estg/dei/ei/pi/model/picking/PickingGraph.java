@@ -3,6 +3,7 @@ package ipleiria.estg.dei.ei.pi.model.picking;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import ipleiria.estg.dei.ei.pi.model.search.SearchNode;
 import ipleiria.estg.dei.ei.pi.utils.EdgeDirection;
 import ipleiria.estg.dei.ei.pi.utils.PickLocation;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
@@ -14,12 +15,16 @@ import java.util.List;
 public class PickingGraph extends Graph<Node> {
 
     private List<Node> decisionNodes;
+    private HashMap<Integer, Node> decisionNodesMap;
     private ArrayList<PickingAgent> agents;
     private Node offloadArea;
     private ArrayList<PickingPick> picks;
     private HashMap<String, EdgeDirection> subEdges;
+    private HashMap<String, List<SearchNode<Node>>> pairs;
+    private HashMap<Integer, Edge<Node>> aisleNodeEdge;
 
     public PickingGraph() {
+        this.pairs = new HashMap<>();
     }
 
     public ArrayList<PickingPick> getPicks() {
@@ -42,6 +47,22 @@ public class PickingGraph extends Graph<Node> {
         return offloadArea;
     }
 
+    public HashMap<Integer, Edge<Node>> getAisleNodeEdge() {
+        return aisleNodeEdge;
+    }
+
+    public HashMap<String, EdgeDirection> getSubEdges() {
+        return subEdges;
+    }
+
+    public HashMap<String, List<SearchNode<Node>>> getPairs() {
+        return pairs;
+    }
+
+    public HashMap<Integer, Node> getDecisionNodesMap() {
+        return decisionNodesMap;
+    }
+
     public void createGraphFromFile(JsonObject jsonLayout) throws InvalidNodeException {
         createGeneralGraph(jsonLayout);
         importAgents(jsonLayout);
@@ -61,6 +82,8 @@ public class PickingGraph extends Graph<Node> {
         this.agents = new ArrayList<>();
         this.picks = new ArrayList<>();
         this.subEdges = new HashMap<>();
+        this.decisionNodesMap = new HashMap<>();
+        this.aisleNodeEdge = new HashMap<>();
 //        this.subEdgesSize = 0;
 
         importDecisionNodes(jsonObject);
@@ -80,6 +103,7 @@ public class PickingGraph extends Graph<Node> {
 
             this.nodes.put(jsonNode.get("nodeNumber").getAsInt(), decisionNode);
             this.decisionNodes.add(decisionNode);
+            this.decisionNodesMap.put(decisionNode.getIdentifier(), decisionNode);
             this.graphSize++;
         }
     }
@@ -123,11 +147,10 @@ public class PickingGraph extends Graph<Node> {
 //            node1.addEdge(jsonEdge.get("edgeNumber").getAsInt());
 //            node2.addEdge(jsonEdge.get("edgeNumber").getAsInt());
 
-            edge = new Edge<>(jsonEdge.get("distance").getAsDouble(), jsonEdge.get("direction").getAsInt() == 1 ? EdgeDirection.ONEWAY : EdgeDirection.TWOWAY);
+            edge = new Edge<>(jsonEdge.get("distance").getAsDouble(), jsonEdge.get("direction").getAsInt() == 1 ? EdgeDirection.ONEWAY : EdgeDirection.TWOWAY, node1, node2);
             edge.addNode(node1);
             edge.addNode(node2);
 
-//            this.edges.add(edge);
             this.edges.put(jsonEdge.get("edgeNumber").getAsInt(), edge);
             this.subEdges.put(jsonEdge.get("node1Number") +  "-" + jsonEdge.get("node2Number"), jsonEdge.get("direction").getAsInt() == 1 ? EdgeDirection.ONEWAY : EdgeDirection.TWOWAY);
 //            this.subEdgesSize++;
@@ -154,6 +177,7 @@ public class PickingGraph extends Graph<Node> {
 
     public void importPicks(JsonObject jsonObject) throws InvalidNodeException {
         this.picks = new ArrayList<>();
+        this.pairs = new HashMap<>();
 
         JsonArray jsonPicks = jsonObject.getAsJsonArray("picks");
 
@@ -173,13 +197,14 @@ public class PickingGraph extends Graph<Node> {
         Node node = addNode(edgeNumber, line, column);
 
         this.agents.add(new PickingAgent(node.getIdentifier(), 0, node.getLine(), node.getColumn(), capacity));
+        this.aisleNodeEdge.put(node.getIdentifier(), this.edges.get(edgeNumber));
     }
 
     private void addPick(int edgeNumber, int line, int column, int location, double weight, double capacity) throws InvalidNodeException {
         Node node = addNode(edgeNumber, line, column);
 
         this.picks.add(new PickingPick(node.getIdentifier(), 0, node.getLine(), node.getColumn(), location == -1 ? PickLocation.LEFT: PickLocation.RIGHT, weight, capacity));
-
+        this.aisleNodeEdge.put(node.getIdentifier(), this.edges.get(edgeNumber));
     }
 
     private Node addNode(int edgeNumber, int line, int column) throws InvalidNodeException {
@@ -193,6 +218,7 @@ public class PickingGraph extends Graph<Node> {
             distance = (node.getLine() - line) + (node.getColumn() - column);
 
             if (distance == 0) {
+                System.out.println("aaaaaaa");
                 return node;
             } else if ((distance < 0) && (distance > node1DistanceToNewNode)) {
                 node1 = node;
