@@ -25,24 +25,18 @@ public class SimulationFrameController implements Initializable, EnvironmentList
 
 
     private List<Node> graphDecisionNodes;
-    private List<PickNode> graphPicks;
-    private List<Node> graphAgents;
+    private List<PickingPick> graphPicks;
+    private List<PickingAgent> graphAgents;
     private HashMap<Integer,Edge<Node>> graphEdges;
 
 
     private static final int NODE_SIZE = 10;
     private static final int PADDING = 25;
 
+    private HashMap<String, Rectangle> picks = new HashMap<>();
+    private HashMap<Integer, StackPane> nodes = new HashMap<>();
+    private HashMap<Integer, StackPane> agents = new HashMap<>();
 
-    HashMap<String, Rectangle> picks = new HashMap<>();
-    HashMap<Integer, StackPane> nodes = new HashMap<>();
-    HashMap<Integer, StackPane> agents = new HashMap<>();
-
-    //Circle a1= new Circle(10, Color.RED);
-    //Circle a2= new Circle(10, Color.GOLD);
-
-    //public StackPane a1a = new StackPane();
-    //public StackPane a2a = new StackPane();
     public List<Timeline> timeLines = new ArrayList<>();
 
     public SequentialTransition st;
@@ -123,7 +117,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
 
     private void createPicks() {
 
-        for (PickNode graphPick : graphPicks) {
+        for (PickingPick graphPick : graphPicks) {
 
             String strBuilder = graphPick.getLine()+"-"+graphPick.getColumn();
             if(graphPick.getPickLocation()== PickLocation.LEFT){
@@ -222,7 +216,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     }
 
     @Override
-    public void createEnvironment(List<Node> decisionNodes, HashMap<Integer,Edge<Node>> edges, List<Node> agents) {
+    public void createEnvironment(List<Node> decisionNodes, HashMap<Integer,Edge<Node>> edges, List<PickingAgent> agents) {
         this.graphDecisionNodes= decisionNodes;
         this.graphEdges=edges;
         this.graphAgents=agents;
@@ -231,7 +225,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
 
 
     @Override
-    public void createSimulationPicks(List<PickNode> pickNodes) {
+    public void createSimulationPicks(List<PickingPick> pickNodes) {
         this.graphPicks= pickNodes;
         createPicks();
     }
