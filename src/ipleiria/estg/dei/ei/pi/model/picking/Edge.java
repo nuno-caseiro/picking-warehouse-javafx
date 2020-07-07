@@ -7,18 +7,24 @@ import java.util.List;
 
 public class Edge<N extends Node> {
 
+    private int edgeNumber;
     private List<N> nodes;
     private  N node1;
     private  N node2;
     private double length;
     private EdgeDirection edgeDirection;
 
-    public Edge(double distanceOfNodes, EdgeDirection edgeDirection, N node1, N node2) {
+    public Edge(int edgeNumber, double distanceOfNodes, EdgeDirection edgeDirection, N node1, N node2) {
+        this.edgeNumber = edgeNumber;
         this.length = distanceOfNodes;
         this.edgeDirection = edgeDirection;
         this.node1 = node1;
         this.node2 = node2;
         this.nodes = new ArrayList<>();
+    }
+
+    public int getEdgeNumber() {
+        return edgeNumber;
     }
 
     public List<N> getNodes() {

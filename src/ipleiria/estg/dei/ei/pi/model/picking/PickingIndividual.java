@@ -16,6 +16,8 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
     private double time;
     private int numberTimesOffload;
     private int numberOfCollisions;
+    private double waitTime;
+    private double maxWaitTime;
 
     private double weightOnTopOfRestrictionPick;
     private double restrictionPickCapacity;
@@ -50,6 +52,8 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
         this.time = pickingIndividual.time;
         this.numberTimesOffload = pickingIndividual.numberTimesOffload;
         this.numberOfCollisions = pickingIndividual.numberOfCollisions;
+        this.waitTime = pickingIndividual.waitTime;
+        this.maxWaitTime = pickingIndividual.maxWaitTime;
     }
 
     public List<PickingAgentPath> getPaths() {
@@ -66,6 +70,14 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
 
     public int getNumberTimesOffload() {
         return numberTimesOffload;
+    }
+
+    public double getWaitTime() {
+        return waitTime;
+    }
+
+    public double getMaxWaitTime() {
+        return maxWaitTime;
     }
 
     @Override
@@ -211,6 +223,8 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
 
     private void detectAndPenalizeCollisions() {
         this.numberOfCollisions = 0;
+        this.waitTime = 0;
+        this.maxWaitTime = 0;
 
         for (PickingAgentPath agentPath : this.paths) {
             agentPath.populateNodePairsMap();
@@ -218,12 +232,14 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
         }
 
         // NODE COLLISIONS
+        PathNode node;
         for (int i = 0; i < this.paths.size() - 1; i++) {
             for (int j = i + 1; j < this.paths.size(); j++) {
-                for (PathNode node : this.paths.get(i).getPath()) {
+                for (int k = 0; k < this.paths.get(i).getPath().size(); k++) {
+                    node = this.paths.get(i).getPath().get(k);
                     if (this.paths.get(j).getPath().containsNodeAtTime(node.getIdentifier(), node.getTime())) {
                         this.numberOfCollisions++;
-                        handleNodeCollisions(node, this.paths.get(i), this.paths.get(j));
+                        handleNodeCollisions(node, this.paths.get(i).getPath().get(k - 1), this.paths.get(i), this.paths.get(j));
                     }
                 }
             }
@@ -256,7 +272,7 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
         }
     }
 
-    private void handleNodeCollisions(PathNode node, PickingAgentPath agent1, PickingAgentPath agent2) {
+    private void handleNodeCollisions(PathNode node, PathNode previousNode, PickingAgentPath agent1, PickingAgentPath agent2) {
 
         if (this.problem.getGraph().getDecisionNodesMap().containsKey(node.getIdentifier())) {
 
@@ -264,10 +280,14 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
         } else {
             Edge<Node> e = this.problem.getGraph().getAisleNodeEdge().get(node.getIdentifier());
 
-            int agent1Distance = 0;
-            int agent2Distance = 0;
+            int agent1Distance = Math.abs(node.getLine() - e.getNode1().getLine()) + Math.abs(node.getColumn() - e.getNode1().getColumn());
+            int agent2Distance = Math.abs(node.getLine() - e.getNode2().getLine()) + Math.abs(node.getColumn() - e.getNode2().getColumn());
 
-
+            if (agent1Distance < Math.abs(previousNode.getLine() - e.getNode1().getLine()) + Math.abs(previousNode.getColumn() - e.getNode1().getColumn())) {
+                int aux = agent1Distance;
+                agent1Distance = agent2Distance;
+                agent2Distance = aux;
+            }
 
             handleCollisionType(agent1Distance, agent1, agent2Distance, agent2);
         }
@@ -288,16 +308,21 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
         agent1Distance += distance;
         agent2Distance += distance;
 
-
+        Edge<Node> e = null;
         if (!this.problem.getDecisionNodesMap().containsKey(node1.getIdentifier()) || !this.problem.getDecisionNodesMap().containsKey(node2.getIdentifier())) {
-            Edge<Node> e;
             if (!this.problem.getDecisionNodesMap().containsKey(node1.getIdentifier())) {
                 e = this.problem.getAisleNodeEdge().get(node1.getIdentifier());
             } else {
                 e = this.problem.getAisleNodeEdge().get(node2.getIdentifier());
             }
 
-
+            if ((Math.abs(node1.getLine() - e.getNode1().getLine()) + Math.abs(node1.getColumn() - e.getNode1().getColumn())) < (Math.abs(node2.getLine() - e.getNode1().getLine()) + Math.abs(node2.getColumn() - e.getNode1().getColumn()))) {
+                agent1Distance += Math.abs(node1.getLine() - e.getNode1().getLine()) + Math.abs(node1.getColumn() - e.getNode1().getColumn());
+                agent2Distance += Math.abs(node2.getLine() - e.getNode2().getLine()) + Math.abs(node2.getColumn() - e.getNode2().getColumn());
+            } else {
+                agent1Distance += Math.abs(node1.getLine() - e.getNode2().getLine()) + Math.abs(node1.getColumn() - e.getNode2().getColumn());
+                agent2Distance += Math.abs(node2.getLine() - e.getNode1().getLine()) + Math.abs(node2.getColumn() - e.getNode1().getColumn());
+            }
         }
 
         handleCollisionType(agent1Distance, agent1, agent2Distance, agent2);
@@ -327,6 +352,10 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
         }
 
         this.fitness += distance;
+        this.waitTime += distance;
+        if (this.maxWaitTime < distance) {
+            this.maxWaitTime = distance;
+        }
     }
 
     private boolean isEdgeOneWay(int node1, int node2) {
