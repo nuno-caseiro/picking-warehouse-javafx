@@ -118,7 +118,7 @@
                   <Insets left="10.0" />
                </padding>
             </Label>
-            <TextField promptText="1" text="1" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+            <TextField fx:id="timeWeightField" promptText="1" text="1" GridPane.columnIndex="1" GridPane.rowIndex="12" />
             <TextField promptText="1" text="1" GridPane.columnIndex="1" GridPane.rowIndex="13" />
          </children>
          <opaqueInsets>
@@ -126,12 +126,12 @@
          </opaqueInsets>
       </GridPane>
       <TextArea editable="false" layoutX="-5.0" layoutY="628.0" prefHeight="166.0" prefWidth="990.0" promptText="Best solution" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <LineChart fx:id="gaChart" createSymbols="false" layoutX="332.0" layoutY="-1.0" legendVisible="false" prefHeight="562.0" prefWidth="658.0" title="Evolution" AnchorPane.bottomAnchor="166.0" AnchorPane.leftAnchor="332.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <LineChart fx:id="gaChart" animated="false" createSymbols="false" layoutX="332.0" layoutY="-1.0" legendVisible="false" prefHeight="562.0" prefWidth="658.0" title="Evolution" AnchorPane.bottomAnchor="166.0" AnchorPane.leftAnchor="332.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <xAxis>
-          <NumberAxis label="generation" prefHeight="39.0" prefWidth="581.0" side="BOTTOM" />
+          <NumberAxis animated="false" label="generation" prefHeight="39.0" prefWidth="581.0" side="BOTTOM" />
         </xAxis>
         <yAxis>
-          <NumberAxis label="fitness" prefHeight="514.0" prefWidth="47.0" side="LEFT" />
+          <NumberAxis animated="false" label="fitness" prefHeight="514.0" prefWidth="47.0" side="LEFT" />
         </yAxis>
       </LineChart>
    </children>

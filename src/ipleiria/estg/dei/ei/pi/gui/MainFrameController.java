@@ -100,6 +100,7 @@ public class MainFrameController implements Initializable {
         stepBackwardButton.setGraphic(stepBackwardIcon);
 
 
+
     }
 
     public Button getRunGaButton() {

@@ -63,7 +63,7 @@ public class Environment<I extends Individual<? extends GAProblem>> {
 
     public void fireCreateEnvironment() {
         for (EnvironmentListener listener : environmentListeners) {
-            listener.createEnvironment(graph.getDecisionNodes(),graph.getEdges(),graph.getAgents());
+            listener.createEnvironment(graph.getDecisionNodes(),graph.getEdges(),graph.getAgents(),graph.getOffloadArea());
         }
     }
 

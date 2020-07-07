@@ -220,7 +220,7 @@
             <Insets />
          </opaqueInsets>
       </TextArea>
-      <ProgressBar layoutY="745.0" prefHeight="20.0" prefWidth="1036.0" progress="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <ProgressBar fx:id="progressBar" layoutY="745.0" prefHeight="20.0" prefWidth="1036.0" progress="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
       <GridPane fx:id="editingParametersPane" layoutX="521.0" layoutY="20.0" prefHeight="365.0" prefWidth="428.0" AnchorPane.leftAnchor="521.0" AnchorPane.rightAnchor="41.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

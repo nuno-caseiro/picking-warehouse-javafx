@@ -2,6 +2,7 @@ package ipleiria.estg.dei.ei.pi.model.experiments;
 
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
+import ipleiria.estg.dei.ei.pi.utils.exceptions.ValueNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +31,11 @@ public class Experiment <E extends ExperimentsFactory, P extends GAProblem> {
         this.experimentValues = experimentValues;
     }
 
-    public void run() {
+    public void run() throws ValueNotFoundException {
         for (int run = 0; run < numRuns; run++) {
             ga = factory.generateGAInstance(run + 1);
             ga.run(problem);
+            System.out.println("run ended "+ ga.getBestInRun().getFitness());
         }
         fireExperimentEnded();
     }
