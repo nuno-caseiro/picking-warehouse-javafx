@@ -36,6 +36,7 @@
             <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="14.0" minHeight="0.0" prefHeight="14.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
@@ -104,67 +105,67 @@
                   <Insets left="10.0" />
                </padding>
             </Label>
-            <TextArea fx:id="popSizeArea" editable="false" onMouseClicked="#showEditParameters" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <TextArea fx:id="popSizeArea" editable="false" onMouseClicked="#showEditParameters" text="100" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="generationsArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <TextArea fx:id="generationsArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="100" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="selectionMethodArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <TextArea fx:id="selectionMethodArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="Tournament" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="tournamentSizeArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <TextArea fx:id="tournamentSizeArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="4" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="selectivePressureArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <TextArea fx:id="selectivePressureArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="2" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="recombinationMethodArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <TextArea fx:id="recombinationMethodArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="PMX" GridPane.columnIndex="1" GridPane.rowIndex="6">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="recombinationProbArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+            <TextArea fx:id="recombinationProbArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="0.7" GridPane.columnIndex="1" GridPane.rowIndex="7">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="mutationMethodArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
+            <TextArea fx:id="mutationMethodArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="Insert" GridPane.columnIndex="1" GridPane.rowIndex="8">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="mutationProbArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
+            <TextArea fx:id="mutationProbArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="0.1" GridPane.columnIndex="1" GridPane.rowIndex="9">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="collisionsHandlingArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="10">
+            <TextArea fx:id="collisionsHandlingArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="Type 2" GridPane.columnIndex="1" GridPane.rowIndex="10">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="weightLimitationArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="11">
+            <TextArea fx:id="weightLimitationArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="Both" GridPane.columnIndex="1" GridPane.rowIndex="11">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="numberAgentsArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="14">
+            <TextArea fx:id="numberAgentsArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="3" GridPane.columnIndex="1" GridPane.rowIndex="14">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="numberPicksArea" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="15">
+            <TextArea fx:id="numberPicksArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="45" GridPane.columnIndex="1" GridPane.rowIndex="15">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
@@ -174,7 +175,7 @@
                   <Insets left="10.0" />
                </padding>
             </Label>
-            <TextArea fx:id="nRrunsArea" GridPane.columnIndex="1">
+            <TextArea fx:id="nrRunsArea" text="100" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
@@ -189,12 +190,22 @@
                   <Insets left="10.0" />
                </padding>
             </Label>
-            <TextArea fx:id="timeWeightsArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="12">
+            <TextArea fx:id="timeWeightsArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="1" GridPane.columnIndex="1" GridPane.rowIndex="12">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
-            <TextArea fx:id="colisionWeightsArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="13">
+            <TextArea fx:id="collisionWeightsArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="1" GridPane.columnIndex="1" GridPane.rowIndex="13">
+               <GridPane.margin>
+                  <Insets right="5.0" top="10.0" />
+               </GridPane.margin>
+            </TextArea>
+            <Label text="Statistics:" GridPane.rowIndex="16">
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </Label>
+            <TextArea fx:id="statisticsArea" editable="false" onMouseClicked="#showEditParameters" prefHeight="200.0" prefWidth="200.0" text="StatisticBestAverage" GridPane.columnIndex="1" GridPane.rowIndex="16">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>

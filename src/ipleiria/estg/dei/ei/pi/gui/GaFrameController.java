@@ -1,5 +1,6 @@
 package ipleiria.estg.dei.ei.pi.gui;
 
+import ipleiria.estg.dei.ei.pi.model.experiments.ExperimentEvent;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAListener;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.picking.PickingGAProblem;
@@ -65,7 +66,6 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
 
         mutationMethodField.getItems().addAll(MutationMethod.values());
         mutationMethodField.setValue(mutationMethodField.getItems().get(0));
-
 
         weightLimitationField.getItems().addAll(WeightLimitation.values());
         weightLimitationField.setValue(weightLimitationField.getItems().get(0));
@@ -145,6 +145,11 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
 
     @Override
     public void runEnded(GeneticAlgorithm<PickingIndividual, PickingGAProblem> geneticAlgorithm) {
+
+    }
+
+    @Override
+    public void experimentEnded(ExperimentEvent experimentEvent) {
 
     }
 }

@@ -2,6 +2,9 @@ package ipleiria.estg.dei.ei.pi.controller;
 
 import com.google.gson.JsonParser;
 import ipleiria.estg.dei.ei.pi.gui.MainFrameController;
+import ipleiria.estg.dei.ei.pi.model.experiments.Experiment;
+import ipleiria.estg.dei.ei.pi.model.experiments.ExperimentsFactory;
+import ipleiria.estg.dei.ei.pi.model.experiments.PickingExperimentsFactory;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.Mutation;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.MutationInsert;
@@ -44,7 +47,13 @@ public class Controller {
     }
 
     private void runExperiments() {
+        
+        ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(this.mainFrame.getExperimentsFrameController());
+        while (experimentsFactory.hasMoreExperiments()){
 
+                Experiment experiment = experimentsFactory.nextExperiment(environment.getGraph());
+                experiment.run();
+        }
     }
 
 

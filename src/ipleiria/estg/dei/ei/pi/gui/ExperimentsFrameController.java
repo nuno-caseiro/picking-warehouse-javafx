@@ -46,11 +46,11 @@ public class ExperimentsFrameController implements Initializable {
     @FXML
     public TextArea numberPicksArea;
     @FXML
-    public TextArea nRrunsArea;
+    public TextArea nrRunsArea;
     @FXML
     public TextArea timeWeightsArea;
     @FXML
-    public TextArea colisionWeightsArea;
+    public TextArea collisionWeightsArea;
     @FXML
     public TextArea bestIndividualExperimentsArea;
     @FXML
@@ -65,12 +65,13 @@ public class ExperimentsFrameController implements Initializable {
     public ListView<String> actualParameters;
     @FXML
     public Label labelEditingParameter;
+    @FXML
+    public TextArea statisticsArea;
 
     private String actualParameterField;
     private ParameterGUI actualParameterGUI;
     private HashMap<String,ParameterGUI> parameters;
     private HashMap<String,Object> availableParameters;
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -91,7 +92,6 @@ public class ExperimentsFrameController implements Initializable {
         values.add("OX");
         values.add("OX1");
         values.add("CX");
-        values.add("DX");
         availableParameters.put("Recombination",values);
         values = new LinkedList<>();
         values.add("Insert");
@@ -108,8 +108,12 @@ public class ExperimentsFrameController implements Initializable {
         values.add("Agent");
         values.add("Both");
         availableParameters.put("WeightLimitations",values);
+        values = new LinkedList<>();
+        values.add("StatisticBestAverage");
+        availableParameters.put("Statistics",values);
 
-        parameters.put("nrRunsArea",new ParameterGUI("nrRunsArea",nRrunsArea,intExpInput));
+
+        parameters.put("nrRunsArea",new ParameterGUI("nrRunsArea",nrRunsArea,intExpInput));
         parameters.put("popSizeArea",new ParameterGUI("population size",popSizeArea,intExpInput));
         parameters.put("generationsArea",new ParameterGUI("# of generations",generationsArea,intExpInput));
         parameters.put("selectionMethodArea",new ParameterGUI("selection method",selectionMethodArea,selectExpInput));
@@ -122,14 +126,15 @@ public class ExperimentsFrameController implements Initializable {
         parameters.put("collisionsHandlingArea",new ParameterGUI("collisions handling",collisionsHandlingArea,selectExpInput));
         parameters.put("weightLimitationArea",new ParameterGUI("weight limitation",weightLimitationArea,selectExpInput));
         parameters.put("timeWeightsArea",new ParameterGUI("time weight",timeWeightsArea,intExpInput));
-        parameters.put("collisionWeightsArea",new ParameterGUI("collisions weight",colisionWeightsArea,intExpInput));
+        parameters.put("collisionWeightsArea",new ParameterGUI("collisions weight",collisionWeightsArea,intExpInput));
         parameters.put("numberAgentsArea",new ParameterGUI("number of agents",numberAgentsArea,intExpInput));
         parameters.put("numberPicksArea",new ParameterGUI("number of picks",numberPicksArea,intExpInput));
+        parameters.put("statisticsArea",new ParameterGUI("statistics",statisticsArea,selectExpInput));
+
+
 
         selectExpInput.setViewOrder(-1);
     }
-
-
 
     public void showEditParameters(Event event){
         editingParametersPane.setVisible(true);
@@ -157,6 +162,9 @@ public class ExperimentsFrameController implements Initializable {
                     break;
                 case "weightLimitationArea":
                     selectExpInput.getItems().addAll((Collection<? extends String>) availableParameters.get("WeightLimitations"));
+                    break;
+                case "statisticsArea":
+                    selectExpInput.getItems().addAll((Collection<? extends String>) availableParameters.get("Statistics"));
                     break;
             }
             actualParameters.getItems().addAll(actualParameterGUI.getParameters());
@@ -210,8 +218,11 @@ public class ExperimentsFrameController implements Initializable {
         actualParameters.getItems().clear();
         if(actualParameterGUI.getParameters().size()!=0){
         actualParameters.getItems().addAll(actualParameterGUI.getParameters());
-
         }
+    }
+
+    public HashMap<String, ParameterGUI> getParameters() {
+        return parameters;
     }
 
     private String listsToString(List<String> list){
@@ -283,16 +294,16 @@ public class ExperimentsFrameController implements Initializable {
         return numberPicksArea;
     }
 
-    public TextArea getnRrunsArea() {
-        return nRrunsArea;
+    public TextArea getnRunsArea() {
+        return nrRunsArea;
     }
 
     public TextArea getTimeWeightsArea() {
         return timeWeightsArea;
     }
 
-    public TextArea getColisionWeightsArea() {
-        return colisionWeightsArea;
+    public TextArea getCollisionWeightsArea() {
+        return collisionWeightsArea;
     }
 
     public TextArea getBestIndividualExperimentsArea() {
