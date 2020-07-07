@@ -115,7 +115,7 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
         collisionsWeight= Integer.parseInt(getParameterValue("Collisions weight"));
 
 
-        problem = new PickingGAProblem(pickingGraph,new AStarSearch<>(new PickingManhattanDistance()), weightLimitation);
+//        problem = new PickingGAProblem(pickingGraph, new AStarSearch<>(new PickingManhattanDistance()), weightLimitation);
 
         String experimentTextualRepresentation = buildExperimentTextualRepresentation();
         String experimentHeader = buildExperimentHeader();
