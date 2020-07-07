@@ -27,7 +27,13 @@ public class PickingGraph extends Graph<Node> {
         this.pairs = new HashMap<>();
     }
 
+
+    public List<Node> getDecisionNodes() {
+        return decisionNodes;
+    }
+
     public ArrayList<PickingPick> getPicks() {
+
         return picks;
     }
 

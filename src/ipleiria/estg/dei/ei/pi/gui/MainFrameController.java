@@ -37,7 +37,7 @@ public class MainFrameController implements Initializable {
     private Button stepBackwardButton;
 
     @FXML
-    private StackPane simulationFrame;
+    private AnchorPane simulationFrame;
 
     @FXML
     private AnchorPane gaFrame;
@@ -106,10 +106,6 @@ public class MainFrameController implements Initializable {
         return runGaButton;
     }
 
-    public void play() {
-        simulationFrameController.start();
-        slider.setMax(simulationFrameController.st.getTotalDuration().toMillis());
-    }
 
 
     public void playFromSlider(){
@@ -150,5 +146,13 @@ public class MainFrameController implements Initializable {
 
     public GaFrameController getGaFrameController() {
         return gaFrameController;
+    }
+
+    public SimulationFrameController getSimulationFrameController() {
+        return simulationFrameController;
+    }
+
+    public ExperimentsFrameController getExperimentsFrameController() {
+        return experimentsFrameController;
     }
 }

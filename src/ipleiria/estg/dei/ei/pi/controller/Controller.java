@@ -39,10 +39,24 @@ public class Controller {
         this.mainFrame.getLoadLayoutButton().setOnAction(e -> loadWarehouseLayout());
         this.mainFrame.getLoadPicksButton().setOnAction(e -> loadPicks());
         this.mainFrame.getRunGaButton().setOnAction(e -> runGA());
+        this.mainFrame.getSimulationButton().setOnAction(e->simulate());
+        this.mainFrame.getExperimentsFrameController().getRunExperimentsButton().setOnAction(e->runExperiments());
+
+    }
+
+    private void runExperiments() {
+
+    }
+
+
+    private void simulate() {
+        this.mainFrame.getSimulationFrameController().start(environment.getBestInRun());
+        //this.mainFrame.getSlider().setMax(this.mainFrame.getSimulationFrameController().st.getTotalDuration().toMillis());
     }
 
     private void loadWarehouseLayout() {
         try {
+            this.environment.addEnvironmentListener(this.mainFrame.getSimulationFrameController());
             this.environment.loadLayout(JsonParser.parseReader(new FileReader("src/ipleiria/estg/dei/ei/pi/dataSets/WarehouseLayout.json")).getAsJsonObject());
         } catch (InvalidNodeException | FileNotFoundException e) {
             e.printStackTrace();
@@ -70,6 +84,7 @@ public class Controller {
         geneticAlgorithm.addGAListener(mainFrame.getGaFrameController());
 
         PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(this.environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), WeightLimitation.Picks, CollisionsHandling.Type3));
+        environment.setBestInRun(individual);
 
         System.out.println(individual.getFitness());
         System.out.println(individual.getNumberOfCollisions());
