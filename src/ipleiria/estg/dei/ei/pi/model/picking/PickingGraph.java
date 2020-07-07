@@ -8,9 +8,7 @@ import ipleiria.estg.dei.ei.pi.utils.EdgeDirection;
 import ipleiria.estg.dei.ei.pi.utils.PickLocation;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class PickingGraph extends Graph<Node> {
 
@@ -22,11 +20,13 @@ public class PickingGraph extends Graph<Node> {
     private HashMap<String, EdgeDirection> subEdges;
     private HashMap<String, List<SearchNode<Node>>> pairs;
     private HashMap<Integer, Edge<Node>> aisleNodeEdge;
+    private List<Edge<Node>> edgesList;
+    private int maxLine;
+    private int maxColumn;
 
     public PickingGraph() {
         this.pairs = new HashMap<>();
     }
-
 
     public List<Node> getDecisionNodes() {
         return decisionNodes;
@@ -69,14 +69,15 @@ public class PickingGraph extends Graph<Node> {
         return decisionNodesMap;
     }
 
-    public void createGraphFromFile(JsonObject jsonLayout) throws InvalidNodeException {
+    public void createGraphFromFile(JsonObject jsonLayout, JsonObject jsonPicks) throws InvalidNodeException {
         createGeneralGraph(jsonLayout);
         importAgents(jsonLayout);
+        importPicks(jsonPicks);
     }
 
-    public void createGraphRandomPicksAndAgents(JsonObject jsonLayout) {
+    public void createGraphRandomPicksAndAgents(JsonObject jsonLayout, int seed, int numPicks, int numAgents, int numRuns) throws InvalidNodeException {
         createGeneralGraph(jsonLayout);
-        generateRandomPicksAndAgents();
+        generateRandomPicksAndAgents(seed, numPicks, numAgents, numRuns);
     }
 
     private void createGeneralGraph(JsonObject jsonObject) {
@@ -90,12 +91,19 @@ public class PickingGraph extends Graph<Node> {
         this.subEdges = new HashMap<>();
         this.decisionNodesMap = new HashMap<>();
         this.aisleNodeEdge = new HashMap<>();
+        this.edgesList = new ArrayList<>();
 //        this.subEdgesSize = 0;
 
         importDecisionNodes(jsonObject);
         importSuccessors(jsonObject);
         importEdges(jsonObject);
         importOffload(jsonObject);
+        importDimensions(jsonObject);
+    }
+
+    private void importDimensions(JsonObject jsonObject) {
+        this.maxLine = jsonObject.get("maxLine").getAsInt();
+        this.maxColumn = jsonObject.get("maxColumn").getAsInt();
     }
 
     private void importDecisionNodes(JsonObject jsonObject) {
@@ -153,10 +161,11 @@ public class PickingGraph extends Graph<Node> {
 //            node1.addEdge(jsonEdge.get("edgeNumber").getAsInt());
 //            node2.addEdge(jsonEdge.get("edgeNumber").getAsInt());
 
-            edge = new Edge<>(jsonEdge.get("distance").getAsDouble(), jsonEdge.get("direction").getAsInt() == 1 ? EdgeDirection.ONEWAY : EdgeDirection.TWOWAY, node1, node2);
+            edge = new Edge<>(jsonEdge.get("edgeNumber").getAsInt(), jsonEdge.get("distance").getAsDouble(), jsonEdge.get("direction").getAsInt() == 1 ? EdgeDirection.ONEWAY : EdgeDirection.TWOWAY, node1, node2);
             edge.addNode(node1);
             edge.addNode(node2);
 
+            this.edgesList.add(edge);
             this.edges.put(jsonEdge.get("edgeNumber").getAsInt(), edge);
             this.subEdges.put(jsonEdge.get("node1Number") +  "-" + jsonEdge.get("node2Number"), jsonEdge.get("direction").getAsInt() == 1 ? EdgeDirection.ONEWAY : EdgeDirection.TWOWAY);
 //            this.subEdgesSize++;
@@ -195,8 +204,84 @@ public class PickingGraph extends Graph<Node> {
         }
     }
 
-    private void generateRandomPicksAndAgents() {
-        // TODO ?
+    private void generateRandomPicksAndAgents(int seed, int numPicks, int numAgents, int numRuns) throws InvalidNodeException {
+        HashMap<String, Integer> positionsPicks = new HashMap<>();
+        HashMap<String, Integer> positionsAgents = new HashMap<>();
+
+        // GET POSSIBLE POSITIONS
+        Node n1;
+        Node n2;
+        int line;
+        int column;
+        for (Edge<Node> e : this.edgesList) {
+            n1 = e.getNode1();
+            n2 = e.getNode2();
+            line = n1.getLine();
+            column = n1.getColumn();
+
+            if (n1.getColumn() == n2.getColumn()) {
+                for (int i = Math.min(n1.getLine(), n2.getLine()) + 1; i < Math.max(n1.getLine(), n2.getLine()); i++) {
+                    positionsPicks.put(i + "-" + column, e.getEdgeNumber());
+                    positionsAgents.put(i + "-" + column, e.getEdgeNumber());
+                }
+            } else {
+                for (int i = Math.min(n1.getColumn(), n2.getColumn()) + 1; i < Math.max(n1.getColumn(), n2.getColumn()); i++) {
+                    positionsAgents.put(line + "-" + i, e.getEdgeNumber());
+                }
+            }
+
+            if (!positionsAgents.containsKey(line + "-" + column)) {
+                positionsAgents.put(line + "-" + column, e.getEdgeNumber());
+            }
+
+            if (!positionsAgents.containsKey(n2.getLine() + "-" + n2.getColumn())) {
+                positionsAgents.put(n2.getLine() + "-" + n2.getColumn(), e.getEdgeNumber());
+            }
+        }
+
+        // GENERATE RANDOM PICKS AND AGENTS
+        HashSet<String> cells = new HashSet<>();
+        Random randomPicks = new Random(seed);
+        Random randomAgents = new Random(numRuns + seed);
+        int picks = 0;
+        int offset;
+        int weight;
+        int capacity;
+        Node newNode;
+        while (picks < numPicks) {
+            line = randomPicks.nextInt(this.maxLine + 1);
+            column = randomPicks.nextInt(this.maxColumn + 1);
+            offset = randomPicks.nextInt(2) == 0 ? -1 : 1;
+            weight = randomPicks.nextInt(25) + 1;
+            capacity = randomPicks.nextInt(18) + 3;
+
+            if (cells.contains(line + "-" + column + "-" + offset)) {
+                continue;
+            }
+
+            if (!positionsPicks.containsKey(line + "-" + column)) {
+                continue;
+            }
+
+            cells.add(line + "-" + column + "-" + offset);
+            picks++;
+            addPick(positionsPicks.get(line + "-" + column), line, column, offset, weight, weight * capacity);
+        }
+
+        int agents = 0;
+        while (agents < numAgents) {
+            line = randomAgents.nextInt(this.maxLine + 1);
+            column = randomAgents.nextInt(this.maxColumn + 1);
+
+            if (!positionsAgents.containsKey(line + "-" + column)) {
+                continue;
+            }
+
+            agents++;
+            addAgent(positionsAgents.get(line + "-" + column), line, column, 75);
+        }
+
+        this.pairs = new HashMap<>();
     }
 
     private void addAgent(int edgeNumber, int line, int column, double capacity) throws InvalidNodeException {

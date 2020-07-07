@@ -1196,5 +1196,7 @@
             "capacity" : 75
         }
     ],
-    "offloadArea": 36
+    "offloadArea": 36,
+    "maxLine": 32,
+    "maxColumn": 20
 }

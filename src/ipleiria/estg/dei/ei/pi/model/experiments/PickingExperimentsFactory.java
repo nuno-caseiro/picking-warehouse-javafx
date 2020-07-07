@@ -112,7 +112,6 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
         timeWeight= Integer.parseInt(getParameterValue("Time weight"));
         collisionsWeight= Integer.parseInt(getParameterValue("Collisions weight"));
 
-
         problem = new PickingGAProblem(pickingGraph,new AStarSearch<>(new PickingManhattanDistance()), weightLimitation,collisionsHandling);
 
         String experimentTextualRepresentation = buildExperimentTextualRepresentation();

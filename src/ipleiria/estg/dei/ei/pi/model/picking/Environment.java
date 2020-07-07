@@ -21,10 +21,15 @@ public class Environment<I extends Individual<? extends GAProblem>> {
     public Environment() {
         this.graph = new PickingGraph();
         this.environmentListeners = new ArrayList<>();
+        this.jsonLayout = null;
     }
 
     public PickingGraph getGraph() {
         return graph;
+    }
+
+    public JsonObject getJsonLayout() {
+        return jsonLayout;
     }
 
     public I getBestInRun() {
@@ -35,14 +40,13 @@ public class Environment<I extends Individual<? extends GAProblem>> {
         this.bestInRun = bestInRun;
     }
 
-    public void loadLayout(JsonObject jsonObject) throws InvalidNodeException {
-        this.graph.createGraphFromFile(jsonObject);
-        fireCreateEnvironment();
+    public void loadWarehouseFile(JsonObject jsonLayout) {
+        this.jsonLayout = jsonLayout;
     }
 
-    public void loadPicks(JsonObject jsonObject) throws InvalidNodeException {
-        this.graph.importPicks(jsonObject);
-        fireCreateSimulationPicks();
+    public void loadGraph(JsonObject jsonPicks) throws InvalidNodeException {
+        this.graph.createGraphFromFile(this.jsonLayout, jsonPicks);
+        fireCreateEnvironment();
     }
 
     public synchronized void addEnvironmentListener(EnvironmentListener l) {
