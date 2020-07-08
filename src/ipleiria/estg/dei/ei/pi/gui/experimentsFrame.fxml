@@ -235,8 +235,8 @@
          <children>
             <ListView fx:id="actualParameters" prefHeight="160.0" prefWidth="190.0" GridPane.rowIndex="2" />
             <ListView fx:id="selectExpInput" prefHeight="160.0" prefWidth="190.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Button fx:id="removeButton" mnemonicParsing="false" onMouseClicked="#remove" prefHeight="50.0" prefWidth="214.0" text="Remover" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
-            <Button fx:id="addButton" mnemonicParsing="false" onMouseClicked="#add" prefHeight="50.0" prefWidth="218.0" text="Adicionar" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <Button fx:id="removeButton" mnemonicParsing="false" onMouseClicked="#remove" prefHeight="50.0" prefWidth="214.0" text="Remove" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <Button fx:id="addButton" mnemonicParsing="false" onMouseClicked="#add" prefHeight="50.0" prefWidth="218.0" text="Add" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
             <Label fx:id="labelEditingParameter" text="Editing" />
             <Label text="Atual Parameters" GridPane.rowIndex="1" />
             <TextField fx:id="intExpInput" prefHeight="274.0" prefWidth="214.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
