@@ -365,6 +365,26 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
         return this.problem.getGraph().getSubEdges().get(node2 + "-" + node1) == EdgeDirection.ONEWAY;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Fitness: ");
+        sb.append(fitness);
+        sb.append(" - Time: ");
+        sb.append(this.time);
+        sb.append(" - Collisions: ");
+        sb.append(this.numberOfCollisions);
+        sb.append(" - #Offload: ");
+        sb.append(this.numberTimesOffload);
+        sb.append(" - Wait Time: ");
+        sb.append(this.waitTime);
+        sb.append("\nPath: ");
+        for (int value : genome) {
+            sb.append(value).append(" ");
+        }
+        return sb.toString();
+    }
+
 
 
     private boolean rangesOverlap(double x1, double x2, double y1, double y2) {

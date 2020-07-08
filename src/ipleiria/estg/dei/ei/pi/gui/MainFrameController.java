@@ -78,7 +78,6 @@ public class MainFrameController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         simulationFrameController.init(this);
 
-
         ImageView loadWarehouseIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/loadWarehouseLayoutIcon.png"));
         ImageView loadPicksIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/loadPicksIcon.png"));
 
@@ -122,11 +121,16 @@ public class MainFrameController implements Initializable {
                 });
             }
         });
+    }
 
-
-
-
-
+    public void manageButtons(boolean loadLayout, boolean loadPicks, boolean runGa, boolean stopGA, boolean playSimulate, boolean pauseStop, boolean slider){
+        this.loadLayoutButton.setDisable(loadLayout);
+        this.loadPicksButton.setDisable(loadPicks);
+        this.runGaButton.setDisable(runGa);
+        this.stopGAButton.setDisable(stopGA);
+        this.simulationButton.setDisable(playSimulate);
+        this.startPauseButton.setDisable(pauseStop);
+        this.slider.setDisable(slider);
 
     }
 
