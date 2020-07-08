@@ -81,7 +81,7 @@ public class Controller {
 
     private void simulate() {
         this.mainFrame.getSimulationFrameController().start(environment.getBestInRun());
-        //this.mainFrame.getSlider().setMax(this.mainFrame.getSimulationFrameController().st.getTotalDuration().toMillis());
+     //   this.mainFrame.getSlider().setMax(this.mainFrame.getSimulationFrameController()..getTotalDuration().toMillis());
     }
 
     private void loadWarehouseLayout() {
@@ -97,7 +97,7 @@ public class Controller {
         try {
             if (this.environment.getJsonLayout() != null) {
                 this.environment.loadGraph(JsonParser.parseReader(new FileReader("src/ipleiria/estg/dei/ei/pi/dataSets/PicksWeightCapacity.json")).getAsJsonObject());
-                //this.environment.generateRandomLayout();
+
             }
         } catch (InvalidNodeException | FileNotFoundException e) {
             e.printStackTrace();
