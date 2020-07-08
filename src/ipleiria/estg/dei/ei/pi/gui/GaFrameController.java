@@ -97,6 +97,14 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
 
     }
 
+    public int getTimeWeightField() {
+        return Integer.parseInt(timeWeightField.getText());
+    }
+
+    public int getCollisionWeightField() {
+        return Integer.parseInt(collisionWeightField.getText());
+    }
+
     public CollisionsHandling getCollisionsHandlingValue(){
         return CollisionsHandling.valueOf(collisionsHandlingFieldCollisions.getSelectionModel().getSelectedItem().toString());
     }

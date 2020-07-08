@@ -3,6 +3,7 @@ package ipleiria.estg.dei.ei.pi.model.experiments;
 import ipleiria.estg.dei.ei.pi.gui.ExperimentsFrameController;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
+import ipleiria.estg.dei.ei.pi.model.picking.PickingGAProblem;
 import ipleiria.estg.dei.ei.pi.model.picking.PickingGraph;
 import javafx.fxml.FXML;
 
@@ -28,7 +29,10 @@ public abstract class ExperimentsFactory {
 
     public abstract GeneticAlgorithm generateGAInstance(int seed);
 
+    protected abstract PickingGAProblem pickingGAProblem(int seed);
+
     protected abstract Experiment<ExperimentsFactory, GAProblem>  buildExperiment(PickingGraph pickingGraph);
+
 
 
     private void readParametersValues() {

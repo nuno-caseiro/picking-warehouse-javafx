@@ -248,6 +248,11 @@ public class SimulationFrameController implements Initializable, EnvironmentList
 
     @Override
     public void createEnvironment(List<Node> decisionNodes, HashMap<Integer,Edge<Node>> edges, List<PickingAgent> agents, Node offLoad) {
+        simulationPane.getChildren().clear();
+        nodes.clear();
+        picks.clear();
+        this.agents.clear();
+        this.offLoad=null;
         this.graphDecisionNodes= decisionNodes;
         this.graphEdges=edges;
         this.graphAgents=agents;

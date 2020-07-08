@@ -24,6 +24,8 @@ public class Environment<I extends Individual<? extends GAProblem>> {
         this.jsonLayout = null;
     }
 
+
+
     public PickingGraph getGraph() {
         return graph;
     }
@@ -47,6 +49,7 @@ public class Environment<I extends Individual<? extends GAProblem>> {
     public void loadGraph(JsonObject jsonPicks) throws InvalidNodeException {
         this.graph.createGraphFromFile(this.jsonLayout, jsonPicks);
         fireCreateEnvironment();
+        fireCreateSimulationPicks();
     }
 
     public synchronized void addEnvironmentListener(EnvironmentListener l) {
@@ -78,4 +81,6 @@ public class Environment<I extends Individual<? extends GAProblem>> {
             listener.createSimulationPicks(graph.getPicks());
         }
     }
+
+
 }

@@ -268,7 +268,7 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
         }
 
         if (this.problem.getCollisionsHandling() == CollisionsHandling.Type1) {
-//            this.fitness = (this.fitness * this.environment.getTimeWeight()) + (this.numberOfCollisions * this.environment.getCollisionsWeight());
+            this.fitness = (this.fitness * this.problem.getTimeWeight()) + (this.numberOfCollisions * this.problem.getCollisionWeight());
         }
     }
 
@@ -364,6 +364,8 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
         }
         return this.problem.getGraph().getSubEdges().get(node2 + "-" + node1) == EdgeDirection.ONEWAY;
     }
+
+
 
     private boolean rangesOverlap(double x1, double x2, double y1, double y2) {
         return x1 < y2 && y1 < x2;
