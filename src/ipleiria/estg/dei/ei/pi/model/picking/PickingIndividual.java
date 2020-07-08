@@ -239,7 +239,7 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
                     node = this.paths.get(i).getPath().get(k);
                     if (this.paths.get(j).getPath().containsNodeAtTime(node.getIdentifier(), node.getTime())) {
                         this.numberOfCollisions++;
-                        handleNodeCollisions(node, this.paths.get(i).getPath().get(k - 1), this.paths.get(i), this.paths.get(j));
+                        handleNodeCollisions(node, k > 0 ? this.paths.get(i).getPath().get(k - 1) : node, this.paths.get(i), this.paths.get(j));
                     }
                 }
             }
@@ -267,7 +267,7 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
             }
         }
 
-        if (this.problem.getCollisionsHandling() == CollisionsHandling.Type1) {
+        if (this.problem.getCollisionsHandling() == CollisionsHandling.Type1 && this.problem.getTimeWeight() > 0 && this.problem.getCollisionWeight() > 0) {
             this.fitness = (this.fitness * this.problem.getTimeWeight()) + (this.numberOfCollisions * this.problem.getCollisionWeight());
         }
     }

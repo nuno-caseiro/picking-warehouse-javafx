@@ -247,7 +247,6 @@ public class PickingGraph extends Graph<Node> {
         int offset;
         int weight;
         int capacity;
-        Node newNode;
         while (picks < numPicks) {
             line = randomPicks.nextInt(this.maxLine + 1);
             column = randomPicks.nextInt(this.maxColumn + 1);
