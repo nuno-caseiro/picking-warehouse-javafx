@@ -1,17 +1,27 @@
 package ipleiria.estg.dei.ei.pi.gui;
 
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Screen;
+import javafx.stage.Window;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainFrameController implements Initializable {
 
+    @FXML
+    public BorderPane mainsFrame;
     @FXML
     private Button loadLayoutButton;
 
@@ -96,8 +106,25 @@ public class MainFrameController implements Initializable {
         simulationButton.setGraphic(simulationIcon);
 
         startPauseButton.setGraphic(pauseIcon);
-        stepForwardButton.setGraphic(stepForwardIcon);
-        stepBackwardButton.setGraphic(stepBackwardIcon);
+
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+        slider.setPrefWidth((bounds.getWidth()*0.75)/1.40);
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                mainsFrame.widthProperty().addListener(new ChangeListener<Number>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                        slider.setPrefWidth(t1.doubleValue()/1.40);
+                    }
+                });
+            }
+        });
+
+
+
 
 
 
@@ -108,6 +135,9 @@ public class MainFrameController implements Initializable {
     }
 
 
+    public void playPause(){
+        simulationFrameController.playPause();
+    }
 
     public void playFromSlider(){
         simulationFrameController.startFromSlider(slider.getValue());
@@ -156,4 +186,7 @@ public class MainFrameController implements Initializable {
     public ExperimentsFrameController getExperimentsFrameController() {
         return experimentsFrameController;
     }
+
+
+
 }

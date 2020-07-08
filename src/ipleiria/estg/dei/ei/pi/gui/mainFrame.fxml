@@ -8,7 +8,7 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ipleiria.estg.dei.ei.pi.gui.MainFrameController">
+<BorderPane fx:id="mainsFrame" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ipleiria.estg.dei.ei.pi.gui.MainFrameController">
    <top>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
@@ -17,12 +17,10 @@
             <Separator orientation="VERTICAL" />
             <Button fx:id="runGaButton" mnemonicParsing="false" />
             <Button fx:id="stopGAButton" mnemonicParsing="false" />
-            <Button fx:id="simulationButton" mnemonicParsing="false" />
             <Separator orientation="VERTICAL" />
-            <Button fx:id="startPauseButton" mnemonicParsing="false" />
-            <Button fx:id="stepForwardButton" mnemonicParsing="false" />
-            <Button fx:id="stepBackwardButton" mnemonicParsing="false" />
-            <Slider fx:id="slider" onMouseReleased="#playFromSlider" prefHeight="16.0" prefWidth="210.0" />
+            <Button fx:id="simulationButton" mnemonicParsing="false" />
+            <Button fx:id="startPauseButton" mnemonicParsing="false" onMouseClicked="#playPause" />
+            <Slider fx:id="slider" onMouseReleased="#playFromSlider" prefHeight="16.0" />
         </items>
       </ToolBar>
    </top>

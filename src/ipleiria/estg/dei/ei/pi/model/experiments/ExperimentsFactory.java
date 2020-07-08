@@ -4,7 +4,6 @@ import ipleiria.estg.dei.ei.pi.gui.ExperimentsFrameController;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.picking.PickingGAProblem;
-import ipleiria.estg.dei.ei.pi.model.picking.PickingGraph;
 import javafx.fxml.FXML;
 
 import java.util.HashMap;
@@ -31,7 +30,7 @@ public abstract class ExperimentsFactory {
 
     protected abstract PickingGAProblem pickingGAProblem(int seed);
 
-    protected abstract Experiment<ExperimentsFactory, GAProblem>  buildExperiment(PickingGraph pickingGraph);
+    protected abstract Experiment<ExperimentsFactory, GAProblem>  buildExperiment();
 
 
 
@@ -79,9 +78,9 @@ public abstract class ExperimentsFactory {
         return orderedParametersVector[0].activeValueIndex < orderedParametersVector[0].getNumberOfValues();
     }
 
-    public Experiment<ExperimentsFactory, GAProblem> nextExperiment(PickingGraph pickingGraph) {
+    public Experiment<ExperimentsFactory, GAProblem> nextExperiment() {
         if (hasMoreExperiments()) {
-            Experiment<ExperimentsFactory, GAProblem> experiment = buildExperiment(pickingGraph);
+            Experiment<ExperimentsFactory, GAProblem> experiment = buildExperiment();
             indicesManaging(orderedParametersVector.length - 1);
             return experiment;
         }

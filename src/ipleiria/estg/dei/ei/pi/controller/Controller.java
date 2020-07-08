@@ -59,7 +59,7 @@ public class Controller {
                     ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(mainFrame.getExperimentsFrameController(),JsonParser.parseReader(new FileReader("src/ipleiria/estg/dei/ei/pi/dataSets/WarehouseLayout.json")).getAsJsonObject());
                     mainFrame.getExperimentsFrameController().setAllRuns(experimentsFactory.getCountAllRuns());
                     while (experimentsFactory.hasMoreExperiments()){
-                        Experiment<ExperimentsFactory, GAProblem> experiment = experimentsFactory.nextExperiment(environment.getGraph());
+                        Experiment<ExperimentsFactory, GAProblem> experiment = experimentsFactory.nextExperiment();
                         experiment.run();
                     }
                 }catch (Exception e) {
@@ -81,7 +81,7 @@ public class Controller {
 
     private void simulate() {
         this.mainFrame.getSimulationFrameController().start(environment.getBestInRun());
-     //   this.mainFrame.getSlider().setMax(this.mainFrame.getSimulationFrameController()..getTotalDuration().toMillis());
+        this.mainFrame.getSlider().setMax(this.mainFrame.getSimulationFrameController().getTimeline().getTotalDuration().toMillis());
     }
 
     private void loadWarehouseLayout() {
