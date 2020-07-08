@@ -11,7 +11,7 @@ public class Experiment <E extends ExperimentsFactory, P extends GAProblem> {
     private final E factory;
     private final int numRuns;
     private GeneticAlgorithm ga;
-    private final P problem;
+    private P problem;
     private final String experimentTextualRepresentation;
     private final String experimentHeader;
     private final String experimentValues;
@@ -34,6 +34,7 @@ public class Experiment <E extends ExperimentsFactory, P extends GAProblem> {
     public void run() throws ValueNotFoundException {
         for (int run = 0; run < numRuns; run++) {
             ga = factory.generateGAInstance(run + 1);
+            problem= (P) factory.pickingGAProblem(run +1);
             ga.run(problem);
             System.out.println("run ended "+ ga.getBestInRun().getFitness());
         }

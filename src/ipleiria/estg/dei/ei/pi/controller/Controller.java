@@ -5,6 +5,7 @@ import ipleiria.estg.dei.ei.pi.gui.MainFrameController;
 import ipleiria.estg.dei.ei.pi.model.experiments.Experiment;
 import ipleiria.estg.dei.ei.pi.model.experiments.ExperimentsFactory;
 import ipleiria.estg.dei.ei.pi.model.experiments.PickingExperimentsFactory;
+import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.Mutation;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.MutationInsert;
@@ -55,10 +56,10 @@ public class Controller {
                 try{
                     mainFrame.getExperimentsFrameController().getProgressBar().setProgress(0);
                     mainFrame.getExperimentsFrameController().setRunsProgress(0);
-                    ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(mainFrame.getExperimentsFrameController());
+                    ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(mainFrame.getExperimentsFrameController(),JsonParser.parseReader(new FileReader("src/ipleiria/estg/dei/ei/pi/dataSets/WarehouseLayout.json")).getAsJsonObject());
                     mainFrame.getExperimentsFrameController().setAllRuns(experimentsFactory.getCountAllRuns());
                     while (experimentsFactory.hasMoreExperiments()){
-                        Experiment experiment = experimentsFactory.nextExperiment(environment.getGraph());
+                        Experiment<ExperimentsFactory, GAProblem> experiment = experimentsFactory.nextExperiment(environment.getGraph());
                         experiment.run();
                     }
                 }catch (Exception e) {
@@ -96,6 +97,7 @@ public class Controller {
         try {
             if (this.environment.getJsonLayout() != null) {
                 this.environment.loadGraph(JsonParser.parseReader(new FileReader("src/ipleiria/estg/dei/ei/pi/dataSets/PicksWeightCapacity.json")).getAsJsonObject());
+                //this.environment.generateRandomLayout();
             }
         } catch (InvalidNodeException | FileNotFoundException e) {
             e.printStackTrace();
@@ -119,7 +121,7 @@ public class Controller {
                 try{
                     mainFrame.getGaFrameController().getSeriesBestIndividual().getData().clear();
                     mainFrame.getGaFrameController().getSeriesAverageFitness().getData().clear();
-                    PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), mainFrame.getGaFrameController().getWeightLimitationValue(), mainFrame.getGaFrameController().getCollisionsHandlingValue()));
+                    PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), mainFrame.getGaFrameController().getWeightLimitationValue(), mainFrame.getGaFrameController().getCollisionsHandlingValue(),mainFrame.getGaFrameController().getTimeWeightField(),mainFrame.getGaFrameController().getCollisionWeightField()));
                     environment.setBestInRun(individual);
                     System.out.println(individual.getFitness());
                     System.out.println(individual.getNumberOfCollisions());

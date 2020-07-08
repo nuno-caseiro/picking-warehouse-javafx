@@ -1,7 +1,9 @@
 package ipleiria.estg.dei.ei.pi.model.experiments;
 
+import com.google.gson.JsonObject;
 import ipleiria.estg.dei.ei.pi.gui.ExperimentsFrameController;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAListener;
+import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.Mutation;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.MutationInsert;
@@ -11,13 +13,11 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.recombina
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.RankBased;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.SelectionMethod;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.Tournament;
-import ipleiria.estg.dei.ei.pi.model.picking.PickingGAProblem;
-import ipleiria.estg.dei.ei.pi.model.picking.PickingGraph;
-import ipleiria.estg.dei.ei.pi.model.picking.PickingIndividual;
-import ipleiria.estg.dei.ei.pi.model.picking.PickingManhattanDistance;
+import ipleiria.estg.dei.ei.pi.model.picking.*;
 import ipleiria.estg.dei.ei.pi.model.search.AStarSearch;
 import ipleiria.estg.dei.ei.pi.utils.CollisionsHandling;
 import ipleiria.estg.dei.ei.pi.utils.WeightLimitation;
+import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -37,16 +37,21 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
     private int nrAgents;
     private int nrPicks;
     private PickingGraph graph;
+    private JsonObject jsonLayout;
+    private AStarSearch<Node> aStarSearch;
+
     //TODO collisions handling, weight limitation, timeweight, collisions weight
 
 
-    public PickingExperimentsFactory(ExperimentsFrameController experimentsFrameController) {
+    public PickingExperimentsFactory(ExperimentsFrameController experimentsFrameController, JsonObject jsonObject) {
         super(experimentsFrameController);
-
+        this.jsonLayout=jsonObject;
+        this.graph= new PickingGraph();
+        this.aStarSearch= new AStarSearch<>(new PickingManhattanDistance());
     }
 
     @Override
-    public GeneticAlgorithm generateGAInstance(int seed) {
+    public GeneticAlgorithm<PickingIndividual,PickingGAProblem> generateGAInstance(int seed) {
 
         GeneticAlgorithm<PickingIndividual,PickingGAProblem> ga = new GeneticAlgorithm<>(new PickingIndividual.PickingIndividualFactory(),selection,recombination,mutation,populationSize,maxGenerations,new Random(seed));
         ga.addGAListener(experimentsController);
@@ -55,6 +60,17 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
         }
 
         return ga;
+    }
+
+    @Override
+    protected PickingGAProblem pickingGAProblem(int seed) {
+        try {
+            graph.createGraphRandomPicksAndAgents(jsonLayout,seed,nrPicks,nrAgents,numRuns);
+            return new PickingGAProblem(graph,aStarSearch,weightLimitation,collisionsHandling,timeWeight,collisionsWeight);
+        } catch (InvalidNodeException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -112,7 +128,7 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
         timeWeight= Integer.parseInt(getParameterValue("Time weight"));
         collisionsWeight= Integer.parseInt(getParameterValue("Collisions weight"));
 
-        problem = new PickingGAProblem(pickingGraph,new AStarSearch<>(new PickingManhattanDistance()), weightLimitation,collisionsHandling);
+        //problem = new PickingGAProblem(pickingGraph,new AStarSearch<>(new PickingManhattanDistance()), weightLimitation,collisionsHandling);
 
         String experimentTextualRepresentation = buildExperimentTextualRepresentation();
         String experimentHeader = buildExperimentHeader();
@@ -131,16 +147,12 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
         return experiment;
     }
 
-    public void generateLayoutAndPicks(){
 
-    }
 
-    private ExperimentListener buildStatistic(
-            String statisticName,
-            String experimentHeader) {
+    private ExperimentListener buildStatistic(String statisticName, String experimentHeader) {
         switch (statisticName) {
             case "StatisticBestAverage":
-                return new StatisticBestAverage(numRuns, experimentHeader);
+                return new StatisticBestAverage<PickingIndividual,PickingGAProblem>(numRuns, experimentHeader);
         }
         return null;
     }
@@ -154,8 +166,6 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
         sb.append(recombination.getProbability() + "\t");
         sb.append(mutation + "\t");
         sb.append(mutation.getProbability() + "\t");
-        sb.append(nrAgents + "\t");
-        sb.append(nrPicks + "\t");
         return sb.toString();
     }
 
@@ -169,9 +179,6 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
         sb.append("Recombination prob.:" + "\t");
         sb.append("Mutation:" + "\t");
         sb.append("Mutation prob.:" + "\t");
-        sb.append("Number agents" + "\t");
-        sb.append("Number picks" + "\t");
-
         return sb.toString();
     }
 
@@ -184,8 +191,6 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
         sb.append("Recombination prob.: " + recombination.getProbability() + "\r\n");
         sb.append("Mutation:" + mutation + "\r\n");
         sb.append("Mutation prob.: " + mutation.getProbability()+ "\r\n");
-        sb.append("Number agents" + "\r\n");
-        sb.append("Number picks" + "\r\n");
         return sb.toString();
     }
 }

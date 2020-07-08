@@ -119,7 +119,7 @@
                </padding>
             </Label>
             <TextField fx:id="timeWeightField" promptText="1" text="1" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-            <TextField promptText="1" text="1" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+            <TextField fx:id="collisionWeightField" promptText="1" text="1" GridPane.columnIndex="1" GridPane.rowIndex="13" />
          </children>
          <opaqueInsets>
             <Insets bottom="1.0" />

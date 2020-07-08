@@ -22,7 +22,11 @@ public abstract class Individual<P extends GAProblem> implements Comparable<Indi
 
     public abstract void computeFitness();
 
-//    public abstract void swapGenes(Individual<P> other, int g);
+    public P getProblem() {
+        return problem;
+    }
+
+    //    public abstract void swapGenes(Individual<P> other, int g);
 
     @Override
     public abstract Individual<P> clone();

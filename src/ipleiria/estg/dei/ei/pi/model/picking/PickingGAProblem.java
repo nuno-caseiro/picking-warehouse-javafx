@@ -26,8 +26,11 @@ public class PickingGAProblem extends GAProblem {
     private HashMap<Integer, Edge<Node>> edges;
     private final WeightLimitation weightLimitation;
     private final CollisionsHandling collisionsHandling;
+    private int timeWeight;
+    private int collisionWeight;
 
-    public PickingGAProblem(PickingGraph graph, AStarSearch<Node> searchMethod, WeightLimitation weightLimitation, CollisionsHandling collisionsHandling) {
+
+    public PickingGAProblem(PickingGraph graph, AStarSearch<Node> searchMethod, WeightLimitation weightLimitation, CollisionsHandling collisionsHandling, int timeWeight, int collisionWeight) {
         this.graph = graph;
         this.searchMethod = searchMethod;
         this.weightLimitation = weightLimitation;
@@ -41,7 +44,13 @@ public class PickingGAProblem extends GAProblem {
         this.aisleNodeEdge = this.graph.getAisleNodeEdge();
         this.decisionNodesMap = this.graph.getDecisionNodesMap();
         this.edges = this.graph.getEdges();
+        this.timeWeight = timeWeight;
+        this.collisionWeight = collisionWeight;
     }
+
+    public int getTimeWeight() { return timeWeight; }
+
+    public int getCollisionWeight() { return collisionWeight; }
 
     public int getNumberPicks() {
         return numberPicks;
