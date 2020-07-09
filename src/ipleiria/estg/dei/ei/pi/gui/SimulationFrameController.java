@@ -3,8 +3,8 @@ package ipleiria.estg.dei.ei.pi.gui;
 import ipleiria.estg.dei.ei.pi.model.picking.*;
 import ipleiria.estg.dei.ei.pi.utils.PickLocation;
 import javafx.animation.*;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.layout.*;
@@ -22,75 +22,76 @@ public class SimulationFrameController implements Initializable, EnvironmentList
 
     public AnchorPane simulationPane;
     public Group group;
-
+    @FXML
+    public StackPane simulationStackPane;
 
     private List<Node> graphDecisionNodes;
     private List<PickingPick> graphPicks;
     private List<PickingAgent> graphAgents;
     private HashMap<Integer,Edge<Node>> graphEdges;
+    private Node offload;
 
-
-    private static final int NODE_SIZE = 10;
-    private static final int PADDING = 25;
+    private double NODE_SIZE = 10;
+    private double PADDING = 25;
+    private double PADDING_BOXES = 35;
+    private double PICKS_SIZE = 20;
 
     private HashMap<String, Rectangle> picks = new HashMap<>();
     private HashMap<Integer, StackPane> nodes = new HashMap<>();
     private HashMap<Integer, StackPane> agents = new HashMap<>();
+    private HashMap<Double,Rectangle> picksEmpty = new HashMap<>();
     private StackPane offLoad;
 
-    public List<Timeline> timeLines = new ArrayList<>();
+    private int maxLine;
+    private int maxCol;
+    private  double maxWidthPane;
+    private  double maxHeightPane;
 
-    public SequentialTransition st;
-    public boolean stFirst = false;
+    private Timeline timeline;
 
     private MainFrameController main;
 
     public void init(MainFrameController mainFrameController){
         main= mainFrameController;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                maxHeightPane=simulationPane.getHeight();
+                maxWidthPane=simulationPane.getWidth();
+            }
+        });
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         group = new Group();
-
-
-     /*   addTimeLine(new KeyFrame(Duration.millis(1000),new KeyValue(a1a.layoutXProperty(),nodes.get("250-50").getLayoutX())));
-        addTimeLine(new KeyFrame(Duration.millis(1000),new KeyValue(a1a.layoutYProperty(),picks.get("240-110").getY())));
-        addTimeLine(new KeyFrame(Duration.millis(1),new KeyValue(picks.get("240-110").fillProperty(),Color.BLACK)));
-        addTimeLine(new KeyFrame(Duration.millis(1000),new KeyValue(a1a.layoutYProperty(),nodes.get("250-150").getLayoutY()),new KeyValue(a2a.layoutYProperty(),nodes.get("150-50").getLayoutY()) ));
-        addTimeLine(new KeyFrame(Duration.millis(1000),new KeyValue(a1a.layoutXProperty(),nodes.get("150-150").getLayoutX())));*/
-
     }
 
     public void createEdge(List<Node> nodes){
-        Line l = new Line(this.nodes.get(nodes.get(0).getIdentifier()).getLayoutX()+10,this.nodes.get(nodes.get(0).getIdentifier()).getLayoutY()+10
-                ,this.nodes.get(nodes.get(1).getIdentifier()).getLayoutX()+10,this.nodes.get(nodes.get(1).getIdentifier()).getLayoutY()+10);
+        Line l = new Line(this.nodes.get(nodes.get(0).getIdentifier()).getLayoutX()+NODE_SIZE,this.nodes.get(nodes.get(0).getIdentifier()).getLayoutY()+NODE_SIZE
+                ,this.nodes.get(nodes.get(1).getIdentifier()).getLayoutX()+NODE_SIZE,this.nodes.get(nodes.get(1).getIdentifier()).getLayoutY()+NODE_SIZE);
         l.setViewOrder(1.0);
-        simulationPane.getChildren().add(l);
-        // simulationPane.getChildren().add(l);
-
+        group.getChildren().add(l);
     }
 
     public void createShelf(Edge e){
         Node node1 = (Node) e.getNodes().get(0);
-        List<Rectangle> nodeList = new ArrayList<>();
 
         for (int i = 1; i < (int) e.getLength(); i++) {
-            nodeList.clear();
-            Rectangle rL = new Rectangle((node1.getColumn() *PADDING)-25,((node1.getLine()*PADDING)+(i*PADDING)),20,20);
+            Rectangle rL = new Rectangle((node1.getColumn() *PADDING)-(PICKS_SIZE+(NODE_SIZE/2)),((node1.getLine()*PADDING)+(i*PADDING)),PICKS_SIZE,PICKS_SIZE);
             rL.setStroke(Color.BLACK);
             rL.setStrokeType(StrokeType.INSIDE);
             rL.setFill(Color.WHITE);
 
-            Rectangle rR = new Rectangle((node1.getColumn() *PADDING)+25,(node1.getLine()*PADDING)+(i*PADDING),20,20);
+            Rectangle rR = new Rectangle((node1.getColumn() *PADDING)+(PICKS_SIZE+(NODE_SIZE/2)),(node1.getLine()*PADDING)+(i*PADDING),PICKS_SIZE,PICKS_SIZE);
 
             rR.setStroke(Color.BLACK);
             rR.setStrokeType(StrokeType.INSIDE);
             rR.setFill(Color.WHITE);
             rR.setId("1-1-R");
 
-            simulationPane.getChildren().add(rL);
-            simulationPane.getChildren().add(rR);
+            group.getChildren().add(rL);
+            group.getChildren().add(rR);
             picks.put((node1.getLine()+(i)+"-"+node1.getColumn()+"L"),rL);
             picks.put((node1.getLine()+(i)+"-"+node1.getColumn()+"R"),rR);
         }
@@ -100,7 +101,6 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         for (int i = 0; i < graphDecisionNodes.size(); i++) {
             createNode(graphDecisionNodes.get(i));
         }
-
         for (Integer integer : graphEdges.keySet()) {
 
             createEdge(graphEdges.get(integer).getNodes());
@@ -109,11 +109,9 @@ public class SimulationFrameController implements Initializable, EnvironmentList
                 createShelf(graphEdges.get(integer));
             }
         }
-
         for (Node graphAgent : graphAgents) {
             createNode(graphAgent);
         }
-
     }
 
     private void createPicks() {
@@ -133,10 +131,8 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         }
     }
 
-
     public void createNode(Node node){
-
-        Text text = new Text(String.valueOf(node.getIdentifier()));
+        Text text = new Text(String.valueOf(agents.size()+1));
         Circle circle = new Circle();
         StackPane stackPane = new StackPane();
 
@@ -149,16 +145,14 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         if(graphAgents.contains(node)){
             circle = new Circle(NODE_SIZE, Color.RED);
             stackPane.setViewOrder(-2.0);
-            agents.put(node.getIdentifier(),stackPane);
+            agents.put(agents.size()+1,stackPane);
         }
         circle.setStroke(Color.BLACK);
         stackPane.getChildren().addAll(circle,text);
         stackPane.setLayoutY(node.getLine()*PADDING);
         stackPane.setLayoutX(node.getColumn()*PADDING);
 
-
-        this.simulationPane.getChildren().add(stackPane);
-
+        this.group.getChildren().add(stackPane);
     }
 
     public void createOffLoad(Node node){
@@ -172,28 +166,24 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         stackPane.setLayoutX(node.getColumn()*PADDING);
         stackPane.setViewOrder(-1.0);
         offLoad=stackPane;
-        this.simulationPane.getChildren().add(stackPane);
+        this.group.getChildren().add(stackPane);
     }
 
-
-    public void addTimeLine(KeyFrame kv) {
-        Timeline t= new Timeline();
-        t.getKeyFrames().addAll(kv);
-
-        t.setOnFinished(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                main.getSlider().setValue(st.getCurrentTime().toMillis());
-            }
-        });
-
-
-        timeLines.add(t);
+    public void clearAll(){
+        simulationStackPane.getChildren().clear();
+        group.getChildren().clear();
+        agents.clear();
+        picks.clear();
+        nodes.clear();
     }
-
-
 
     public void start(PickingIndividual individual) {
+        clearAll();
+        createLayout();
+        createPicks();
+        createOffLoad(offload);
+        this.simulationStackPane.getChildren().add(group);
+
         int max=0;
         for (PickingAgentPath path : individual.getPaths()) {
             if(max<path.getPath().size()){
@@ -201,45 +191,105 @@ public class SimulationFrameController implements Initializable, EnvironmentList
             }
         }
 
+        timeline = new Timeline();
         for (int i = 0; i < max; i++) {
-            ParallelTransition p = new ParallelTransition();
-            for (int i1 = 0; i1 < individual.getPaths().size(); i1++) {
-                if(i<individual.getPaths().get(i1).getPath().size()){
+            for (int i1 = 1; i1 <= individual.getPaths().size(); i1++) {
+                if(i<individual.getPaths().get(i1-1).getPath().size()){
+                    PathNode node = individual.getPaths().get(i1-1).getPath().get(i);
+                    KeyFrame k;
+                    KeyFrame k2;
+                    KeyFrame k3;
+                    KeyFrame keyFrame;
+                    switch (node.getPickLocation()){
+                        case NONE:
+                            if(nodes.containsKey(node.getIdentifier())){
+                                    k = new KeyFrame(Duration.millis((node.getTime()+1)*250),new KeyValue(agents.get(i1).layoutXProperty(),nodes.get(node.getIdentifier()).getLayoutX()),new KeyValue(agents.get(i1).layoutYProperty(),nodes.get(node.getIdentifier()).getLayoutY()));
+                                    keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setBar());
+                            }else{
+                                if(picks.containsKey(node.getLine()+"-"+node.getColumn()+"L")){
+                                    k = new KeyFrame(Duration.millis((node.getTime()+1)*250),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"L").getX()+ PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"L").getY()));
+                                    keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setBar());
+                                }else{
+                                    k = new KeyFrame(Duration.millis((node.getTime()+1)*250),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getX()- PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getY()));
+                                    keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setBar());
+                                }
 
+                            }
+                            timeline.getKeyFrames().add(k);
+                            timeline.getKeyFrames().add(keyFrame);
+                        break;
+                        case LEFT:
+                            k = new KeyFrame(Duration.millis((node.getTime()+1)*250),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"L").getX()+ PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"L").getY()));
+                            k2 = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setPickEmpty(picks.get(node.getLine()+"-"+node.getColumn()+"L")));
+                            keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setBar());
+                            timeline.getKeyFrames().add(k);
+                            timeline.getKeyFrames().add(k2);
+                            timeline.getKeyFrames().add(keyFrame);
+                            break;
+                        case RIGHT:
+                            k = new KeyFrame(Duration.millis((node.getTime()+1)*250),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getX()- PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getY()));
+                            k2 = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setPickEmpty(picks.get(node.getLine()+"-"+node.getColumn()+"R")));
+                            keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setBar());
+                            timeline.getKeyFrames().add(k);
+                            timeline.getKeyFrames().add(k2);
+                            timeline.getKeyFrames().add(keyFrame);
+                            break;
+                        case BOTH:
+                            k = new KeyFrame(Duration.millis((node.getTime()+1)*250),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getX()- PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getY()));
+                            k2 = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setPickEmpty(picks.get(node.getLine()+"-"+node.getColumn()+"L")));
+                            k3 = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setPickEmpty(picks.get(node.getLine()+"-"+node.getColumn()+"R")));
+                            keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setBar());
+                            timeline.getKeyFrames().add(k);
+                            timeline.getKeyFrames().add(k2);
+                            timeline.getKeyFrames().add(k3);
+                            timeline.getKeyFrames().add(keyFrame);
+                    }
                 }
-
             }
+        }
 
-            }
+        timeline.playFromStart();
 
 
-        KeyFrame k = new KeyFrame(Duration.millis(1000),new KeyValue(agents.get(37).layoutYProperty(),nodes.get(7).getLayoutY()));
-        KeyFrame k1 = new KeyFrame(Duration.millis(500),new KeyValue(agents.get(38).layoutYProperty(),nodes.get(15).getLayoutY()));
-
-        Timeline t = new Timeline();
-        t.getKeyFrames().add(k);
-
-        Timeline t1 = new Timeline();
-        t.getKeyFrames().add(k1);
-
-        ParallelTransition p = new ParallelTransition(t,t1);
-
-        st= new SequentialTransition();
-        st.getChildren().add(p);
-        stFirst=true;
-        st.play();
-       /* if(st.getStatus() == Animation.Status.PAUSED || st.getStatus() ==Animation.Status.STOPPED){
-            st.play();
-        }else{
-            st.pause();
-        }*/
     }
+
+    public void playPause(){
+        if(timeline.getStatus()== Animation.Status.RUNNING){
+            timeline.pause();
+        }else if(timeline.getStatus()== Animation.Status.PAUSED){
+            timeline.play();
+        }
+    }
+
+
+    public void setBar(){
+        main.getSlider().setValue(timeline.getCurrentTime().toMillis());
+        System.out.println((timeline.getCurrentTime().toMillis()));
+    }
+
+    private void setPickEmpty(Rectangle pick){
+        pick.setFill(Color.WHITE);
+        picksEmpty.put(timeline.getCurrentTime().toMillis(),pick);
+    }
+
 
     public void startFromSlider(Double time){
-        st.jumpTo(Duration.millis(time));
-        st.play();
+        for (Double aDouble : picksEmpty.keySet()) {
+            if(aDouble>=time){
+                picksEmpty.get(aDouble).setFill(Color.GREEN);
+            }else{
+                picksEmpty.get(aDouble).setFill(Color.WHITE);
+
+            }
+        }
+
+        timeline.jumpTo(Duration.millis(time));
+        timeline.play();
     }
 
+    public Timeline getTimeline() {
+        return timeline;
+    }
 
     @Override
     public void updateEnvironment() {
@@ -247,8 +297,8 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     }
 
     @Override
-    public void createEnvironment(List<Node> decisionNodes, HashMap<Integer,Edge<Node>> edges, List<PickingAgent> agents, Node offLoad) {
-        simulationPane.getChildren().clear();
+    public void createEnvironment(List<Node> decisionNodes, HashMap<Integer,Edge<Node>> edges, List<PickingAgent> agents, Node offLoad, int mLine, int mCol) {
+        simulationStackPane.getChildren().clear();
         nodes.clear();
         picks.clear();
         this.agents.clear();
@@ -256,8 +306,21 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         this.graphDecisionNodes= decisionNodes;
         this.graphEdges=edges;
         this.graphAgents=agents;
+        this.maxLine=mLine;
+        this.maxCol=mCol;
+        adjustSizes();
         createLayout();
+        this.offload=offLoad;
         createOffLoad(offLoad);
+    }
+
+    private void adjustSizes() {
+        this.PADDING = maxHeightPane/maxLine;
+        this.NODE_SIZE= PADDING-15;
+        this.PICKS_SIZE= NODE_SIZE*2;
+        this.PADDING_BOXES = (PICKS_SIZE+(NODE_SIZE/2));
+        System.out.println(this.PADDING);
+        System.out.println(maxHeightPane);
     }
 
 
@@ -265,5 +328,6 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     public void createSimulationPicks(List<PickingPick> pickNodes) {
         this.graphPicks= pickNodes;
         createPicks();
+        this.simulationStackPane.getChildren().add(group);
     }
 }

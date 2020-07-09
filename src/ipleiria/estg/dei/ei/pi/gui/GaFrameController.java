@@ -14,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
@@ -40,6 +41,7 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
     public TextField mutationProbField;
     @FXML
     public TextField agentsCapacityField;
+
     @FXML
     public ChoiceBox<SelectionMethod> selectionMethodFieldSelection;
     @FXML
@@ -56,12 +58,15 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
     public TextField timeWeightField;
     @FXML
     public TextField collisionWeightField;
+    @FXML
+    public TextArea bestInRunArea;
 
     private XYChart.Series<Number,Number> seriesBestIndividual;
     private XYChart.Series<Number,Number> seriesAverageFitness;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         selectionMethodFieldSelection.getItems().addAll(SelectionMethod.values());
         selectionMethodFieldSelection.setValue(selectionMethodFieldSelection.getItems().get(0));
 
@@ -79,6 +84,8 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
 
         seriesBestIndividual = new XYChart.Series<>();
         seriesAverageFitness = new XYChart.Series<>();
+        seriesAverageFitness.setName("Average");
+        seriesBestIndividual.setName("Best");
         gaChart.getData().add(seriesBestIndividual);
         gaChart.getData().add(seriesAverageFitness);
 
@@ -173,7 +180,9 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
         return seriesAverageFitness;
     }
 
-
+    public TextArea getBestInRunArea() {
+        return bestInRunArea;
+    }
 
     @Override
     public void generationEnded(GeneticAlgorithm<PickingIndividual, PickingGAProblem> geneticAlgorithm) {
@@ -189,7 +198,7 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
 
     @Override
     public void runEnded(GeneticAlgorithm<PickingIndividual, PickingGAProblem> geneticAlgorithm) {
-
+        bestInRunArea.setText(geneticAlgorithm.getBestInRun().toString());
     }
 
     @Override

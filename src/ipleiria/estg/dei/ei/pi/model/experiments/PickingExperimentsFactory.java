@@ -3,7 +3,6 @@ package ipleiria.estg.dei.ei.pi.model.experiments;
 import com.google.gson.JsonObject;
 import ipleiria.estg.dei.ei.pi.gui.ExperimentsFrameController;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAListener;
-import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.Mutation;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.geneticOperators.mutation.MutationInsert;
@@ -74,10 +73,10 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
     }
 
     @Override
-    protected Experiment buildExperiment(PickingGraph pickingGraph) {
+    protected Experiment buildExperiment() {
 //        Environment.getInstance().generateRandomLayout();
 
-        this.graph = pickingGraph;
+
         populationSize = Integer.parseInt(getParameterValue("Population size"));
         maxGenerations = Integer.parseInt(getParameterValue("Max generations"));
         numRuns = Integer.parseInt(getParameterValue("Runs"));

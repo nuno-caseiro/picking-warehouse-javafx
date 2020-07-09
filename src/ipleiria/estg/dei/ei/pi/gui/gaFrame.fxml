@@ -125,8 +125,8 @@
             <Insets bottom="1.0" />
          </opaqueInsets>
       </GridPane>
-      <TextArea editable="false" layoutX="-5.0" layoutY="628.0" prefHeight="166.0" prefWidth="990.0" promptText="Best solution" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <LineChart fx:id="gaChart" animated="false" createSymbols="false" layoutX="332.0" layoutY="-1.0" legendVisible="false" prefHeight="562.0" prefWidth="658.0" title="Evolution" AnchorPane.bottomAnchor="166.0" AnchorPane.leftAnchor="332.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <TextArea fx:id="bestInRunArea" editable="false" layoutX="0" layoutY="628.0" prefHeight="166.0" prefWidth="990.0" promptText="Best solution" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <LineChart fx:id="gaChart" animated="false" createSymbols="false" layoutX="332.0" layoutY="-1.0" prefHeight="562.0" prefWidth="658.0" title="Evolution" AnchorPane.bottomAnchor="166.0" AnchorPane.leftAnchor="332.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <xAxis>
           <NumberAxis animated="false" label="generation" prefHeight="39.0" prefWidth="581.0" side="BOTTOM" />
         </xAxis>

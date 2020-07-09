@@ -41,6 +41,14 @@ public class PickingGraph extends Graph<Node> {
         return this.picks.size();
     }
 
+    public int getMaxLine() {
+        return maxLine;
+    }
+
+    public int getMaxColumn() {
+        return maxColumn;
+    }
+
     public ArrayList<PickingAgent> getAgents() {
         return agents;
     }

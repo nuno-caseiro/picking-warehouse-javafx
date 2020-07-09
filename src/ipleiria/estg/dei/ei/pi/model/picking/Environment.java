@@ -2,6 +2,7 @@ package ipleiria.estg.dei.ei.pi.model.picking;
 
 import com.google.gson.JsonObject;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
+import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.Individual;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
 
@@ -17,11 +18,16 @@ public class Environment<I extends Individual<? extends GAProblem>> {
     private Boolean pauseGA;
     private JsonObject jsonLayout;
     private ArrayList<EnvironmentListener> environmentListeners;
+    private GeneticAlgorithm<PickingIndividual, PickingGAProblem> geneticAlgorithm;
 
     public Environment() {
         this.graph = new PickingGraph();
         this.environmentListeners = new ArrayList<>();
         this.jsonLayout = null;
+    }
+
+    public void setGeneticAlgorithm(GeneticAlgorithm<PickingIndividual, PickingGAProblem> geneticAlgorithm) {
+        this.geneticAlgorithm = geneticAlgorithm;
     }
 
 
@@ -66,7 +72,7 @@ public class Environment<I extends Individual<? extends GAProblem>> {
 
     public void fireCreateEnvironment() {
         for (EnvironmentListener listener : environmentListeners) {
-            listener.createEnvironment(graph.getDecisionNodes(),graph.getEdges(),graph.getAgents(),graph.getOffloadArea());
+            listener.createEnvironment(graph.getDecisionNodes(),graph.getEdges(),graph.getAgents(),graph.getOffloadArea(),graph.getMaxLine(),graph.getMaxColumn());
         }
     }
 
@@ -83,4 +89,7 @@ public class Environment<I extends Individual<? extends GAProblem>> {
     }
 
 
+    public void stopGA() {
+        this.geneticAlgorithm.setStopped(true);
+    }
 }

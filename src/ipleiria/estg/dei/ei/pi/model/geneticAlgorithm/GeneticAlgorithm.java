@@ -57,6 +57,10 @@ public class GeneticAlgorithm<I extends Individual<? extends GAProblem>, P exten
         return this.bestInRun;
     }
 
+    public void setStopped(boolean stopped) {
+        this.stopped = stopped;
+    }
+
     private boolean stopCondition(int t) {
         return this.stopped || t == this.maxGenerations;
     }
