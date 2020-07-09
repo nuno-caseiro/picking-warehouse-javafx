@@ -65,17 +65,23 @@ public class Controller {
     }
 
     private void runExperiments() {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setInitialDirectory(new File("src/ipleiria/estg/dei/ei/pi/dataSets/warehouseLayout"));
+            File selectedFile = fileChooser.showOpenDialog(Window.getWindows().get(0));
         workerExperiments = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
                 try{
                     mainFrame.getExperimentsFrameController().getProgressBar().setProgress(0);
                     mainFrame.getExperimentsFrameController().setRunsProgress(0);
-                    ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(mainFrame.getExperimentsFrameController(),JsonParser.parseReader(new FileReader("src/ipleiria/estg/dei/ei/pi/dataSets/WarehouseLayout.json")).getAsJsonObject());
-                    mainFrame.getExperimentsFrameController().setAllRuns(experimentsFactory.getCountAllRuns());
-                    while (experimentsFactory.hasMoreExperiments()){
-                        Experiment<ExperimentsFactory, GAProblem> experiment = experimentsFactory.nextExperiment();
-                        experiment.run();
+                    if(selectedFile!=null){
+                        ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(mainFrame.getExperimentsFrameController(),JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
+                        mainFrame.getExperimentsFrameController().setAllRuns(experimentsFactory.getCountAllRuns());
+                        while (experimentsFactory.hasMoreExperiments()){
+                            Experiment<ExperimentsFactory, GAProblem> experiment = experimentsFactory.nextExperiment();
+                            experiment.run();
+                        }
+
                     }
                 }catch (Exception e) {
                     e.printStackTrace(System.err);
