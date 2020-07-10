@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane minHeight="680.0" prefHeight="728.0" prefWidth="990.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ipleiria.estg.dei.ei.pi.gui.ExperimentsFrameController">
+<AnchorPane prefHeight="728.0" prefWidth="990.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ipleiria.estg.dei.ei.pi.gui.ExperimentsFrameController">
    <children>
       <GridPane fx:id="parametersGrid" layoutY="27.0" prefWidth="496.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
