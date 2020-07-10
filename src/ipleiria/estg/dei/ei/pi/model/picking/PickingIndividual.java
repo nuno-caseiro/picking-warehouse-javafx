@@ -369,19 +369,21 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Fitness: ");
-        sb.append(fitness);
-        sb.append(" - Time: ");
-        sb.append(this.time);
-        sb.append(" - Collisions: ");
-        sb.append(this.numberOfCollisions);
-        sb.append(" - #Offload: ");
-        sb.append(this.numberTimesOffload);
-        sb.append(" - Wait Time: ");
-        sb.append(this.waitTime);
-        sb.append("\nPath: ");
-        for (int value : genome) {
-            sb.append(value).append(" ");
+        sb.append(fitness).append("\n");
+        sb.append("Time: ");
+        sb.append(this.time).append("\n");
+        sb.append("Number of Collisions: ");
+        sb.append(this.numberOfCollisions).append("\n");
+        sb.append("Collision Wait Time: ");
+        sb.append(this.waitTime).append("\n");
+        sb.append("Number of Time Agents Went to Offload: ");
+        sb.append(this.numberTimesOffload).append("\n\n");
+
+        for (int i = 0; i < this.paths.size(); i++) {
+            sb.append("Agent ").append(i + 1).append(" path time : ");
+            sb.append(this.paths.get(i).getValue()).append("\n");
         }
+
         return sb.toString();
     }
 
