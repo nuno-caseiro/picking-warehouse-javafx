@@ -35,6 +35,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     private double PADDING = 25;
     private double PADDING_BOXES = 35;
     private double PICKS_SIZE = 20;
+    private int SPEED = 150;
 
     private HashMap<String, Rectangle> picks = new HashMap<>();
     private HashMap<Integer, StackPane> nodes = new HashMap<>();
@@ -78,12 +79,12 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         Node node1 = (Node) e.getNodes().get(0);
 
         for (int i = 1; i < (int) e.getLength(); i++) {
-            Rectangle rL = new Rectangle((node1.getColumn() *PADDING)-(PICKS_SIZE+(NODE_SIZE/2)),((node1.getLine()*PADDING)+(i*PADDING)),PICKS_SIZE,PICKS_SIZE);
+            Rectangle rL = new Rectangle((node1.getColumn() *PADDING)-(PADDING_BOXES),((node1.getLine()*PADDING*0.95)+(i*PADDING*0.95)),PICKS_SIZE,PICKS_SIZE);
             rL.setStroke(Color.BLACK);
             rL.setStrokeType(StrokeType.INSIDE);
             rL.setFill(Color.WHITE);
 
-            Rectangle rR = new Rectangle((node1.getColumn() *PADDING)+(PICKS_SIZE+(NODE_SIZE/2)),(node1.getLine()*PADDING)+(i*PADDING),PICKS_SIZE,PICKS_SIZE);
+            Rectangle rR = new Rectangle((node1.getColumn() *PADDING)+(PADDING_BOXES),(node1.getLine()*PADDING*0.95)+(i*PADDING*0.95),PICKS_SIZE,PICKS_SIZE);
 
             rR.setStroke(Color.BLACK);
             rR.setStrokeType(StrokeType.INSIDE);
@@ -132,7 +133,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     }
 
     public void createNode(Node node){
-        Text text = new Text(String.valueOf(agents.size()+1));
+        Text text = new Text(String.valueOf(node.getIdentifier()));
         Circle circle = new Circle();
         StackPane stackPane = new StackPane();
 
@@ -143,13 +144,14 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         }
 
         if(graphAgents.contains(node)){
+            text = new Text(String.valueOf(agents.size()+1));
             circle = new Circle(NODE_SIZE, Color.RED);
             stackPane.setViewOrder(-2.0);
             agents.put(agents.size()+1,stackPane);
         }
         circle.setStroke(Color.BLACK);
         stackPane.getChildren().addAll(circle,text);
-        stackPane.setLayoutY(node.getLine()*PADDING);
+        stackPane.setLayoutY(node.getLine()*PADDING*0.95);
         stackPane.setLayoutX(node.getColumn()*PADDING);
 
         this.group.getChildren().add(stackPane);
@@ -162,7 +164,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         circle = new Circle(NODE_SIZE, Color.BLACK);
         circle.setStroke(Color.BLACK);
         stackPane.getChildren().addAll(circle,text);
-        stackPane.setLayoutY(node.getLine()*PADDING);
+        stackPane.setLayoutY(node.getLine()*PADDING*0.95);
         stackPane.setLayoutX(node.getColumn()*PADDING);
         stackPane.setViewOrder(-1.0);
         offLoad=stackPane;
@@ -196,61 +198,62 @@ public class SimulationFrameController implements Initializable, EnvironmentList
             for (int i1 = 1; i1 <= individual.getPaths().size(); i1++) {
                 if(i<individual.getPaths().get(i1-1).getPath().size()){
                     PathNode node = individual.getPaths().get(i1-1).getPath().get(i);
-                    KeyFrame k;
-                    KeyFrame k2;
-                    KeyFrame k3;
-                    KeyFrame keyFrame;
-                    switch (node.getPickLocation()){
-                        case NONE:
-                            if(nodes.containsKey(node.getIdentifier())){
-                                    k = new KeyFrame(Duration.millis((node.getTime()+1)*250),new KeyValue(agents.get(i1).layoutXProperty(),nodes.get(node.getIdentifier()).getLayoutX()),new KeyValue(agents.get(i1).layoutYProperty(),nodes.get(node.getIdentifier()).getLayoutY()));
-                                    keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setBar());
-                            }else{
-                                if(picks.containsKey(node.getLine()+"-"+node.getColumn()+"L")){
-                                    k = new KeyFrame(Duration.millis((node.getTime()+1)*250),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"L").getX()+ PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"L").getY()));
-                                    keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setBar());
-                                }else{
-                                    k = new KeyFrame(Duration.millis((node.getTime()+1)*250),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getX()- PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getY()));
-                                    keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setBar());
-                                }
-
-                            }
-                            timeline.getKeyFrames().add(k);
-                            timeline.getKeyFrames().add(keyFrame);
-                        break;
-                        case LEFT:
-                            k = new KeyFrame(Duration.millis((node.getTime()+1)*250),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"L").getX()+ PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"L").getY()));
-                            k2 = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setPickEmpty(picks.get(node.getLine()+"-"+node.getColumn()+"L")));
-                            keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setBar());
-                            timeline.getKeyFrames().add(k);
-                            timeline.getKeyFrames().add(k2);
-                            timeline.getKeyFrames().add(keyFrame);
-                            break;
-                        case RIGHT:
-                            k = new KeyFrame(Duration.millis((node.getTime()+1)*250),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getX()- PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getY()));
-                            k2 = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setPickEmpty(picks.get(node.getLine()+"-"+node.getColumn()+"R")));
-                            keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setBar());
-                            timeline.getKeyFrames().add(k);
-                            timeline.getKeyFrames().add(k2);
-                            timeline.getKeyFrames().add(keyFrame);
-                            break;
-                        case BOTH:
-                            k = new KeyFrame(Duration.millis((node.getTime()+1)*250),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getX()- PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getY()));
-                            k2 = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setPickEmpty(picks.get(node.getLine()+"-"+node.getColumn()+"L")));
-                            k3 = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setPickEmpty(picks.get(node.getLine()+"-"+node.getColumn()+"R")));
-                            keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setBar());
-                            timeline.getKeyFrames().add(k);
-                            timeline.getKeyFrames().add(k2);
-                            timeline.getKeyFrames().add(k3);
-                            timeline.getKeyFrames().add(keyFrame);
-                    }
+                    createKeyFrame(timeline, node, i1);
                 }
             }
         }
-
         timeline.playFromStart();
 
+    }
 
+    private void createKeyFrame(Timeline t, PathNode node, int i1){
+        KeyFrame k;
+        KeyFrame k2;
+        KeyFrame k3;
+        KeyFrame keyFrame;
+        switch (node.getPickLocation()){
+            case NONE:
+                if(nodes.containsKey(node.getIdentifier())){
+                    k = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),new KeyValue(agents.get(i1).layoutXProperty(),nodes.get(node.getIdentifier()).getLayoutX()),new KeyValue(agents.get(i1).layoutYProperty(),nodes.get(node.getIdentifier()).getLayoutY()));
+                    keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),e->setBar());
+                }else{
+                    if(picks.containsKey(node.getLine()+"-"+node.getColumn()+"L")){
+                        k = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"L").getX()+ PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"L").getY()));
+                        keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),e->setBar());
+                    }else{
+                        k = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getX()- PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getY()));
+                        keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),e->setBar());
+                    }
+                }
+                timeline.getKeyFrames().add(k);
+                timeline.getKeyFrames().add(keyFrame);
+                break;
+            case LEFT:
+                k = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"L").getX()+ PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"L").getY()));
+                k2 = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),e->setPickEmpty(picks.get(node.getLine()+"-"+node.getColumn()+"L")));
+                keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),e->setBar());
+                timeline.getKeyFrames().add(k);
+                timeline.getKeyFrames().add(k2);
+                timeline.getKeyFrames().add(keyFrame);
+                break;
+            case RIGHT:
+                k = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getX()- PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getY()));
+                k2 = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),e->setPickEmpty(picks.get(node.getLine()+"-"+node.getColumn()+"R")));
+                keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),e->setBar());
+                timeline.getKeyFrames().add(k);
+                timeline.getKeyFrames().add(k2);
+                timeline.getKeyFrames().add(keyFrame);
+                break;
+            case BOTH:
+                k = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),new KeyValue(agents.get(i1).layoutXProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getX()- PADDING_BOXES),new KeyValue(agents.get(i1).layoutYProperty(),picks.get(node.getLine()+"-"+node.getColumn()+"R").getY()));
+                k2 = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),e->setPickEmpty(picks.get(node.getLine()+"-"+node.getColumn()+"L")));
+                k3 = new KeyFrame(Duration.millis((node.getTime()+1)*SPEED),e->setPickEmpty(picks.get(node.getLine()+"-"+node.getColumn()+"R")));
+                keyFrame = new KeyFrame(Duration.millis((node.getTime()+1)*250),e->setBar());
+                timeline.getKeyFrames().add(k);
+                timeline.getKeyFrames().add(k2);
+                timeline.getKeyFrames().add(k3);
+                timeline.getKeyFrames().add(keyFrame);
+        }
     }
 
     public void playPause(){
@@ -319,6 +322,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         this.NODE_SIZE= PADDING-15;
         this.PICKS_SIZE= NODE_SIZE*2;
         this.PADDING_BOXES = (PICKS_SIZE+(NODE_SIZE/2));
+
         System.out.println(this.PADDING);
         System.out.println(maxHeightPane);
     }
