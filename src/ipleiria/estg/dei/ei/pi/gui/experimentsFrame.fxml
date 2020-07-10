@@ -175,7 +175,7 @@
                   <Insets left="10.0" />
                </padding>
             </Label>
-            <TextArea fx:id="nrRunsArea" minHeight="3.0" text="100" GridPane.columnIndex="1">
+            <TextArea fx:id="nrRunsArea" minHeight="3.0" promptText="100" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets right="5.0" top="10.0" />
                </GridPane.margin>

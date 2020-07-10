@@ -73,6 +73,8 @@ public class MainFrameController implements Initializable {
     @FXML
     private ExperimentsFrameController experimentsFrameController;
 
+    private Alert alert;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -121,6 +123,13 @@ public class MainFrameController implements Initializable {
                 });
             }
         });
+    }
+
+    public void showAlert(String errors){
+        alert= new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setContentText(errors);
+        alert.showAndWait();
     }
 
     public void manageButtons(boolean loadLayout, boolean loadPicks, boolean runGa, boolean stopGA, boolean playSimulate, boolean pauseStop, boolean slider){

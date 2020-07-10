@@ -16,10 +16,14 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
+import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 
 public class GaFrameController implements Initializable, GAListener<PickingIndividual, PickingGAProblem> {
 
@@ -64,6 +68,9 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
     private XYChart.Series<Number,Number> seriesBestIndividual;
     private XYChart.Series<Number,Number> seriesAverageFitness;
 
+    private UnaryOperator<TextFormatter.Change> integerFilter;
+    private UnaryOperator<TextFormatter.Change> decimalFilter;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -88,6 +95,20 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
         seriesBestIndividual.setName("Best");
         gaChart.getData().add(seriesBestIndividual);
         gaChart.getData().add(seriesAverageFitness);
+        
+
+        selectionMethodFieldSelection.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                if(t1.intValue()==0){
+                    tournamentSizeField.setDisable(false);
+                    selectivePressureField.setDisable(true);
+                }else{
+                    tournamentSizeField.setDisable(true);
+                    selectivePressureField.setDisable(false);
+                }
+            }
+        });
 
         collisionsHandlingFieldCollisions.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -102,18 +123,57 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
             }
         });
 
+
+        decimalFilter = new UnaryOperator<TextFormatter.Change>() {
+            @Override
+            public TextFormatter.Change apply(TextFormatter.Change change) {
+                String newText = change.getControlNewText();
+                if ((newText.matches("\\d*\\.?\\d*") || newText.matches("\\d*\\,?\\d*")) ) {
+                    return change;
+                }
+                return null;
+            }
+        };
+
+
+        integerFilter = new UnaryOperator<TextFormatter.Change>() {
+            @Override
+            public TextFormatter.Change apply(TextFormatter.Change change) {
+                String newText = change.getControlNewText();
+                if (newText.matches("-?([1-9][0-9]*)?") ) {
+                    return change;
+                }
+                return null;
+            }
+        };
+
+        seedGaField.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(),1,integerFilter));
+        popSizeField.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(),100,integerFilter));
+        generationsField.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(),100,integerFilter));
+        tournamentSizeField.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(),4,integerFilter));
+        selectivePressureField.setTextFormatter(new TextFormatter<>(new DoubleStringConverter(),2.0,decimalFilter));
+        recombinationProbField.setTextFormatter(new TextFormatter<>(new DoubleStringConverter(),0.8,decimalFilter));
+        mutationProbField.setTextFormatter(new TextFormatter<>(new DoubleStringConverter(),0.1,decimalFilter));
+        timeWeightField.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(),1,integerFilter));
+        collisionWeightField.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(),1,integerFilter));
     }
 
     public int getTimeWeightField() {
-        return Integer.parseInt(timeWeightField.getText());
+        if (!timeWeightField.getText().isEmpty()){
+            return Integer.parseInt(timeWeightField.getText());
+        }
+        return 0;
     }
 
     public int getCollisionWeightField() {
-        return Integer.parseInt(collisionWeightField.getText());
+        if(!collisionWeightField.getText().isEmpty()) {
+            return Integer.parseInt(collisionWeightField.getText());
+        }
+        return 0;
     }
 
     public CollisionsHandling getCollisionsHandlingValue(){
-        return CollisionsHandling.valueOf(collisionsHandlingFieldCollisions.getSelectionModel().getSelectedItem().toString());
+            return CollisionsHandling.valueOf(collisionsHandlingFieldCollisions.getSelectionModel().getSelectedItem().toString());
     }
 
     public WeightLimitation getWeightLimitationValue(){
@@ -121,31 +181,46 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
     }
 
     public int getSeedGaField() {
-        return Integer.parseInt(seedGaField.getText());
+        if(!seedGaField.getText().isEmpty()){
+            return Integer.parseInt(seedGaField.getText());
+        }
+        return 0;
     }
 
     public int getPopSizeField() {
-        return Integer.parseInt(popSizeField.getText());
+        if(!popSizeField.getText().isEmpty())
+            return Integer.parseInt(popSizeField.getText());
+        return 0;
     }
 
     public int getGenerationsField() {
-        return Integer.parseInt(generationsField.getText());
+        if(!generationsField.getText().isEmpty())
+            return Integer.parseInt(generationsField.getText());
+        return 0;
     }
 
     public int getTournamentSizeField() {
-        return Integer.parseInt(tournamentSizeField.getText());
+        if(!tournamentSizeField.getText().isEmpty())
+            return Integer.parseInt(tournamentSizeField.getText());
+        return 0;
     }
 
     public double getSelectivePressureField() {
-        return Double.parseDouble(selectivePressureField.getText());
+        if(!selectivePressureField.getText().isEmpty())
+            return Double.parseDouble(selectivePressureField.getText());
+        return 0;
     }
 
     public double getRecombinationProbField() {
-        return Double.parseDouble(recombinationProbField.getText());
+        if(!recombinationProbField.getText().isEmpty())
+            return Double.parseDouble(recombinationProbField.getText());
+        return 0;
     }
 
     public double getMutationProbField() {
-        return Double.parseDouble(mutationProbField.getText());
+        if(!mutationProbField.getText().isEmpty())
+            return Double.parseDouble(mutationProbField.getText());
+        return 0;
     }
 
     public int getAgentsCapacityField() {
@@ -182,6 +257,59 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
 
     public TextArea getBestInRunArea() {
         return bestInRunArea;
+    }
+
+    public String handleErrors(){
+        StringBuilder error= new StringBuilder();
+        if(getSeedGaField()==0)
+            error.append("Seed value").append(errors(1));
+
+        if (getPopSizeField()==0 || getPopSizeField()%2!=0 )
+            error.append("Population size").append(errors(4));
+
+        if(getGenerationsField()==0)
+            error.append("# of generations").append(errors(1));
+
+        if(getTournamentSizeField()==0 || getTournamentSizeField()>getPopSizeField() )
+            error.append("Tournament size").append(errors(5));
+
+        if(getSelectivePressureField()==0 || getSelectivePressureField()<1.0 || getSelectivePressureField()>2.0)
+            error.append("Selective pressure").append(errors(2));
+
+        if(getRecombinationProbField()==0 || getRecombinationProbField()<0 || getRecombinationProbField()>1)
+            error.append("Recombination pressure").append(errors(3));
+
+        if(getMutationProbField()==0 || getMutationProbField()<0 || getMutationProbField()>1)
+            error.append("Selective pressure").append(errors(3));
+
+        if(getTimeWeightField()==0)
+            error.append("Selective pressure").append(errors(1));
+
+        if(getCollisionWeightField()==0)
+            error.append("Selective pressure").append(errors(1));
+
+        if(error.length()==0){
+            error.append("success");
+        }
+
+        return error.toString();
+    }
+
+    public String errors(int i){
+        switch (i){
+            case 1:
+                return " cannot be empty or 0\n";
+            case 2:
+                return " must be between 1 and 2 and cannot be empty\n";
+            case 3:
+                return " must be between 0 and 1 and cannot be empty\n";
+            case 4:
+                return " must be even and cannot be empty\n";
+            case 5:
+                return " must be less than population size and not empty\n";
+
+        }
+        return null;
     }
 
     @Override
