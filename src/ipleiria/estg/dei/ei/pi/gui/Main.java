@@ -22,7 +22,7 @@ public class Main extends Application {
         Screen screen = Screen.getPrimary();
         Rectangle2D bounds = screen.getVisualBounds();
         primaryStage.setMinWidth(1024);
-        primaryStage.setMinHeight(750);
+        primaryStage.setMinHeight(720);
         primaryStage.setScene(new Scene(root, bounds.getWidth()*0.75, bounds.getHeight()*0.75));
         primaryStage.show();
 
