@@ -13,9 +13,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.util.converter.IntegerStringConverter;
 
 import java.net.URL;
 import java.util.*;
+import java.util.function.UnaryOperator;
 
 public class ExperimentsFrameController implements Initializable, GAListener {
 
@@ -76,6 +78,7 @@ public class ExperimentsFrameController implements Initializable, GAListener {
     @FXML
     public ProgressBar progressBar;
 
+    private Alert alert;
     private int runsProgress;
     private double allRuns;
     private String actualParameterField;
@@ -144,10 +147,107 @@ public class ExperimentsFrameController implements Initializable, GAListener {
         parameters.put("numberPicksArea",new ParameterGUI("number of picks",numberPicksArea,intExpInput,"45"));
         parameters.put("statisticsArea",new ParameterGUI("statistics",statisticsArea,selectExpInput,"StatisticBestAverage"));
 
+        UnaryOperator<TextFormatter.Change> decimalFilter = change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d*\\.?\\d*") || newText.matches("\\d*\\,?\\d*")) {
+                return change;
+            }
+            return null;
+        };
+
+        UnaryOperator<TextFormatter.Change> integerFilter = change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("-?([1-9][0-9]*)?") ) {
+                return change;
+            }
+            return null;
+        };
 
 
+        nrRunsArea.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(),100,integerFilter));
+        intExpInput.setTextFormatter(new TextFormatter<>(integerFilter));
+        decimalExpInput.setTextFormatter(new TextFormatter<>(decimalFilter));
 
         selectExpInput.setViewOrder(-1);
+    }
+
+
+    public String handleErrors(){
+        StringBuilder error= new StringBuilder();
+        if(getNrRunsAreaInt()==0)
+            error.append("Number of runs ").append(errors(1));
+
+        if (getPopSizeArea()==0 )
+            error.append("Population size").append(errors(1));
+
+        if(getGenerationsArea()==0)
+            error.append("# of generations").append(errors(1));
+
+        if(getSelectionMethodArea()==0 )
+            error.append("Selection method").append(errors(1));
+
+        if(getTournamentSizeArea()==0 )
+            error.append("Tournament size").append(errors(1));
+
+        if(getSelectivePressureArea()==0 )
+            error.append("Selective pressure").append(errors(1));
+
+        if(getRecombinationMethodArea()==0 )
+            error.append("Recombination method").append(errors(1));
+
+        if(getRecombinationProbArea()==0)
+            error.append("Selective pressure").append(errors(3));
+
+        if(getMutationMethodArea()==0 )
+            error.append("Mutation method").append(errors(1));
+
+        if(getMutationProbArea()==0)
+            error.append("Mutation probability").append(errors(3));
+
+        if(getCollisionsHandlingArea()==0)
+            error.append("Collisions handling").append(errors(1));
+
+        if(getWeightLimitationArea()==0)
+            error.append("Weight limitation").append(errors(1));
+
+        if(getTimeWeightsArea()==0)
+            error.append("Time weight").append(errors(1));
+
+        if(getCollisionWeightsArea()==0)
+            error.append("Collisions weight").append(errors(1));
+
+        if(getNumberAgentsArea()==0)
+            error.append("Number of agents").append(errors(1));
+
+        if(getNumberPicksArea()==0)
+            error.append("Number of agents").append(errors(1));
+
+        if(getStatisticsArea()==0)
+            error.append("Statistics ").append(errors(1));
+
+        if(error.length()==0){
+            error.append("success");
+        }
+
+        return error.toString();
+    }
+
+
+    public String errors(int i){
+        switch (i){
+            case 1:
+                return " cannot be empty or 0\n";
+            case 2:
+                return " must be between 1 and 2 and cannot be empty\n";
+            case 3:
+                return " must be between 0 and 1 and cannot be empty\n";
+            case 4:
+                return " must be even and cannot be empty\n";
+            case 5:
+                return " must be less than population size and not empty\n";
+
+        }
+        return null;
     }
 
     public void showEditParameters(Event event){
@@ -206,14 +306,26 @@ public class ExperimentsFrameController implements Initializable, GAListener {
             updateActualItems();
         }
         if(actualParameterGUI.getControl().getId().equals(intExpInput.getId())) {
-            if(!actualParameterGUI.getParameters().contains(intExpInput.getText().trim()) && !intExpInput.getText().trim().isEmpty()){
+            if(!actualParameterGUI.getParameters().contains(intExpInput.getText().trim()) && !intExpInput.getText().trim().isEmpty() && Integer.parseInt(intExpInput.getText().trim())!=0){
+                if ((actualParameterGUI.getId().equals("population size") && Integer.parseInt(intExpInput.getText().trim())%2!=0)){
+                    showAlert("Value must be even");
+                }
                 actualParameterGUI.getParameters().add(intExpInput.getText().trim());
             }
             updateActualItems();
         }
         if(actualParameterGUI.getControl().getId().equals(decimalExpInput.getId())) {
-            if(!actualParameterGUI.getParameters().contains(decimalExpInput.getText().trim()) && !decimalExpInput.getText().trim().isEmpty() ){
-                actualParameterGUI.getParameters().add(decimalExpInput.getText().trim());
+            if(!actualParameterGUI.getParameters().contains(decimalExpInput.getText().trim()) && !decimalExpInput.getText().trim().isEmpty()){
+                if(Double.parseDouble(decimalExpInput.getText().trim())==0){
+                    showAlert("Value cannot be 0");
+                }else if(actualParameterGUI.getId().equals("selective pressure") && Double.parseDouble(decimalExpInput.getText().trim())<1.0 || Double.parseDouble(decimalExpInput.getText().trim())>2.0){
+                        showAlert("Value must be between 1.0 and 2.0");
+                } else if ((actualParameterGUI.getId().equals("recombination probability") || actualParameterGUI.getId().equals("mutation probability")) && (Double.parseDouble(decimalExpInput.getText().trim())<0.0 || Double.parseDouble(decimalExpInput.getText().trim())>1.0) ){
+                        showAlert("Value must be between 0.0 and 1.0");
+                }else{
+
+                 actualParameterGUI.getParameters().add(decimalExpInput.getText().trim());
+                }
             }
             updateActualItems();
         }
@@ -233,6 +345,13 @@ public class ExperimentsFrameController implements Initializable, GAListener {
         if(actualParameterGUI.getParameters().size()!=0){
         actualParameters.getItems().addAll(actualParameterGUI.getParameters());
         }
+    }
+
+    public void showAlert(String errors){
+        alert= new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setContentText(errors);
+        alert.showAndWait();
     }
 
 
@@ -262,6 +381,7 @@ public class ExperimentsFrameController implements Initializable, GAListener {
         return nrRunsArea;
     }
 
+
     public ProgressBar getProgressBar() {
         return progressBar;
     }
@@ -280,6 +400,108 @@ public class ExperimentsFrameController implements Initializable, GAListener {
 
     public void setAllRuns(double allRuns) {
         this.allRuns = allRuns;
+    }
+
+    public int getNrRunsAreaInt() {
+        if(!nrRunsArea.getText().isEmpty())
+            return Integer.parseInt(nrRunsArea.getText());
+        return 0;
+    }
+
+    public int getPopSizeArea() {
+        if(!popSizeArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public int getGenerationsArea() {
+        if(!generationsArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public int getSelectionMethodArea() {
+        if(!selectionMethodArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public int getTournamentSizeArea() {
+        if(!tournamentSizeArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public double getSelectivePressureArea() {
+        if(!selectivePressureArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public int getRecombinationMethodArea() {
+        if(!recombinationMethodArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public double getRecombinationProbArea() {
+        if(!recombinationProbArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public int getMutationMethodArea() {
+        if(!mutationMethodArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public double getMutationProbArea() {
+        if(!mutationProbArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public int getCollisionsHandlingArea() {
+        if(!collisionsHandlingArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public int getWeightLimitationArea() {
+        if(!weightLimitationArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public int getNumberAgentsArea() {
+        if(!numberAgentsArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public int getNumberPicksArea() {
+        if(!numberPicksArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public int getTimeWeightsArea() {
+        if(!timeWeightsArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public int getCollisionWeightsArea() {
+        if(!collisionWeightsArea.getText().isEmpty())
+            return 1;
+        return 0;
+    }
+
+    public int getStatisticsArea() {
+        if(!statisticsArea.getText().isEmpty())
+            return 1;
+        return 0;
     }
 
     @Override

@@ -17,9 +17,6 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.Selection
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.Tournament;
 import ipleiria.estg.dei.ei.pi.model.picking.*;
 import ipleiria.estg.dei.ei.pi.model.search.AStarSearch;
-import ipleiria.estg.dei.ei.pi.utils.CollisionsHandling;
-import ipleiria.estg.dei.ei.pi.utils.PickLocation;
-import ipleiria.estg.dei.ei.pi.utils.WeightLimitation;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
 import javafx.application.Platform;
 import javafx.stage.FileChooser;
@@ -29,12 +26,8 @@ import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class Controller {
 
@@ -65,37 +58,41 @@ public class Controller {
     }
 
     private void runExperiments() {
+        if(mainFrame.getExperimentsFrameController().handleErrors().equals("success")) {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialDirectory(new File("src/ipleiria/estg/dei/ei/pi/dataSets/warehouseLayout"));
             File selectedFile = fileChooser.showOpenDialog(Window.getWindows().get(0));
-        workerExperiments = new SwingWorker<Void, Void>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                try{
-                    mainFrame.getExperimentsFrameController().getProgressBar().setProgress(0);
-                    mainFrame.getExperimentsFrameController().setRunsProgress(0);
-                    if(selectedFile!=null){
-                        ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(mainFrame.getExperimentsFrameController(),JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
-                        mainFrame.getExperimentsFrameController().setAllRuns(experimentsFactory.getCountAllRuns());
-                        while (experimentsFactory.hasMoreExperiments()){
-                            Experiment<ExperimentsFactory, GAProblem> experiment = experimentsFactory.nextExperiment();
-                            experiment.run();
+            workerExperiments = new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    try {
+                        mainFrame.getExperimentsFrameController().getProgressBar().setProgress(0);
+                        mainFrame.getExperimentsFrameController().setRunsProgress(0);
+                        if (selectedFile != null) {
+                            ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(mainFrame.getExperimentsFrameController(), JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
+                            mainFrame.getExperimentsFrameController().setAllRuns(experimentsFactory.getCountAllRuns());
+                            while (experimentsFactory.hasMoreExperiments()) {
+                                Experiment<ExperimentsFactory, GAProblem> experiment = experimentsFactory.nextExperiment();
+                                experiment.run();
+                            }
+
                         }
-
+                    } catch (Exception e) {
+                        e.printStackTrace(System.err);
                     }
-                }catch (Exception e) {
-                    e.printStackTrace(System.err);
+                    return null;
                 }
-                return null;
-            }
 
-            @Override
-            protected void done() {
-                super.done();
-                System.out.println("done experiments");
-            }
-        };
-        workerExperiments.execute();
+                @Override
+                protected void done() {
+                    super.done();
+                    System.out.println("done experiments");
+                }
+            };
+            workerExperiments.execute();
+        }else{
+            mainFrame.showAlert(mainFrame.getExperimentsFrameController().handleErrors());
+        }
     }
 
 
@@ -166,44 +163,47 @@ public class Controller {
     }
 
     private void runGA() {
+        if(mainFrame.getGaFrameController().handleErrors().equals("success")) {
+            GeneticAlgorithm<PickingIndividual, PickingGAProblem> geneticAlgorithm = new GeneticAlgorithm<>(new PickingIndividual.PickingIndividualFactory(),
+                    getSelectionMethod(),
+                    getRecombinationMethod(),
+                    getMutationMethod(),
+                    mainFrame.getGaFrameController().getPopSizeField(), mainFrame.getGaFrameController().getGenerationsField(), new Random(mainFrame.getGaFrameController().getSeedGaField()));
 
-         GeneticAlgorithm<PickingIndividual, PickingGAProblem> geneticAlgorithm = new GeneticAlgorithm<>(new PickingIndividual.PickingIndividualFactory(),
-                getSelectionMethod(),
-                getRecombinationMethod(),
-                getMutationMethod(),
-                mainFrame.getGaFrameController().getPopSizeField(), mainFrame.getGaFrameController().getGenerationsField(), new Random(mainFrame.getGaFrameController().getSeedGaField()));
+            geneticAlgorithm.addGAListener(mainFrame.getGaFrameController());
+            environment.setGeneticAlgorithm(geneticAlgorithm);
+            worker = new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    try {
+                        mainFrame.getGaFrameController().getBestInRunArea().setText("");
+                        mainFrame.manageButtons(true, true, true, false, true, true, true);
+                        mainFrame.getGaFrameController().getSeriesBestIndividual().getData().clear();
+                        mainFrame.getGaFrameController().getSeriesAverageFitness().getData().clear();
+                        PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), mainFrame.getGaFrameController().getWeightLimitationValue(), mainFrame.getGaFrameController().getCollisionsHandlingValue(), mainFrame.getGaFrameController().getTimeWeightField(), mainFrame.getGaFrameController().getCollisionWeightField()));
+                        environment.setBestInRun(individual);
+                        System.out.println(individual.getFitness());
+                        System.out.println(individual.getNumberOfCollisions());
+                        System.out.println(individual.getNumberTimesOffload());
+                        System.out.println(Arrays.toString(individual.getGenome()));
 
-        geneticAlgorithm.addGAListener(mainFrame.getGaFrameController());
-        environment.setGeneticAlgorithm(geneticAlgorithm);
-        worker = new SwingWorker<Void, Void>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                try{
-                    mainFrame.getGaFrameController().getBestInRunArea().setText("");
-                    mainFrame.manageButtons(true,true,true,false,true,true,true);
-                    mainFrame.getGaFrameController().getSeriesBestIndividual().getData().clear();
-                    mainFrame.getGaFrameController().getSeriesAverageFitness().getData().clear();
-                    PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), mainFrame.getGaFrameController().getWeightLimitationValue(), mainFrame.getGaFrameController().getCollisionsHandlingValue(),mainFrame.getGaFrameController().getTimeWeightField(),mainFrame.getGaFrameController().getCollisionWeightField()));
-                    environment.setBestInRun(individual);
-                    System.out.println(individual.getFitness());
-                    System.out.println(individual.getNumberOfCollisions());
-                    System.out.println(individual.getNumberTimesOffload());
-                    System.out.println(Arrays.toString(individual.getGenome()));
-
-                }catch (Exception e) {
-                    e.printStackTrace(System.err);
+                    } catch (Exception e) {
+                        e.printStackTrace(System.err);
+                    }
+                    return null;
                 }
-                return null;
-            }
 
-            @Override
-            protected void done() {
-                super.done();
-                mainFrame.manageButtons(false,false,false,true,false,true,true);
+                @Override
+                protected void done() {
+                    super.done();
+                    mainFrame.manageButtons(false, false, false, true, false, true, true);
 
-            }
-        };
-        worker.execute();
+                }
+            };
+            worker.execute();
+        }else{
+            mainFrame.showAlert(mainFrame.getGaFrameController().handleErrors());
+        }
     }
 
 
@@ -245,6 +245,8 @@ public class Controller {
         }
         return null;
     }
+
+
 
 
 
