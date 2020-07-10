@@ -17,24 +17,24 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.Selection
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.selectionMethods.Tournament;
 import ipleiria.estg.dei.ei.pi.model.picking.*;
 import ipleiria.estg.dei.ei.pi.model.search.AStarSearch;
-import ipleiria.estg.dei.ei.pi.utils.CollisionsHandling;
-import ipleiria.estg.dei.ei.pi.utils.PickLocation;
-import ipleiria.estg.dei.ei.pi.utils.WeightLimitation;
+import ipleiria.estg.dei.ei.pi.utils.JSONValidator;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
 import javafx.application.Platform;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import org.everit.json.schema.ValidationException;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class Controller {
 
@@ -98,7 +98,6 @@ public class Controller {
         workerExperiments.execute();
     }
 
-
     private void simulate() {
         worker = new SwingWorker<Void, Void>() {
             @Override
@@ -135,16 +134,21 @@ public class Controller {
         this.environment.addEnvironmentListener(this.mainFrame.getSimulationFrameController());
         try {
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setInitialDirectory(new File("src/ipleiria/estg/dei/ei/pi/dataSets/warehouseLayout"));
+            fileChooser.setInitialDirectory(new File(getClass().getResource("../dataSets/warehouseLayout").getPath()));
             File selectedFile = fileChooser.showOpenDialog(Window.getWindows().get(0));
-            if(selectedFile!=null){
+
+            if(selectedFile != null) {
+                JSONValidator.validateJSON(Files.readString(Path.of(selectedFile.getPath())), getClass().getResourceAsStream("../utils/schemas/warehouseSchema.json"));
+
                 this.environment.loadWarehouseFile(JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
+
+                this.mainFrame.manageButtons(false,false,true,true,true,true,true);
             }
 
-            this.mainFrame.manageButtons(false,false,true,true,true,true,true);
-
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
+        } catch (ValidationException e) {
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!ERRO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); // TODO
         }
     }
 
@@ -152,16 +156,23 @@ public class Controller {
         try {
             if (this.environment.getJsonLayout() != null) {
                 FileChooser fileChooser = new FileChooser();
-                fileChooser.setInitialDirectory(new File("src/ipleiria/estg/dei/ei/pi/dataSets/picks"));
+                fileChooser.setInitialDirectory(new File(getClass().getResource("../dataSets/picks").getPath()));
                 File selectedFile = fileChooser.showOpenDialog(Window.getWindows().get(0));
-                if(selectedFile!=null){
+
+                if(selectedFile!=null) {
+                    JSONValidator.validateJSON(Files.readString(Path.of(selectedFile.getPath())), getClass().getResourceAsStream("../utils/schemas/picksSchema.json"));
+
                     this.environment.loadGraph(JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
+
+                    this.mainFrame.manageButtons(false,false,false,true,true,true,true);
                 }
 
                 this.mainFrame.manageButtons(false,false,false,true,true,true,true);
             }
-        } catch (InvalidNodeException | FileNotFoundException e) {
+        } catch (InvalidNodeException | IOException e) {
             e.printStackTrace();
+        } catch (ValidationException e) {
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!ERRO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); // TODO
         }
     }
 
