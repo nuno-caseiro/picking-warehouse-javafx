@@ -87,7 +87,7 @@ public class ExperimentsFrameController implements Initializable, GAListener {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         runsProgress=0;
         addButton.prefHeightProperty().bind(editingParametersPane.heightProperty());
-        addButton.prefWidthProperty().bind(editingParametersPane.prefWidthProperty());
+        addButton.prefWidthProperty().bind(editingParametersPane.widthProperty());
         removeButton.prefHeightProperty().bind(editingParametersPane.heightProperty());
         removeButton.prefWidthProperty().bind(editingParametersPane.widthProperty());
         editingParametersPane.setVisible(false);
