@@ -198,7 +198,13 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
 
     @Override
     public void runEnded(GeneticAlgorithm<PickingIndividual, PickingGAProblem> geneticAlgorithm) {
-        bestInRunArea.setText(geneticAlgorithm.getBestInRun().toString());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+            bestInRunArea.setText(geneticAlgorithm.getBestInRun().toString());
+
+            }
+        });
     }
 
     @Override
