@@ -1,6 +1,7 @@
 package ipleiria.estg.dei.ei.pi.model.picking;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import ipleiria.estg.dei.ei.pi.model.search.SearchNode;
@@ -314,7 +315,6 @@ public class PickingGraph extends Graph<Node> {
             distance = (node.getLine() - line) + (node.getColumn() - column);
 
             if (distance == 0) {
-                System.out.println("aaaaaaa");
                 return node;
             } else if ((distance < 0) && (distance > node1DistanceToNewNode)) {
                 node1 = node;

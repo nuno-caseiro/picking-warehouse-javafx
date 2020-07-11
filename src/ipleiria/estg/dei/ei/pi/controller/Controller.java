@@ -20,6 +20,8 @@ import ipleiria.estg.dei.ei.pi.model.search.AStarSearch;
 import ipleiria.estg.dei.ei.pi.utils.JSONValidator;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import org.everit.json.schema.ValidationException;
@@ -71,6 +73,10 @@ public class Controller {
         if(mainFrame.getExperimentsFrameController().handleErrors().equals("success")) {
             FileChooser fileChooser = new FileChooser();
             File selectedFile = fileChooser.showOpenDialog(Window.getWindows().get(0));
+            if(selectedFile!=null){
+                mainFrame.getExperimentsFrameController().getRunExperimentsButton().setDisable(true);
+                mainFrame.getExperimentsFrameController().getStopExperiments().setDisable(false);
+            }
             workerExperiments = new SwingWorker<Void, Void>() {
                 @Override
                 protected Void doInBackground() throws Exception {
@@ -96,7 +102,8 @@ public class Controller {
                 @Override
                 protected void done() {
                     super.done();
-                    System.out.println("done experiments");
+                    mainFrame.getExperimentsFrameController().getRunExperimentsButton().setDisable(false);
+                    mainFrame.getExperimentsFrameController().getStopExperiments().setDisable(true);
                 }
             };
             workerExperiments.execute();
@@ -105,36 +112,27 @@ public class Controller {
         }
     }
 
+
     private void simulate() {
-        worker = new SwingWorker<Void, Void>() {
+
+        mainFrame.manageButtons(true,  true,true,true,false,false,false);
+
+        Platform.runLater(new Runnable() {
             @Override
-            protected Void doInBackground() throws Exception {
-                try {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            mainFrame.manageButtons(false,false,true,true,false,false,false);
-                            mainFrame.getSimulationFrameController().start(environment.getBestInRun());
-                            mainFrame.getSlider().setMax(mainFrame.getSimulationFrameController().getTimeline().getTotalDuration().toMillis());
-                        }
-                    });
-
-                } catch (Exception e) {
-                    e.printStackTrace(System.err);
-                }
-                return null;
-
+            public void run() {
+                mainFrame.getSimulationFrameController().start(environment.getBestInRun());
+                mainFrame.getSlider().setMax(mainFrame.getSimulationFrameController().getTimeline().getTotalDuration().toMillis());
+                mainFrame.getSimulationFrameController().getTimeline().setOnFinished(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        mainFrame.getSimulationFrameController().setFirstTime(true);
+                        mainFrame.manageButtons(false,false,false,true,false,false,false);
+                    }
+                });
             }
+        });
 
-            @Override
-            protected void done() {
-                super.done();
-                mainFrame.manageButtons(false,false,false,true,false,false,false);
 
-            }
-        };
-
-        worker.execute();
     }
 
     private void loadWarehouseLayout() {
@@ -166,7 +164,8 @@ public class Controller {
 
                 if(selectedFile!=null) {
                     JSONValidator.validateJSON(Files.readString(Path.of(selectedFile.getPath())), getClass().getResourceAsStream("/picksSchema.json"));
-
+                    mainFrame.getSimulationFrameController().getTimeline().getKeyFrames().clear();
+                    mainFrame.getSimulationFrameController().setFirstTime(true);
                     this.environment.loadGraph(JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
 
                     this.mainFrame.manageButtons(false,false,false,true,true,true,true);
@@ -203,22 +202,15 @@ public class Controller {
                         mainFrame.getGaFrameController().getSeriesAverageFitness().getData().clear();
                         PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), mainFrame.getGaFrameController().getWeightLimitationValue(), mainFrame.getGaFrameController().getCollisionsHandlingValue(), mainFrame.getGaFrameController().getTimeWeightField(), mainFrame.getGaFrameController().getCollisionWeightField(), random));
                         environment.setBestInRun(individual);
-                        System.out.println(individual.getFitness());
-                        System.out.println(individual.getNumberOfCollisions());
-                        System.out.println(individual.getNumberTimesOffload());
-                        System.out.println(Arrays.toString(individual.getGenome()));
-
                     } catch (Exception e) {
                         e.printStackTrace(System.err);
                     }
                     return null;
                 }
-
                 @Override
                 protected void done() {
                     super.done();
                     mainFrame.manageButtons(false, false, false, true, false, true, true);
-
                 }
             };
             worker.execute();
