@@ -286,6 +286,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
             }
         }
 
+
         timeline.jumpTo(Duration.millis(time));
         timeline.play();
     }
