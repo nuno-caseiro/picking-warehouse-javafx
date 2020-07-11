@@ -77,6 +77,10 @@ public class ExperimentsFrameController implements Initializable, GAListener {
     public TextArea statisticsArea;
     @FXML
     public ProgressBar progressBar;
+    @FXML
+    public GridPane gridRunStop;
+    @FXML
+    public Button stopExperiments;
 
     private Alert alert;
     private int runsProgress;
@@ -93,6 +97,8 @@ public class ExperimentsFrameController implements Initializable, GAListener {
         addButton.prefWidthProperty().bind(editingParametersPane.widthProperty());
         removeButton.prefHeightProperty().bind(editingParametersPane.heightProperty());
         removeButton.prefWidthProperty().bind(editingParametersPane.widthProperty());
+        stopExperiments.prefWidthProperty().bind(gridRunStop.widthProperty());
+        runExperimentsButton.prefWidthProperty().bind(gridRunStop.widthProperty());
         editingParametersPane.setVisible(false);
         parameters= new HashMap<>();
 
@@ -350,6 +356,7 @@ public class ExperimentsFrameController implements Initializable, GAListener {
     public void showAlert(String errors){
         alert= new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
+        alert.getDialogPane().setPrefWidth(500);
         alert.setContentText(errors);
         alert.showAndWait();
     }

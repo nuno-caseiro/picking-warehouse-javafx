@@ -377,11 +377,11 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
         sb.append("Collision Wait Time: ");
         sb.append(this.waitTime).append("\n");
         sb.append("Number of Time Agents Went to Offload: ");
-        sb.append(this.numberTimesOffload).append("\n\n");
+        sb.append(this.numberTimesOffload).append("\n");
 
         for (int i = 0; i < this.paths.size(); i++) {
-            sb.append("Agent ").append(i + 1).append(" path time : ");
-            sb.append(this.paths.get(i).getValue()).append("\n");
+            sb.append("\n").append("Agent ").append(i + 1).append(" path time : ");
+            sb.append(this.paths.get(i).getValue());
         }
 
         return sb.toString();

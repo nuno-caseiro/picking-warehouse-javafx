@@ -152,7 +152,7 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ValidationException e) {
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!ERRO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); // TODO
+            mainFrame.showAlert("Incorrect warehouse file format");
         }
     }
 
@@ -176,7 +176,7 @@ public class Controller {
         } catch (InvalidNodeException | IOException e) {
             e.printStackTrace();
         } catch (ValidationException e) {
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!ERRO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); // TODO
+            mainFrame.showAlert("Incorrect picks file format");
         }
     }
 
