@@ -110,14 +110,20 @@ public class Controller {
 
     private void simulate() {
 
-        mainFrame.manageButtons(false,  false,true,true,false,false,false);
-        mainFrame.getSimulationFrameController().start(environment.getBestInRun());
-        mainFrame.getSlider().setMax(mainFrame.getSimulationFrameController().getTimeline().getTotalDuration().toMillis());
-        mainFrame.getSimulationFrameController().getTimeline().setOnFinished(new EventHandler<ActionEvent>() {
+        mainFrame.manageButtons(true,  true,true,true,false,false,false);
+
+        Platform.runLater(new Runnable() {
             @Override
-            public void handle(ActionEvent actionEvent) {
-                mainFrame.getSimulationFrameController().setFirstTime(true);
-                mainFrame.manageButtons(false,false,false,true,false,false,false);
+            public void run() {
+                mainFrame.getSimulationFrameController().start(environment.getBestInRun());
+                mainFrame.getSlider().setMax(mainFrame.getSimulationFrameController().getTimeline().getTotalDuration().toMillis());
+                mainFrame.getSimulationFrameController().getTimeline().setOnFinished(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        mainFrame.getSimulationFrameController().setFirstTime(true);
+                        mainFrame.manageButtons(false,false,false,true,false,false,false);
+                    }
+                });
             }
         });
 
@@ -153,7 +159,8 @@ public class Controller {
 
                 if(selectedFile!=null) {
                     JSONValidator.validateJSON(Files.readString(Path.of(selectedFile.getPath())), getClass().getResourceAsStream("/picksSchema.json"));
-
+                    mainFrame.getSimulationFrameController().getTimeline().getKeyFrames().clear();
+                    mainFrame.getSimulationFrameController().setFirstTime(true);
                     this.environment.loadGraph(JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
 
                     this.mainFrame.manageButtons(false,false,false,true,true,true,true);
