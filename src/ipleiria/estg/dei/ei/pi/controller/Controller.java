@@ -65,8 +65,9 @@ public class Controller {
     }
 
     private void stopExperiment(){
-        workerExperiments.cancel(true);
         environment.getExperiment().setStopGa();
+        workerExperiments.cancel(true);
+
     }
 
     private void runExperiments() {
@@ -83,13 +84,17 @@ public class Controller {
                     try {
                         mainFrame.getExperimentsFrameController().getProgressBar().setProgress(0);
                         mainFrame.getExperimentsFrameController().setRunsProgress(0);
+                        if(environment.getExperiment() != null){
+                            environment.getExperiment().setStopped(false);
+                        }
                         if (selectedFile != null) {
                             ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(mainFrame.getExperimentsFrameController(), JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
                             mainFrame.getExperimentsFrameController().setAllRuns(experimentsFactory.getCountAllRuns());
                             while (experimentsFactory.hasMoreExperiments() ) {
-                                environment.setExperiment(experimentsFactory.nextExperiment());
-                                if(environment.getExperiment().isStopped())
+                                if(environment.getExperiment() != null && environment.getExperiment().isStopped()){
                                     break;
+                                }
+                                environment.setExperiment(experimentsFactory.nextExperiment());
                                 environment.getExperiment().run();
                             }
                         }
