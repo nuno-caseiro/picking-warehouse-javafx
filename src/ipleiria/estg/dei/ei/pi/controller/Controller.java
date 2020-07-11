@@ -20,6 +20,8 @@ import ipleiria.estg.dei.ei.pi.model.search.AStarSearch;
 import ipleiria.estg.dei.ei.pi.utils.JSONValidator;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import org.everit.json.schema.ValidationException;
@@ -105,36 +107,21 @@ public class Controller {
         }
     }
 
+
     private void simulate() {
-        worker = new SwingWorker<Void, Void>() {
+
+        mainFrame.manageButtons(false,  false,true,true,false,false,false);
+        mainFrame.getSimulationFrameController().start(environment.getBestInRun());
+        mainFrame.getSlider().setMax(mainFrame.getSimulationFrameController().getTimeline().getTotalDuration().toMillis());
+        mainFrame.getSimulationFrameController().getTimeline().setOnFinished(new EventHandler<ActionEvent>() {
             @Override
-            protected Void doInBackground() throws Exception {
-                try {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            mainFrame.manageButtons(false,false,true,true,false,false,false);
-                            mainFrame.getSimulationFrameController().start(environment.getBestInRun());
-                            mainFrame.getSlider().setMax(mainFrame.getSimulationFrameController().getTimeline().getTotalDuration().toMillis());
-                        }
-                    });
-
-                } catch (Exception e) {
-                    e.printStackTrace(System.err);
-                }
-                return null;
-
-            }
-
-            @Override
-            protected void done() {
-                super.done();
+            public void handle(ActionEvent actionEvent) {
+                mainFrame.getSimulationFrameController().setFirstTime(true);
                 mainFrame.manageButtons(false,false,false,true,false,false,false);
-
             }
-        };
+        });
 
-        worker.execute();
+
     }
 
     private void loadWarehouseLayout() {

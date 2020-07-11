@@ -59,6 +59,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     public void init(MainFrameController mainFrameController){
         main= mainFrameController;
         firstTime=true;
+        timeline= new Timeline();
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -187,7 +188,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     public void start(PickingIndividual individual) {
         pickingIndividual=individual;
         if(firstTime){
-        timeline = new Timeline();
+        timeline.getKeyFrames().clear();
         for (PickingAgentPath path : individual.getPaths()) {
             if(max<path.getPath().size()){
                 max=path.getPath().size();
@@ -203,9 +204,9 @@ public class SimulationFrameController implements Initializable, EnvironmentList
             }
          }
         firstTime=!firstTime;
-        }else{
-            ajustBoxesFill(0.0);
         }
+
+        ajustBoxesFill(0.0);
 
         timeline.playFromStart();
     }
@@ -259,7 +260,6 @@ public class SimulationFrameController implements Initializable, EnvironmentList
                 timeline.getKeyFrames().add(keyFrame);
 
         }
-        System.out.println("####---"+(node.getTime()+1)*SPEED+"---######");
     }
 
     public void playPause(){
@@ -273,7 +273,6 @@ public class SimulationFrameController implements Initializable, EnvironmentList
 
     public void setBar(){
         main.getSlider().setValue(timeline.getCurrentTime().toMillis());
-        System.out.println((timeline.getCurrentTime().toMillis()));
     }
 
     private void setPickEmpty(Rectangle pick){
@@ -325,7 +324,6 @@ public class SimulationFrameController implements Initializable, EnvironmentList
 
     public void startFromSlider(Double time){
         ajustBoxesFill(time);
-        //timeline.jumpTo(Duration.millis(time));
         timeline.playFrom(Duration.millis(time));
     }
 
@@ -341,6 +339,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     @Override
     public void createEnvironment(List<Node> decisionNodes, HashMap<Integer,Edge<Node>> edges, List<PickingAgent> agents, Node offLoad, int mLine, int mCol) {
         simulationStackPane.getChildren().clear();
+        group.getChildren().clear();
         nodes.clear();
         picks.clear();
         this.agents.clear();
@@ -361,9 +360,6 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         this.NODE_SIZE= PADDING-15;
         this.PICKS_SIZE= NODE_SIZE*2;
         this.PADDING_BOXES = (PICKS_SIZE+(NODE_SIZE/2));
-
-        System.out.println(this.PADDING);
-        System.out.println(maxHeightPane);
     }
 
 
@@ -372,5 +368,13 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         this.graphPicks= pickNodes;
         createPicks();
         this.simulationStackPane.getChildren().add(group);
+    }
+
+    public boolean isFirstTime() {
+        return firstTime;
+    }
+
+    public void setFirstTime(boolean firstTime) {
+        this.firstTime = firstTime;
     }
 }
