@@ -80,20 +80,19 @@ public class MainFrameController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         simulationFrameController.init(this);
 
-        ImageView loadWarehouseIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/loadWarehouseLayoutIcon.png"));
-        ImageView loadPicksIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/loadPicksIcon.png"));
+        ImageView loadWarehouseIcon = new ImageView(new Image(getClass().getResourceAsStream("/loadWarehouseLayoutIcon.png")));
+        ImageView loadPicksIcon = new ImageView(new Image(getClass().getResourceAsStream("/loadPicksIcon.png")));
 
-        ImageView gaTabIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/gaIcon.png"));
-        ImageView simulationTabIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/simulationIcon.png"));
-        ImageView experimentsTabIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/experimentsIcon.png"));
+        ImageView gaTabIcon = new ImageView(new Image(getClass().getResourceAsStream("/gaIcon.png")));
+        ImageView simulationTabIcon = new ImageView(new Image(getClass().getResourceAsStream("/simulationIcon.png")));
+        ImageView experimentsTabIcon = new ImageView(new Image(getClass().getResourceAsStream("/experimentsIcon.png")));
 
-        ImageView runGaIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/gaRunIcon.png"));
-        ImageView stopGaIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/stopGARunIcon.png"));
-        ImageView simulationIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/simulationRunIcon.png"));
+        ImageView runGaIcon = new ImageView(new Image(getClass().getResourceAsStream("/gaRunIcon.png")));
+        ImageView stopGaIcon = new ImageView(new Image(getClass().getResourceAsStream("/stopGARunIcon.png")));
+        ImageView simulationIcon = new ImageView(new Image(getClass().getResourceAsStream("/simulationRunIcon.png")));
 
-        ImageView pauseIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/pausePlayIcon.png"));
-        ImageView stepForwardIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/nextIcon.png"));
-        ImageView stepBackwardIcon = new ImageView(new Image("file:src/ipleiria/estg/dei/ei/pi/gui/assets/backIcon.png"));
+        ImageView pauseIcon = new ImageView(new Image(getClass().getResourceAsStream("/pausePlayIcon.png")));
+
 
         loadLayoutButton.setGraphic(loadWarehouseIcon);
         loadPicksButton.setGraphic(loadPicksIcon);

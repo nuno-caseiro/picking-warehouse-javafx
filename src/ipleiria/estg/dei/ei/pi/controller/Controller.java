@@ -26,11 +26,8 @@ import org.everit.json.schema.ValidationException;
 
 import javax.swing.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -67,7 +64,6 @@ public class Controller {
     private void runExperiments() {
         if(mainFrame.getExperimentsFrameController().handleErrors().equals("success")) {
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setInitialDirectory(new File("src/ipleiria/estg/dei/ei/pi/dataSets/warehouseLayout"));
             File selectedFile = fileChooser.showOpenDialog(Window.getWindows().get(0));
             workerExperiments = new SwingWorker<Void, Void>() {
                 @Override
@@ -82,7 +78,6 @@ public class Controller {
                                 Experiment<ExperimentsFactory, GAProblem> experiment = experimentsFactory.nextExperiment();
                                 experiment.run();
                             }
-
                         }
                     } catch (Exception e) {
                         e.printStackTrace(System.err);
@@ -138,11 +133,10 @@ public class Controller {
         this.environment.addEnvironmentListener(this.mainFrame.getSimulationFrameController());
         try {
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setInitialDirectory(new File(getClass().getResource("../dataSets/warehouseLayout").getPath()));
             File selectedFile = fileChooser.showOpenDialog(Window.getWindows().get(0));
 
             if(selectedFile != null) {
-                JSONValidator.validateJSON(Files.readString(Path.of(selectedFile.getPath())), getClass().getResourceAsStream("../utils/schemas/warehouseSchema.json"));
+                JSONValidator.validateJSON(Files.readString(Path.of(selectedFile.getPath())), getClass().getResourceAsStream("/warehouseSchema.json"));
 
                 this.environment.loadWarehouseFile(JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
 
@@ -160,11 +154,10 @@ public class Controller {
         try {
             if (this.environment.getJsonLayout() != null) {
                 FileChooser fileChooser = new FileChooser();
-                fileChooser.setInitialDirectory(new File(getClass().getResource("../dataSets/picks").getPath()));
                 File selectedFile = fileChooser.showOpenDialog(Window.getWindows().get(0));
 
                 if(selectedFile!=null) {
-                    JSONValidator.validateJSON(Files.readString(Path.of(selectedFile.getPath())), getClass().getResourceAsStream("../utils/schemas/picksSchema.json"));
+                    JSONValidator.validateJSON(Files.readString(Path.of(selectedFile.getPath())), getClass().getResourceAsStream("/picksSchema.json"));
 
                     this.environment.loadGraph(JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
 
