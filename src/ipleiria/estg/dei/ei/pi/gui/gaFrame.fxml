@@ -41,7 +41,7 @@
                   <Insets left="10.0" />
                </padding>
             </Label>
-            <TextField fx:id="seedGaField" promptText="1" GridPane.columnIndex="1" />
+            <TextField fx:id="seedGaField" GridPane.columnIndex="1" />
             <Label text="Population size:" GridPane.rowIndex="1">
                <padding>
                   <Insets left="10.0" />
@@ -87,12 +87,12 @@
                   <Insets left="10.0" />
                </padding>
             </Label>
-            <TextField fx:id="popSizeField" promptText="100" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <TextField fx:id="generationsField" promptText="100" text="100" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="tournamentSizeField" promptText="4" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <TextField fx:id="selectivePressureField" disable="true" promptText="2" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <TextField fx:id="recombinationProbField" promptText="0.8" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <TextField fx:id="mutationProbField" promptText="0.1" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <TextField fx:id="popSizeField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="generationsField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="tournamentSizeField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="selectivePressureField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <TextField fx:id="recombinationProbField" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <TextField fx:id="mutationProbField" GridPane.columnIndex="1" GridPane.rowIndex="9" />
             <Label text="Collisions handling " GridPane.rowIndex="10">
                <padding>
                   <Insets left="10.0" />
@@ -118,8 +118,8 @@
                   <Insets left="10.0" />
                </padding>
             </Label>
-            <TextField fx:id="timeWeightField" promptText="1" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-            <TextField fx:id="collisionWeightField" promptText="1" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+            <TextField fx:id="timeWeightField" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+            <TextField fx:id="collisionWeightField" GridPane.columnIndex="1" GridPane.rowIndex="13" />
          </children>
          <opaqueInsets>
             <Insets bottom="1.0" />

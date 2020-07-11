@@ -35,7 +35,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     private double PADDING = 25;
     private double PADDING_BOXES = 35;
     private double PICKS_SIZE = 20;
-    private int SPEED = 150;
+    private int SPEED = 175;
 
     private HashMap<String, Rectangle> picks = new HashMap<>();
     private HashMap<Integer, StackPane> nodes = new HashMap<>();

@@ -128,6 +128,7 @@ public class MainFrameController implements Initializable {
     public void showAlert(String errors){
         alert= new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
+        alert.getDialogPane().setPrefWidth(500);
         alert.setContentText(errors);
         alert.showAndWait();
     }

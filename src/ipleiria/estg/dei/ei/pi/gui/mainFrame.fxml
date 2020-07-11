@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
@@ -20,7 +21,10 @@
             <Separator orientation="VERTICAL" />
             <Button fx:id="simulationButton" mnemonicParsing="false" />
             <Button fx:id="startPauseButton" mnemonicParsing="false" onMouseClicked="#playPause" />
-            <Slider fx:id="slider" onMouseReleased="#playFromSlider" prefHeight="16.0" />
+            <Slider fx:id="slider" onMouseReleased="#playFromSlider" prefHeight="16.0">
+               <padding>
+                  <Insets left="15.0" />
+               </padding></Slider>
         </items>
       </ToolBar>
    </top>
