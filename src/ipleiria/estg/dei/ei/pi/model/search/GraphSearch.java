@@ -10,7 +10,6 @@ public abstract class GraphSearch<F extends NodeCollection, S extends State> {
 
     protected F frontier;
     protected HashSet<Integer> explored;
-    // TODO protected boolean stopped;
 
 
     public GraphSearch(F frontier) {
@@ -44,7 +43,7 @@ public abstract class GraphSearch<F extends NodeCollection, S extends State> {
         List<SearchNode<S>> solution = new ArrayList<>();
 
         while (searchNode != null) {
-            solution.add(0, searchNode); // TODO add generic to SearchNode
+            solution.add(0, searchNode);
             searchNode = searchNode.getParent();
         }
 

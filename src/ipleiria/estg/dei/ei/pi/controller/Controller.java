@@ -183,11 +183,13 @@ public class Controller {
 
     private void runGA() {
         if(mainFrame.getGaFrameController().handleErrors().equals("success")) {
+            Random random = new Random(mainFrame.getGaFrameController().getSeedGaField());
+
             GeneticAlgorithm<PickingIndividual, PickingGAProblem> geneticAlgorithm = new GeneticAlgorithm<>(new PickingIndividual.PickingIndividualFactory(),
                     getSelectionMethod(),
                     getRecombinationMethod(),
                     getMutationMethod(),
-                    mainFrame.getGaFrameController().getPopSizeField(), mainFrame.getGaFrameController().getGenerationsField(), new Random(mainFrame.getGaFrameController().getSeedGaField()));
+                    mainFrame.getGaFrameController().getPopSizeField(), mainFrame.getGaFrameController().getGenerationsField(), random);
 
             geneticAlgorithm.addGAListener(mainFrame.getGaFrameController());
             environment.setGeneticAlgorithm(geneticAlgorithm);
@@ -199,7 +201,7 @@ public class Controller {
                         mainFrame.manageButtons(true, true, true, false, true, true, true);
                         mainFrame.getGaFrameController().getSeriesBestIndividual().getData().clear();
                         mainFrame.getGaFrameController().getSeriesAverageFitness().getData().clear();
-                        PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), mainFrame.getGaFrameController().getWeightLimitationValue(), mainFrame.getGaFrameController().getCollisionsHandlingValue(), mainFrame.getGaFrameController().getTimeWeightField(), mainFrame.getGaFrameController().getCollisionWeightField()));
+                        PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), mainFrame.getGaFrameController().getWeightLimitationValue(), mainFrame.getGaFrameController().getCollisionsHandlingValue(), mainFrame.getGaFrameController().getTimeWeightField(), mainFrame.getGaFrameController().getCollisionWeightField(), random));
                         environment.setBestInRun(individual);
                         System.out.println(individual.getFitness());
                         System.out.println(individual.getNumberOfCollisions());

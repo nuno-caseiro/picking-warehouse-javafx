@@ -178,8 +178,6 @@ public class PickingGraph extends Graph<Node> {
             this.subEdges.put(jsonEdge.get("node1Number") +  "-" + jsonEdge.get("node2Number"), jsonEdge.get("direction").getAsInt() == 1 ? EdgeDirection.ONEWAY : EdgeDirection.TWOWAY);
 //            this.subEdgesSize++;
         }
-
-        // Collections.sort(this.edges); // TODO ?
     }
 
     private void importAgents(JsonObject jsonObject) throws InvalidNodeException {
@@ -189,7 +187,7 @@ public class PickingGraph extends Graph<Node> {
         for (JsonElement elementAgent : jsonAgents) {
             jsonAgent = elementAgent.getAsJsonObject();
 
-            addAgent(jsonAgent.get("edgeNumber").getAsInt(), jsonAgent.get("line").getAsInt(), jsonAgent.get("column").getAsInt(), jsonAgent.get("capacity").getAsDouble()); // TODO ?
+            addAgent(jsonAgent.get("edgeNumber").getAsInt(), jsonAgent.get("line").getAsInt(), jsonAgent.get("column").getAsInt(), jsonAgent.get("capacity").getAsDouble());
         }
     }
 

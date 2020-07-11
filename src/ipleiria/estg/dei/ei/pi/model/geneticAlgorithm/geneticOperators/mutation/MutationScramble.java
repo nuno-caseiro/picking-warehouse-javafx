@@ -8,6 +8,7 @@ import ipleiria.estg.dei.ei.pi.model.picking.PickingGAProblem;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.ValueNotFoundException;
 
 import java.util.LinkedList;
+import java.util.Random;
 
 public class MutationScramble<I extends IntVectorIndividual<? extends GAProblem>, P extends GAProblem> extends Mutation<I, P> {
 
@@ -16,16 +17,17 @@ public class MutationScramble<I extends IntVectorIndividual<? extends GAProblem>
     }
 
     @Override
-    public void mutate(I individual) {
+    public void mutate(I individual, Random random) {
         PickingGAProblem gaProblem = (PickingGAProblem) individual.getProblem();
         int min = (gaProblem.getNumberAgent()-1)*-1;
+        int cut1 = random.nextInt(individual.getNumGenes());
 
-
-        int cut1 = GeneticAlgorithm.random.nextInt(individual.getNumGenes());
         int cut2;
         do {
-            cut2 = GeneticAlgorithm.random.nextInt(individual.getNumGenes());
-        }while (cut1==cut2);
+
+            cut2 = random.nextInt(individual.getNumGenes());
+        } while (cut1 == cut2);
+
         if (cut1 > cut2) {
             int aux = cut1;
             cut1 = cut2;
@@ -48,6 +50,7 @@ public class MutationScramble<I extends IntVectorIndividual<? extends GAProblem>
             do{
                 num2= GeneticAlgorithm.random.nextInt((individual.getNumGenes()-min)+1)+min;
             }while(!list.contains(num2) || num2==0);
+
 
             int auxNum2 = 0;
             try {

@@ -8,6 +8,7 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.IntVectorIndividual;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class RecombinationOX<I extends IntVectorIndividual<? extends GAProblem>, P extends GAProblem> extends Recombination<I, P> {
 
@@ -16,15 +17,15 @@ public class RecombinationOX<I extends IntVectorIndividual<? extends GAProblem>,
     }
 
     @Override
-    public void recombine(I ind1, I ind2) {
+    public void recombine(I ind1, I ind2, Random random) {
 
         final int size = ind1.getNumGenes();
         int start = 0;
         int end = 0;
         while (start == end) {
 
-            final int number1 = GeneticAlgorithm.random.nextInt(size - 1);
-            final int number2 = GeneticAlgorithm.random.nextInt(size);
+            final int number1 = random.nextInt(size - 1);
+            final int number2 = random.nextInt(size);
 
             start = Math.min(number1, number2);
             end = Math.max(number1, number2);

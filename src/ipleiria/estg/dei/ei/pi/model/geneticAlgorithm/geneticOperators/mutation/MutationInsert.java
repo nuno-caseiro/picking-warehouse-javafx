@@ -5,6 +5,8 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.IntVectorIndividual;
 
+import java.util.Random;
+
 public class MutationInsert<I extends IntVectorIndividual<? extends GAProblem>, P extends GAProblem> extends Mutation<I, P> {
 
     public MutationInsert(double probability) {
@@ -12,12 +14,12 @@ public class MutationInsert<I extends IntVectorIndividual<? extends GAProblem>, 
     }
 
     @Override
-    public void mutate(I individual) {
-        int cut1 = GeneticAlgorithm.random.nextInt(individual.getNumGenes()); // cut1=1
+    public void mutate(I individual, Random random) {
+        int cut1 = random.nextInt(individual.getNumGenes()); // cut1=1
         int cut2;
 
         do {
-            cut2 = GeneticAlgorithm.random.nextInt(individual.getNumGenes()); // cut2=4
+            cut2 = random.nextInt(individual.getNumGenes()); // cut2=4
         } while (cut1 == cut2);
 
         if (cut1 > cut2) {
