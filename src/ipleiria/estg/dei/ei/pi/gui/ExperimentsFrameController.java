@@ -203,7 +203,7 @@ public class ExperimentsFrameController implements Initializable, GAListener {
             error.append("Recombination method").append(errors(1));
 
         if(getRecombinationProbArea()==0)
-            error.append("Selective pressure").append(errors(3));
+            error.append("Recombination probability").append(errors(3));
 
         if(getMutationMethodArea()==0 )
             error.append("Mutation method").append(errors(1));

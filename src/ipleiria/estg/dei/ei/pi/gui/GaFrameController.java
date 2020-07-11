@@ -277,16 +277,16 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
             error.append("Selective pressure").append(errors(2));
 
         if(getRecombinationProbField()==0 || getRecombinationProbField()<0 || getRecombinationProbField()>1)
-            error.append("Recombination pressure").append(errors(3));
+            error.append("Recombination probability").append(errors(3));
 
         if(getMutationProbField()==0 || getMutationProbField()<0 || getMutationProbField()>1)
-            error.append("Selective pressure").append(errors(3));
+            error.append("Selective probability").append(errors(3));
 
         if(getTimeWeightField()==0)
-            error.append("Selective pressure").append(errors(1));
+            error.append("Time weight").append(errors(1));
 
         if(getCollisionWeightField()==0)
-            error.append("Selective pressure").append(errors(1));
+            error.append("Collisions weight").append(errors(1));
 
         if(error.length()==0){
             error.append("success");
