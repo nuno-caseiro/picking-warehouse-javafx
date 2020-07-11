@@ -80,8 +80,10 @@ public class Controller {
                         if (selectedFile != null) {
                             ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(mainFrame.getExperimentsFrameController(), JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
                             mainFrame.getExperimentsFrameController().setAllRuns(experimentsFactory.getCountAllRuns());
-                            while (experimentsFactory.hasMoreExperiments() || !environment.getExperiment().isStopped()) {
+                            while (experimentsFactory.hasMoreExperiments() ) {
                                 environment.setExperiment(experimentsFactory.nextExperiment());
+                                if(environment.getExperiment().isStopped())
+                                    break;
                                 environment.getExperiment().run();
                             }
                         }
