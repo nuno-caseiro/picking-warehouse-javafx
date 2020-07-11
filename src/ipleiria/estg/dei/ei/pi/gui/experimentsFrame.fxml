@@ -254,7 +254,7 @@
                     </rowConstraints>
                      <children>
                         <Button fx:id="runExperimentsButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="490.0" text="Run" />
-                        <Button fx:id="stopExperiments" mnemonicParsing="false" prefHeight="27.0" prefWidth="236.0" text="Stop" GridPane.columnIndex="1" />
+                        <Button fx:id="stopExperiments" disable="true" mnemonicParsing="false" prefHeight="27.0" prefWidth="236.0" text="Stop" GridPane.columnIndex="1" />
                      </children>
                   </GridPane>
                </children>

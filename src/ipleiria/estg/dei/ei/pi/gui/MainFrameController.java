@@ -154,7 +154,10 @@ public class MainFrameController implements Initializable {
 
     public void playFromSlider(){
         runGaButton.setDisable(true);
+        loadLayoutButton.setDisable(true);
+        loadPicksButton.setDisable(true);
         simulationFrameController.startFromSlider(slider.getValue());
+
     }
 
     public Button getLoadLayoutButton() {

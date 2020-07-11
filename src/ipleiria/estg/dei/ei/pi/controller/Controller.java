@@ -73,6 +73,10 @@ public class Controller {
         if(mainFrame.getExperimentsFrameController().handleErrors().equals("success")) {
             FileChooser fileChooser = new FileChooser();
             File selectedFile = fileChooser.showOpenDialog(Window.getWindows().get(0));
+            if(selectedFile!=null){
+                mainFrame.getExperimentsFrameController().getRunExperimentsButton().setDisable(true);
+                mainFrame.getExperimentsFrameController().getStopExperiments().setDisable(false);
+            }
             workerExperiments = new SwingWorker<Void, Void>() {
                 @Override
                 protected Void doInBackground() throws Exception {
@@ -98,6 +102,8 @@ public class Controller {
                 @Override
                 protected void done() {
                     super.done();
+                    mainFrame.getExperimentsFrameController().getRunExperimentsButton().setDisable(false);
+                    mainFrame.getExperimentsFrameController().getStopExperiments().setDisable(true);
                 }
             };
             workerExperiments.execute();

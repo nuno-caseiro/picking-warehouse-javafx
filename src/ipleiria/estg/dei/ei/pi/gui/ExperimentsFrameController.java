@@ -5,6 +5,7 @@ import ipleiria.estg.dei.ei.pi.model.experiments.ParameterGUI;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAListener;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.utils.*;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
@@ -510,6 +511,12 @@ public class ExperimentsFrameController implements Initializable, GAListener {
             return 1;
         return 0;
     }
+
+    public Button getStopExperiments() {
+        return stopExperiments;
+    }
+
+
 
     @Override
     public void generationEnded(GeneticAlgorithm geneticAlgorithm) {
