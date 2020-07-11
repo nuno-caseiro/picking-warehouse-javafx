@@ -44,7 +44,6 @@ public class Experiment <E extends ExperimentsFactory, P extends GAProblem> {
             if(stopped){
                 return;
             }
-            System.out.println("run ended "+ ga.getBestInRun().getFitness());
         }
 
         fireExperimentEnded();

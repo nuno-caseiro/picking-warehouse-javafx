@@ -98,7 +98,6 @@ public class Controller {
                 @Override
                 protected void done() {
                     super.done();
-                    System.out.println("done experiments");
                 }
             };
             workerExperiments.execute();
@@ -197,22 +196,15 @@ public class Controller {
                         mainFrame.getGaFrameController().getSeriesAverageFitness().getData().clear();
                         PickingIndividual individual = geneticAlgorithm.run(new PickingGAProblem(environment.getGraph(), new AStarSearch<>(new PickingManhattanDistance()), mainFrame.getGaFrameController().getWeightLimitationValue(), mainFrame.getGaFrameController().getCollisionsHandlingValue(), mainFrame.getGaFrameController().getTimeWeightField(), mainFrame.getGaFrameController().getCollisionWeightField(), random));
                         environment.setBestInRun(individual);
-                        System.out.println(individual.getFitness());
-                        System.out.println(individual.getNumberOfCollisions());
-                        System.out.println(individual.getNumberTimesOffload());
-                        System.out.println(Arrays.toString(individual.getGenome()));
-
                     } catch (Exception e) {
                         e.printStackTrace(System.err);
                     }
                     return null;
                 }
-
                 @Override
                 protected void done() {
                     super.done();
                     mainFrame.manageButtons(false, false, false, true, false, true, true);
-
                 }
             };
             worker.execute();

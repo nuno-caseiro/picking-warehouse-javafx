@@ -89,8 +89,6 @@ public class StatisticBestAverage<I extends Individual<? extends GAProblem>,P ex
         this.numberOfIndividualsWithCollisions = 0;
         this.waitTimes = new ArrayList<>();
         this.maxWaitTimes = new ArrayList<>();
-
-        System.out.println("##################################################");
     }
 
     @Override

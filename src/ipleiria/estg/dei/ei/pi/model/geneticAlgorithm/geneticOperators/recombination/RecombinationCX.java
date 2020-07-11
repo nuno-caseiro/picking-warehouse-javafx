@@ -18,13 +18,6 @@ public class RecombinationCX<I extends IntVectorIndividual<? extends GAProblem>,
     public void recombine(I ind1, I ind2, Random random) throws ValueNotFoundException {
         List<Integer> cycle1 = new Vector<Integer>();
         List<Integer> cycle2 = new ArrayList<Integer>();
-/*
-        int[] genome1= new int[]{1,2,3,4,5,6,7,8};
-        int[] genome2= new int[]{2,4,6,8,7,5,3,1};
-
-        ind1.setGenome(genome1);
-        ind2.setGenome(genome2);
-*/
 
         int gene1P1 = 0;
         int gene1P2 = 0;
@@ -82,17 +75,6 @@ public class RecombinationCX<I extends IntVectorIndividual<? extends GAProblem>,
         cycle(ind1,ind2,genomeOfChild2,cycle2);
         replaceParentsByChild(ind1,genomeOfChild1);
         replaceParentsByChild(ind2,genomeOfChild2);
-
-        System.out.println("--------");
-        System.out.println(ind1.toString());
-        System.out.println(ind2.toString());
-        System.out.println("--1-");
-        System.out.println(cycle1.toString());
-        System.out.println("--2-");
-        System.out.println(cycle2.toString());
-        System.out.println(genomeOfChild1.toString());
-        System.out.println(genomeOfChild2.toString());
-        System.out.println("--------");
 
         cycle1.clear();
         cycle2.clear();
