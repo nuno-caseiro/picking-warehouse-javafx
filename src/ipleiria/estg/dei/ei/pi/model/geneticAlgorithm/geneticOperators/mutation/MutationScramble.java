@@ -44,11 +44,11 @@ public class MutationScramble<I extends IntVectorIndividual<? extends GAProblem>
 
         for(int i = 0; i < list.size(); i++){
             do{
-                num1= GeneticAlgorithm.random.nextInt((individual.getNumGenes()-min)+1)+min;
+                num1= random.nextInt((individual.getNumGenes()-min)+1)+min;
             }while(!list.contains(num1) || num1==0);
 
             do{
-                num2= GeneticAlgorithm.random.nextInt((individual.getNumGenes()-min)+1)+min;
+                num2= random.nextInt((individual.getNumGenes()-min)+1)+min;
             }while(!list.contains(num2) || num2==0);
 
 
