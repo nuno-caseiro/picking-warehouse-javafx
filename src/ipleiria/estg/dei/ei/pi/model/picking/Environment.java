@@ -51,6 +51,7 @@ public class Environment<I extends Individual<? extends GAProblem>> {
         this.bestInRun = bestInRun;
     }
 
+
     public void loadWarehouseFile(JsonObject jsonLayout) {
         this.jsonLayout = jsonLayout;
     }

@@ -58,6 +58,9 @@ public class Experiment <E extends ExperimentsFactory, P extends GAProblem> {
         return stopped;
     }
 
+    public void setStopped(boolean stopped) {
+        this.stopped = stopped;
+    }
 
     public String getExperimentTextualRepresentation() {
         return experimentTextualRepresentation;
