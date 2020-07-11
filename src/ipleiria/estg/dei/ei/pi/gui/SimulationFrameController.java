@@ -18,6 +18,8 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.util.*;
 
+import static ipleiria.estg.dei.ei.pi.utils.PickLocation.LEFT;
+
 public class SimulationFrameController implements Initializable, EnvironmentListener {
 
     public AnchorPane simulationPane;
@@ -40,13 +42,15 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     private HashMap<String, Rectangle> picks = new HashMap<>();
     private HashMap<Integer, StackPane> nodes = new HashMap<>();
     private HashMap<Integer, StackPane> agents = new HashMap<>();
-    private HashMap<Double,Rectangle> picksEmpty = new HashMap<>();
     private StackPane offLoad;
 
     private int maxLine;
     private int maxCol;
     private  double maxWidthPane;
     private  double maxHeightPane;
+    private int max;
+    private PickingIndividual pickingIndividual;
+    private boolean firstTime;
 
     private Timeline timeline;
 
@@ -54,6 +58,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
 
     public void init(MainFrameController mainFrameController){
         main= mainFrameController;
+        firstTime=true;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -120,7 +125,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         for (PickingPick graphPick : graphPicks) {
 
             String strBuilder = graphPick.getLine()+"-"+graphPick.getColumn();
-            if(graphPick.getPickLocation()== PickLocation.LEFT){
+            if(graphPick.getPickLocation()== LEFT){
                 strBuilder=strBuilder+"L";
                 picks.get(strBuilder).setFill(Color.GREEN);
 
@@ -180,20 +185,15 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     }
 
     public void start(PickingIndividual individual) {
-        clearAll();
-        createLayout();
-        createPicks();
-        createOffLoad(offload);
-        this.simulationStackPane.getChildren().add(group);
-
-        int max=0;
+        pickingIndividual=individual;
+        if(firstTime){
+        timeline = new Timeline();
         for (PickingAgentPath path : individual.getPaths()) {
             if(max<path.getPath().size()){
                 max=path.getPath().size();
             }
         }
 
-        timeline = new Timeline();
         for (int i = 0; i < max; i++) {
             for (int i1 = 1; i1 <= individual.getPaths().size(); i1++) {
                 if(i<individual.getPaths().get(i1-1).getPath().size()){
@@ -201,9 +201,13 @@ public class SimulationFrameController implements Initializable, EnvironmentList
                     createKeyFrame(timeline, node, i1);
                 }
             }
+         }
+        firstTime=!firstTime;
+        }else{
+            ajustBoxesFill(0.0);
         }
-        timeline.playFromStart();
 
+        timeline.playFromStart();
     }
 
     private void createKeyFrame(Timeline t, PathNode node, int i1){
@@ -253,7 +257,9 @@ public class SimulationFrameController implements Initializable, EnvironmentList
                 timeline.getKeyFrames().add(k2);
                 timeline.getKeyFrames().add(k3);
                 timeline.getKeyFrames().add(keyFrame);
+
         }
+        System.out.println("####---"+(node.getTime()+1)*SPEED+"---######");
     }
 
     public void playPause(){
@@ -272,23 +278,55 @@ public class SimulationFrameController implements Initializable, EnvironmentList
 
     private void setPickEmpty(Rectangle pick){
         pick.setFill(Color.WHITE);
-        picksEmpty.put(timeline.getCurrentTime().toMillis(),pick);
+    }
+
+    private void ajustBoxesFill(Double time){
+        for (int i = 0; i < max; i++) {
+            for (int i1 = 1; i1 <= pickingIndividual.getPaths().size(); i1++) {
+                if(i<pickingIndividual.getPaths().get(i1-1).getPath().size()){
+                    PathNode node = pickingIndividual.getPaths().get(i1-1).getPath().get(i);
+                    if(node.getPickLocation()!=PickLocation.NONE){
+                        Rectangle rectangle;
+                        switch (node.getPickLocation()){
+                            case LEFT:
+                                rectangle = picks.get(node.getLine()+"-"+node.getColumn()+"L");
+                                if((node.getTime()+1)*SPEED<time){
+                                    rectangle.setFill(Color.WHITE);
+                                }else{
+                                    rectangle.setFill(Color.GREEN);
+                                }
+                                break;
+                            case RIGHT:
+                                rectangle = picks.get(node.getLine()+"-"+node.getColumn()+"R");
+                                if((node.getTime()+1)*SPEED<time){
+                                    rectangle.setFill(Color.WHITE);
+                                }else{
+                                    rectangle.setFill(Color.GREEN);
+                                }
+                                break;
+                            case BOTH:
+                                rectangle = picks.get(node.getLine()+"-"+node.getColumn()+"L");
+                                Rectangle rectangle1 = picks.get(node.getLine()+"-"+node.getColumn()+"R");
+                                if((node.getTime()+1)*SPEED<time){
+                                    rectangle.setFill(Color.WHITE);
+                                    rectangle1.setFill(Color.WHITE);
+                                }else{
+                                    rectangle.setFill(Color.GREEN);
+                                    rectangle1.setFill(Color.GREEN);
+                                }
+                                break;
+                        }
+                    }
+                }
+
+            }}
     }
 
 
     public void startFromSlider(Double time){
-        for (Double aDouble : picksEmpty.keySet()) {
-            if(aDouble>=time){
-                picksEmpty.get(aDouble).setFill(Color.GREEN);
-            }else{
-                picksEmpty.get(aDouble).setFill(Color.WHITE);
-
-            }
-        }
-
-
-        timeline.jumpTo(Duration.millis(time));
-        timeline.play();
+        ajustBoxesFill(time);
+        //timeline.jumpTo(Duration.millis(time));
+        timeline.playFrom(Duration.millis(time));
     }
 
     public Timeline getTimeline() {
