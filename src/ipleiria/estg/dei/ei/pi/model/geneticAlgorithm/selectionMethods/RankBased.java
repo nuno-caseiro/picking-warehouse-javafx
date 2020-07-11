@@ -7,6 +7,8 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.Individual;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.Population;
 import ipleiria.estg.dei.ei.pi.utils.FitnessComparator;
 
+import java.util.Random;
+
 
 public class RankBased<I extends Individual<? extends GAProblem>, P extends GAProblem> extends SelectionMethod<I,P>  {
 
@@ -25,7 +27,7 @@ public class RankBased<I extends Individual<? extends GAProblem>, P extends GAPr
     }
 
     @Override
-    public Population<I, P> run(Population<I, P>  original) {
+    public Population<I, P> run(Population<I, P>  original, Random random) {
         original.getIndividuals().sort(new FitnessComparator());
 
         Population<I, P> result = new Population<>(original.getSize());
@@ -46,14 +48,14 @@ public class RankBased<I extends Individual<? extends GAProblem>, P extends GAPr
         }
 
         for (int i = 0; i < populationSize; i++) {
-            result.addIndividual(roulette(original));
+            result.addIndividual(roulette(original, random));
         }
         
         return result;
     }
 
-    private I roulette(Population<I, P> population) {
-        double probability = GeneticAlgorithm.random.nextDouble();
+    private I roulette(Population<I, P> population, Random random) {
+        double probability = random.nextDouble();
 
         for (int i = 0; i < populationSize; i++) {
             if (probability <= accumulated[i]) {
@@ -62,7 +64,7 @@ public class RankBased<I extends Individual<? extends GAProblem>, P extends GAPr
         }
 
         //For the case where all individuals have fitness 0
-        return (I) population.getIndividual(GeneticAlgorithm.random.nextInt(populationSize)).clone();
+        return (I) population.getIndividual(random.nextInt(populationSize)).clone();
     }
     
     @Override

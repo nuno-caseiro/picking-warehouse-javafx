@@ -50,9 +50,9 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
     }
 
     @Override
-    public GeneticAlgorithm<PickingIndividual,PickingGAProblem> generateGAInstance(int seed) {
+    public GeneticAlgorithm<PickingIndividual,PickingGAProblem> generateGAInstance(Random random) {
 
-        GeneticAlgorithm<PickingIndividual,PickingGAProblem> ga = new GeneticAlgorithm<>(new PickingIndividual.PickingIndividualFactory(),selection,recombination,mutation,populationSize,maxGenerations,new Random(seed));
+        GeneticAlgorithm<PickingIndividual,PickingGAProblem> ga = new GeneticAlgorithm<>(new PickingIndividual.PickingIndividualFactory(),selection,recombination,mutation,populationSize,maxGenerations, random);
         ga.addGAListener(experimentsController);
         for (ExperimentListener statistic : statistics) {
             ga.addGAListener((GAListener) statistic);
@@ -62,10 +62,10 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
     }
 
     @Override
-    protected PickingGAProblem pickingGAProblem(int seed) {
+    protected PickingGAProblem pickingGAProblem(int seed, Random random) {
         try {
             graph.createGraphRandomPicksAndAgents(jsonLayout,seed,nrPicks,nrAgents,numRuns);
-            return new PickingGAProblem(graph,aStarSearch,weightLimitation,collisionsHandling,timeWeight,collisionsWeight);
+            return new PickingGAProblem(graph,aStarSearch,weightLimitation,collisionsHandling,timeWeight,collisionsWeight, random);
         } catch (InvalidNodeException e) {
             e.printStackTrace();
         }

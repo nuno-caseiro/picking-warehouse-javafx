@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class GeneticAlgorithm<I extends Individual<? extends GAProblem>, P extends GAProblem> {
 
-    public static Random random;
+    public Random random;
     private Population<I, P> population;
     private Factory<I, P> individualFactory;
     private final SelectionMethod<I, P> selection;
@@ -24,14 +24,14 @@ public class GeneticAlgorithm<I extends Individual<? extends GAProblem>, P exten
     private I bestInRun;
     private final List<GAListener<I, P>> listeners;
 
-    public GeneticAlgorithm(Factory<I, P> individualFactory, SelectionMethod<I, P> selection, Recombination<I, P> recombination, Mutation<I, P> mutation, int populationSize, int maxGenerations, Random rand) {
+    public GeneticAlgorithm(Factory<I, P> individualFactory, SelectionMethod<I, P> selection, Recombination<I, P> recombination, Mutation<I, P> mutation, int populationSize, int maxGenerations, Random random) {
         this.individualFactory = individualFactory;
         this.selection = selection;
         this.recombination = recombination;
         this.mutation = mutation;
         this.populationSize = populationSize;
         this.maxGenerations = maxGenerations;
-        random = rand; // TODO change
+        this.random = random; // TODO change
         this.listeners = new ArrayList<>(3);
     }
 
@@ -42,9 +42,9 @@ public class GeneticAlgorithm<I extends Individual<? extends GAProblem>, P exten
         fireGenerationEnded(this);
 
         while (!stopCondition(t)) {
-            Population<I, P> populationAux = this.selection.run(this.population);
-            this.recombination.run(populationAux);
-            this.mutation.run(populationAux);
+            Population<I, P> populationAux = this.selection.run(this.population, this.random);
+            this.recombination.run(populationAux, this.random);
+            this.mutation.run(populationAux, this.random);
             this.population = populationAux;
             I bestInGen = this.population.evaluate();
             computeBestInRun(bestInGen);

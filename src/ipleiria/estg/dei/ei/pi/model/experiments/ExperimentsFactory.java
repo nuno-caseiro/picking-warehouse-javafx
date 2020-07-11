@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public abstract class ExperimentsFactory {
     protected int numRuns;
@@ -26,9 +27,9 @@ public abstract class ExperimentsFactory {
         readStatisticsValues();
     }
 
-    public abstract GeneticAlgorithm generateGAInstance(int seed);
+    public abstract GeneticAlgorithm generateGAInstance(Random random);
 
-    protected abstract PickingGAProblem pickingGAProblem(int seed);
+    protected abstract PickingGAProblem pickingGAProblem(int seed, Random random);
 
     protected abstract Experiment<ExperimentsFactory, GAProblem>  buildExperiment();
 

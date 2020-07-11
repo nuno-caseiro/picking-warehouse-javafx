@@ -7,6 +7,7 @@ import ipleiria.estg.dei.ei.pi.utils.exceptions.ValueNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 
 public class RecombinationCX<I extends IntVectorIndividual<? extends GAProblem>, P extends GAProblem> extends Recombination<I, P> {
@@ -14,7 +15,7 @@ public class RecombinationCX<I extends IntVectorIndividual<? extends GAProblem>,
     public RecombinationCX(double probability) { super(probability); }
 
     @Override
-    public void recombine(I ind1, I ind2) throws ValueNotFoundException {
+    public void recombine(I ind1, I ind2, Random random) throws ValueNotFoundException {
         List<Integer> cycle1 = new Vector<Integer>();
         List<Integer> cycle2 = new ArrayList<Integer>();
 /*

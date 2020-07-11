@@ -40,7 +40,7 @@ public class PickingIndividual extends IntVectorIndividual<PickingGAProblem> {
 
         int randomIndex;
         for (int i = 0; i < genomeSize; i++) {
-            randomIndex = GeneticAlgorithm.random.nextInt(genes.size());
+            randomIndex = this.problem.getRandom().nextInt(genes.size());
             this.genome[i] = genes.get(randomIndex);
             genes.remove(randomIndex);
         }
