@@ -6,10 +6,7 @@ import ipleiria.estg.dei.ei.pi.model.search.SearchNode;
 import ipleiria.estg.dei.ei.pi.utils.CollisionsHandling;
 import ipleiria.estg.dei.ei.pi.utils.WeightLimitation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class PickingGAProblem extends GAProblem {
 
@@ -28,9 +25,10 @@ public class PickingGAProblem extends GAProblem {
     private final CollisionsHandling collisionsHandling;
     private int timeWeight;
     private int collisionWeight;
+    private Random random;
 
 
-    public PickingGAProblem(PickingGraph graph, AStarSearch<Node> searchMethod, WeightLimitation weightLimitation, CollisionsHandling collisionsHandling, int timeWeight, int collisionWeight) {
+    public PickingGAProblem(PickingGraph graph, AStarSearch<Node> searchMethod, WeightLimitation weightLimitation, CollisionsHandling collisionsHandling, int timeWeight, int collisionWeight, Random random) {
         this.graph = graph;
         this.searchMethod = searchMethod;
         this.weightLimitation = weightLimitation;
@@ -46,6 +44,7 @@ public class PickingGAProblem extends GAProblem {
         this.edges = this.graph.getEdges();
         this.timeWeight = timeWeight;
         this.collisionWeight = collisionWeight;
+        this.random = random;
     }
 
     public int getTimeWeight() { return timeWeight; }
@@ -102,5 +101,9 @@ public class PickingGAProblem extends GAProblem {
 
     public HashMap<Integer, Edge<Node>> getEdges() {
         return edges;
+    }
+
+    public Random getRandom() {
+        return random;
     }
 }

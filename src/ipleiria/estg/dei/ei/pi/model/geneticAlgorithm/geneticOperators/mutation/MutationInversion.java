@@ -5,6 +5,8 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.IntVectorIndividual;
 
+import java.util.Random;
+
 public class MutationInversion<I extends IntVectorIndividual<? extends GAProblem>, P extends GAProblem> extends Mutation<I, P> {
 
     public MutationInversion(double probability) {
@@ -12,16 +14,16 @@ public class MutationInversion<I extends IntVectorIndividual<? extends GAProblem
     }
 
     @Override
-    public void mutate(I individual) {
+    public void mutate(I individual, Random random) {
 
         int l = individual.getNumGenes();
 
-        int r1 = GeneticAlgorithm.random.nextInt(l);
-        int r2 = GeneticAlgorithm.random.nextInt(l);
+        int r1 = random.nextInt(l);
+        int r2 = random.nextInt(l);
 
         while (r1 >= r2) {
-            r1 = GeneticAlgorithm.random.nextInt(l);
-            r2 = GeneticAlgorithm.random.nextInt(l);
+            r1 = random.nextInt(l);
+            r2 = random.nextInt(l);
         }
 
         int mid = r1 + (((r2 + 1) - r1) / 2);

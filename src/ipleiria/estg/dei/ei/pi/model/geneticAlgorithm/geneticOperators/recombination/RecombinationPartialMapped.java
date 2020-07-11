@@ -5,6 +5,8 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.IntVectorIndividual;
 
+import java.util.Random;
+
 public class RecombinationPartialMapped<I extends IntVectorIndividual<? extends GAProblem>, P extends GAProblem> extends Recombination<I, P> {
 
     private int[] child1, child2, segment1, segment2;
@@ -16,11 +18,11 @@ public class RecombinationPartialMapped<I extends IntVectorIndividual<? extends 
     }
 
     @Override
-    public void recombine(I ind1, I ind2) {
+    public void recombine(I ind1, I ind2, Random random) {
         this.child1 = new int[ind1.getNumGenes()];
         this.child2 = new int[ind2.getNumGenes()];
-        this.cut1 = GeneticAlgorithm.random.nextInt(ind1.getNumGenes());
-        this.cut2 = GeneticAlgorithm.random.nextInt(ind1.getNumGenes());
+        this.cut1 = random.nextInt(ind1.getNumGenes());
+        this.cut2 = random.nextInt(ind1.getNumGenes());
         if (this.cut1 > this.cut2) {
             int aux = this.cut1;
             this.cut1 = this.cut2;

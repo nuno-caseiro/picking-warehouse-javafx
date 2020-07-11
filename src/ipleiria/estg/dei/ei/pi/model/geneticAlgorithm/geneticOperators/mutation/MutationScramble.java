@@ -7,6 +7,7 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.IntVectorIndividual;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.ValueNotFoundException;
 
 import java.util.LinkedList;
+import java.util.Random;
 
 public class MutationScramble<I extends IntVectorIndividual<? extends GAProblem>, P extends GAProblem> extends Mutation<I, P> {
 
@@ -15,12 +16,12 @@ public class MutationScramble<I extends IntVectorIndividual<? extends GAProblem>
     }
 
     @Override
-    public void mutate(I individual) {
-        int cut1 = GeneticAlgorithm.random.nextInt(individual.getNumGenes());
+    public void mutate(I individual, Random random) {
+        int cut1 = random.nextInt(individual.getNumGenes());
         int cut2;
 
         do {
-            cut2 = GeneticAlgorithm.random.nextInt(individual.getNumGenes());
+            cut2 = random.nextInt(individual.getNumGenes());
         } while (cut1 == cut2);
 
         if (cut1 > cut2) {
@@ -38,11 +39,11 @@ public class MutationScramble<I extends IntVectorIndividual<? extends GAProblem>
         int num2;
         for(int i = 0; i < list.size(); i++){
             do{
-                num1 = GeneticAlgorithm.random.nextInt(individual.getNumGenes()) + 1;
+                num1 = random.nextInt(individual.getNumGenes()) + 1;
             } while(!list.contains(num1));
 
             do{
-                num2 = GeneticAlgorithm.random.nextInt(individual.getNumGenes()) + 1;
+                num2 = random.nextInt(individual.getNumGenes()) + 1;
             } while(!list.contains(num2) || num2 == num1);
 
             try {

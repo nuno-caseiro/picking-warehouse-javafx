@@ -6,6 +6,7 @@ import ipleiria.estg.dei.ei.pi.utils.exceptions.ValueNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Experiment <E extends ExperimentsFactory, P extends GAProblem> {
     private final E factory;
@@ -34,9 +35,11 @@ public class Experiment <E extends ExperimentsFactory, P extends GAProblem> {
     }
 
     public void run() throws ValueNotFoundException {
+        Random random;
         for (int run = 0; run < numRuns; run++) {
-            ga = factory.generateGAInstance(run + 1);
-            problem= (P) factory.pickingGAProblem(run +1);
+            random = new Random(run + 1);
+            ga = factory.generateGAInstance(random);
+            problem= (P) factory.pickingGAProblem(run + 1, random);
             ga.run(problem);
             if(stopped){
                 break;

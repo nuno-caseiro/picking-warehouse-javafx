@@ -5,6 +5,8 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.IntVectorIndividual;
 
+import java.util.Random;
+
 public class RecombinationOX1<I extends IntVectorIndividual<? extends GAProblem>, P extends GAProblem> extends Recombination<I, P> {
 
     public RecombinationOX1(double probability) {
@@ -14,11 +16,11 @@ public class RecombinationOX1<I extends IntVectorIndividual<? extends GAProblem>
     int numGenes;
 
     @Override
-    public void recombine(I ind1, I ind2) {
+    public void recombine(I ind1, I ind2, Random random) {
         this.numGenes = ind1.getNumGenes();
 
-        int cut1 = GeneticAlgorithm.random.nextInt(this.numGenes - 1);
-        int cut2 = GeneticAlgorithm.random.nextInt(this.numGenes);
+        int cut1 = random.nextInt(this.numGenes - 1);
+        int cut2 = random.nextInt(this.numGenes);
 
         int start = Math.min(cut1, cut2);
         int end = Math.max(cut1, cut2);
