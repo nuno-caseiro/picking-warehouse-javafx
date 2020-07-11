@@ -15,6 +15,7 @@ public class Experiment <E extends ExperimentsFactory, P extends GAProblem> {
     private final String experimentTextualRepresentation;
     private final String experimentHeader;
     private final String experimentValues;
+    private boolean stopped;
 
     public Experiment(
             E factory,
@@ -29,6 +30,7 @@ public class Experiment <E extends ExperimentsFactory, P extends GAProblem> {
         this.experimentTextualRepresentation = experimentTextualRepresentation;
         this.experimentHeader = experimentHeader;
         this.experimentValues = experimentValues;
+        this.stopped= false;
     }
 
     public void run() throws ValueNotFoundException {
@@ -36,10 +38,23 @@ public class Experiment <E extends ExperimentsFactory, P extends GAProblem> {
             ga = factory.generateGAInstance(run + 1);
             problem= (P) factory.pickingGAProblem(run +1);
             ga.run(problem);
+            if(stopped){
+                break;
+            }
             System.out.println("run ended "+ ga.getBestInRun().getFitness());
         }
         fireExperimentEnded();
     }
+
+    public void setStopGa(){
+        this.ga.setStopped(true);
+        this.stopped=true;
+    }
+
+    public boolean isStopped() {
+        return stopped;
+    }
+
 
     public String getExperimentTextualRepresentation() {
         return experimentTextualRepresentation;

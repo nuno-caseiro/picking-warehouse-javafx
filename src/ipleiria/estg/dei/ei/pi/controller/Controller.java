@@ -53,12 +53,18 @@ public class Controller {
         this.mainFrame.getStopGAButton().setOnAction(e -> stopGa());
         this.mainFrame.getSimulationButton().setOnAction(e->simulate());
         this.mainFrame.getExperimentsFrameController().getRunExperimentsButton().setOnAction(e->runExperiments());
+        this.mainFrame.getExperimentsFrameController().stopExperiments.setOnAction(e->stopExperiment());
         this.mainFrame.manageButtons(false,true,true,true,true,true,true);
     }
 
     public void stopGa(){
         worker.cancel(true);
         environment.stopGA();
+    }
+
+    private void stopExperiment(){
+        workerExperiments.cancel(true);
+        environment.getExperiment().setStopGa();
     }
 
     private void runExperiments() {
@@ -74,9 +80,9 @@ public class Controller {
                         if (selectedFile != null) {
                             ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(mainFrame.getExperimentsFrameController(), JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
                             mainFrame.getExperimentsFrameController().setAllRuns(experimentsFactory.getCountAllRuns());
-                            while (experimentsFactory.hasMoreExperiments()) {
-                                Experiment<ExperimentsFactory, GAProblem> experiment = experimentsFactory.nextExperiment();
-                                experiment.run();
+                            while (experimentsFactory.hasMoreExperiments() || !environment.getExperiment().isStopped()) {
+                                environment.setExperiment(experimentsFactory.nextExperiment());
+                                environment.getExperiment().run();
                             }
                         }
                     } catch (Exception e) {

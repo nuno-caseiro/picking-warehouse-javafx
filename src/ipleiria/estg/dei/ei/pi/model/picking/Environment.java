@@ -1,6 +1,8 @@
 package ipleiria.estg.dei.ei.pi.model.picking;
 
 import com.google.gson.JsonObject;
+import ipleiria.estg.dei.ei.pi.model.experiments.Experiment;
+import ipleiria.estg.dei.ei.pi.model.experiments.ExperimentsFactory;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.Individual;
@@ -19,6 +21,7 @@ public class Environment<I extends Individual<? extends GAProblem>> {
     private JsonObject jsonLayout;
     private ArrayList<EnvironmentListener> environmentListeners;
     private GeneticAlgorithm<PickingIndividual, PickingGAProblem> geneticAlgorithm;
+    private Experiment<ExperimentsFactory, GAProblem> experiment;
 
     public Environment() {
         this.graph = new PickingGraph();
@@ -50,6 +53,14 @@ public class Environment<I extends Individual<? extends GAProblem>> {
 
     public void loadWarehouseFile(JsonObject jsonLayout) {
         this.jsonLayout = jsonLayout;
+    }
+
+    public Experiment<ExperimentsFactory, GAProblem> getExperiment() {
+        return experiment;
+    }
+
+    public void setExperiment(Experiment<ExperimentsFactory, GAProblem> experiment) {
+        this.experiment = experiment;
     }
 
     public void loadGraph(JsonObject jsonPicks) throws InvalidNodeException {
