@@ -31,7 +31,7 @@ public class PickingAgentPath {
             this.path.add(new PathNode(searchNode.getState().getIdentifier(), searchNode.getState().getLine(), searchNode.getState().getColumn(), this.value + searchNode.getCost(), PickLocation.NONE));
         }
 
-        if (node instanceof PickingPick) { // TODO test
+        if (node instanceof PickingPick) {
             if (path.size() >= 1) {
                 this.path.get(this.path.size() - 1).setPickLocation(((PickingPick) node).getPickLocation());
             } else {

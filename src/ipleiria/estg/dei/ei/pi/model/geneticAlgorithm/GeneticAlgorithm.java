@@ -31,7 +31,7 @@ public class GeneticAlgorithm<I extends Individual<? extends GAProblem>, P exten
         this.mutation = mutation;
         this.populationSize = populationSize;
         this.maxGenerations = maxGenerations;
-        this.random = random; // TODO change
+        this.random = random;
         this.listeners = new ArrayList<>(3);
     }
 
