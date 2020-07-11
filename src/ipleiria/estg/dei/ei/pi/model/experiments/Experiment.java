@@ -42,10 +42,11 @@ public class Experiment <E extends ExperimentsFactory, P extends GAProblem> {
             problem= (P) factory.pickingGAProblem(run + 1, random);
             ga.run(problem);
             if(stopped){
-                break;
+                return;
             }
             System.out.println("run ended "+ ga.getBestInRun().getFitness());
         }
+
         fireExperimentEnded();
     }
 
