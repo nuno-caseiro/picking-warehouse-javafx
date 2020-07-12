@@ -23,6 +23,8 @@ public class MainFrameController implements Initializable {
     @FXML
     public BorderPane mainsFrame;
     @FXML
+    public TabPane tabPane;
+    @FXML
     private Button loadLayoutButton;
 
     @FXML
@@ -129,6 +131,16 @@ public class MainFrameController implements Initializable {
         alert.setTitle("Error");
         alert.getDialogPane().setPrefWidth(500);
         alert.setContentText(errors);
+        alert.showAndWait();
+    }
+
+    public void showInformation(String information){
+        alert= new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText("Success");
+        alert.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/successIcon.png"))));
+        alert.getDialogPane().setPrefWidth(500);
+        alert.setContentText(information);
         alert.showAndWait();
     }
 

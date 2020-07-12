@@ -170,6 +170,7 @@ public class ExperimentsFrameController implements Initializable, GAListener {
             return null;
         };
 
+        nrRunsArea.setFocusTraversable(false);
 
         nrRunsArea.setTextFormatter(new TextFormatter<>(new IntegerStringConverter(),100,integerFilter));
         intExpInput.setTextFormatter(new TextFormatter<>(integerFilter));
@@ -264,6 +265,7 @@ public class ExperimentsFrameController implements Initializable, GAListener {
         actualParameters.getItems().clear();
         selectExpInput.getItems().clear();
         labelEditingParameter.setText("Editing "+ actualParameterGUI.getId());
+
         if(actualParameterGUI.getControl().getId().equals(selectExpInput.getId())) {
             selectExpInput.setViewOrder(-1);
             intExpInput.setViewOrder(0);
@@ -295,12 +297,16 @@ public class ExperimentsFrameController implements Initializable, GAListener {
             selectExpInput.setViewOrder(0);
             intExpInput.setViewOrder(-1);
             decimalExpInput.setViewOrder(0);
+            TextField t = (TextField) actualParameterGUI.getControl();
+            t.setPromptText("Insert " + actualParameterGUI.getId() + " value");
             actualParameters.getItems().addAll(actualParameterGUI.getParameters());
         }
         if(actualParameterGUI.getControl().getId().equals(decimalExpInput.getId())) {
             selectExpInput.setViewOrder(0);
             intExpInput.setViewOrder(0);
             decimalExpInput.setViewOrder(-1);
+            TextField t = (TextField) actualParameterGUI.getControl();
+            t.setPromptText("Insert " + actualParameterGUI.getId() + " value");
             actualParameters.getItems().addAll(actualParameterGUI.getParameters());
         }
     }

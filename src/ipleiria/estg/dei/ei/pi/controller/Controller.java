@@ -150,7 +150,7 @@ public class Controller {
                 JSONValidator.validateJSON(Files.readString(Path.of(selectedFile.getPath())), getClass().getResourceAsStream("/warehouseSchema.json"));
 
                 this.environment.loadWarehouseFile(JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
-
+                this.mainFrame.showInformation("Warehouse layout imported successfully");
                 this.mainFrame.manageButtons(false,false,true,true,true,true,true);
             }
 
@@ -172,7 +172,8 @@ public class Controller {
                     mainFrame.getSimulationFrameController().getTimeline().getKeyFrames().clear();
                     mainFrame.getSimulationFrameController().setFirstTime(true);
                     this.environment.loadGraph(JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
-
+                    this.mainFrame.showInformation("Picks file imported successfully");
+                    this.mainFrame.tabPane.getSelectionModel().select(1);
                     this.mainFrame.manageButtons(false,false,false,true,true,true,true);
                 }
 
