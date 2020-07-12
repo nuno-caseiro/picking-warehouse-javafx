@@ -1,13 +1,13 @@
 package ipleiria.estg.dei.ei.pi.model.picking;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import ipleiria.estg.dei.ei.pi.model.search.SearchNode;
 import ipleiria.estg.dei.ei.pi.utils.EdgeDirection;
 import ipleiria.estg.dei.ei.pi.utils.PickLocation;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
+import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidWarehouseException;
 
 import java.util.*;
 
@@ -78,18 +78,18 @@ public class PickingGraph extends Graph<Node> {
         return decisionNodesMap;
     }
 
-    public void createGraphFromFile(JsonObject jsonLayout, JsonObject jsonPicks) throws InvalidNodeException {
+    public void createGraphFromFile(JsonObject jsonLayout, JsonObject jsonPicks) throws InvalidNodeException, InvalidWarehouseException {
         createGeneralGraph(jsonLayout);
         importAgents(jsonLayout);
         importPicks(jsonPicks);
     }
 
-    public void createGraphRandomPicksAndAgents(JsonObject jsonLayout, int seed, int numPicks, int numAgents, int numRuns) throws InvalidNodeException {
+    public void createGraphRandomPicksAndAgents(JsonObject jsonLayout, int seed, int numPicks, int numAgents, int numRuns) throws InvalidNodeException, InvalidWarehouseException {
         createGeneralGraph(jsonLayout);
         generateRandomPicksAndAgents(seed, numPicks, numAgents, numRuns);
     }
 
-    private void createGeneralGraph(JsonObject jsonObject) {
+    public void createGeneralGraph(JsonObject jsonObject) throws InvalidWarehouseException {
         this.successors = new HashMap<>();
         this.nodes = new HashMap<>();
         this.graphSize = 0;
@@ -131,7 +131,7 @@ public class PickingGraph extends Graph<Node> {
         }
     }
 
-    private void importSuccessors(JsonObject jsonObject) {
+    private void importSuccessors(JsonObject jsonObject) throws InvalidWarehouseException {
         JsonArray jsonNodes = jsonObject.getAsJsonArray("nodes");
 
         JsonObject jsonNode;
@@ -149,12 +149,13 @@ public class PickingGraph extends Graph<Node> {
                 jsonSuccessor = elementSuccessor.getAsJsonObject();
 
                 node = this.nodes.get(jsonSuccessor.get("nodeNumber").getAsInt());
+                checkNode(node);
                 successors.add(new Node(node.getIdentifier(), jsonSuccessor.get("distance").getAsDouble(), node.getLine(), node.getColumn()));
             }
         }
     }
 
-    private void importEdges(JsonObject jsonObject) {
+    private void importEdges(JsonObject jsonObject) throws InvalidWarehouseException {
         JsonArray jsonEdges = jsonObject.getAsJsonArray("edges");
 
         JsonObject jsonEdge;
@@ -165,7 +166,9 @@ public class PickingGraph extends Graph<Node> {
             jsonEdge = elementEdge.getAsJsonObject();
 
             node1 = this.nodes.get(jsonEdge.get("node1Number").getAsInt());
+            checkNode(node1);
             node2 = this.nodes.get(jsonEdge.get("node2Number").getAsInt());
+            checkNode(node2);
 
 //            node1.addEdge(jsonEdge.get("edgeNumber").getAsInt());
 //            node2.addEdge(jsonEdge.get("edgeNumber").getAsInt());
@@ -181,7 +184,7 @@ public class PickingGraph extends Graph<Node> {
         }
     }
 
-    private void importAgents(JsonObject jsonObject) throws InvalidNodeException {
+    private void importAgents(JsonObject jsonObject) throws InvalidNodeException, InvalidWarehouseException {
         JsonArray jsonAgents = jsonObject.getAsJsonArray("agents");
 
         JsonObject jsonAgent;
@@ -192,12 +195,13 @@ public class PickingGraph extends Graph<Node> {
         }
     }
 
-    private void importOffload(JsonObject jsonObject) {
+    private void importOffload(JsonObject jsonObject) throws InvalidWarehouseException {
         Node node = this.nodes.get(jsonObject.get("offloadArea").getAsInt());
+        checkNode(node);
         this.offloadArea = new Node(node.getIdentifier(), 0, node.getLine(), node.getColumn());
     }
 
-    public void importPicks(JsonObject jsonObject) throws InvalidNodeException {
+    private void importPicks(JsonObject jsonObject) throws InvalidNodeException, InvalidWarehouseException {
         this.picks = new ArrayList<>();
         this.pairs = new HashMap<>();
 
@@ -211,7 +215,7 @@ public class PickingGraph extends Graph<Node> {
         }
     }
 
-    private void generateRandomPicksAndAgents(int seed, int numPicks, int numAgents, int numRuns) throws InvalidNodeException {
+    private void generateRandomPicksAndAgents(int seed, int numPicks, int numAgents, int numRuns) throws InvalidNodeException, InvalidWarehouseException {
         HashMap<String, Integer> positionsPicks = new HashMap<>();
         HashMap<String, Integer> positionsAgents = new HashMap<>();
 
@@ -290,14 +294,16 @@ public class PickingGraph extends Graph<Node> {
         this.pairs = new HashMap<>();
     }
 
-    private void addAgent(int edgeNumber, int line, int column, double capacity) throws InvalidNodeException {
+    private void addAgent(int edgeNumber, int line, int column, double capacity) throws InvalidNodeException, InvalidWarehouseException {
+        checkEdges(edgeNumber);
         Node node = addNode(edgeNumber, line, column);
 
         this.agents.add(new PickingAgent(node.getIdentifier(), 0, node.getLine(), node.getColumn(), capacity));
         this.aisleNodeEdge.put(node.getIdentifier(), this.edges.get(edgeNumber));
     }
 
-    private void addPick(int edgeNumber, int line, int column, int location, double weight, double capacity) throws InvalidNodeException {
+    private void addPick(int edgeNumber, int line, int column, int location, double weight, double capacity) throws InvalidNodeException, InvalidWarehouseException {
+        checkEdges(edgeNumber);
         Node node = addNode(edgeNumber, line, column);
 
         this.picks.add(new PickingPick(node.getIdentifier(), 0, node.getLine(), node.getColumn(), location == -1 ? PickLocation.LEFT: PickLocation.RIGHT, weight, capacity));
@@ -354,5 +360,17 @@ public class PickingGraph extends Graph<Node> {
     private void removeNodeFromEachOtherSuccessors(Node n1, Node n2) {
         this.successors.get(n1.getIdentifier()).removeIf(node -> node.getIdentifier() == n2.getIdentifier());
         this.successors.get(n2.getIdentifier()).removeIf(node -> node.getIdentifier() == n1.getIdentifier());
+    }
+
+    private void checkNode(Node node) throws InvalidWarehouseException {
+        if (node == null) {
+            throw new InvalidWarehouseException("Invalid Warefouse File");
+        }
+    }
+
+    private void checkEdges(int number) throws InvalidWarehouseException {
+        if (!this.edges.containsKey(number)) {
+            throw new InvalidWarehouseException("Trying to insert node into invalid position");
+        }
     }
 }

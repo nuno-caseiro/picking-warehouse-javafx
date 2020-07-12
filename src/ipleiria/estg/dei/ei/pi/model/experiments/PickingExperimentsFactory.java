@@ -17,6 +17,7 @@ import ipleiria.estg.dei.ei.pi.model.search.AStarSearch;
 import ipleiria.estg.dei.ei.pi.utils.CollisionsHandling;
 import ipleiria.estg.dei.ei.pi.utils.WeightLimitation;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
+import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidWarehouseException;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -66,7 +67,7 @@ public class PickingExperimentsFactory extends ExperimentsFactory {
         try {
             graph.createGraphRandomPicksAndAgents(jsonLayout,seed,nrPicks,nrAgents,numRuns);
             return new PickingGAProblem(graph,aStarSearch,weightLimitation,collisionsHandling,timeWeight,collisionsWeight, random);
-        } catch (InvalidNodeException e) {
+        } catch (InvalidNodeException | InvalidWarehouseException e) {
             e.printStackTrace();
         }
         return null;

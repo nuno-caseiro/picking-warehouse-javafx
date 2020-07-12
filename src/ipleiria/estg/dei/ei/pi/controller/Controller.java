@@ -19,6 +19,7 @@ import ipleiria.estg.dei.ei.pi.model.picking.*;
 import ipleiria.estg.dei.ei.pi.model.search.AStarSearch;
 import ipleiria.estg.dei.ei.pi.utils.JSONValidator;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
+import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidWarehouseException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -77,9 +78,12 @@ public class Controller {
                 File selectedFile = fileChooser.showOpenDialog(Window.getWindows().get(0));
                 if(selectedFile!=null){
                     JSONValidator.validateJSON(Files.readString(Path.of(selectedFile.getPath())), getClass().getResourceAsStream("/warehouseSchema.json"));
+                    PickingGraph pickingGraph = new PickingGraph();
+                    pickingGraph.createGeneralGraph(JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
                     mainFrame.getExperimentsFrameController().getRunExperimentsButton().setDisable(true);
                     mainFrame.getExperimentsFrameController().getStopExperiments().setDisable(false);
                 }
+
                 workerExperiments = new SwingWorker<Void, Void>() {
                     @Override
                     protected Void doInBackground() throws Exception {
@@ -124,9 +128,10 @@ public class Controller {
             e.printStackTrace();
         } catch (ValidationException e) {
             mainFrame.showAlert("Incorrect warehouse file format");
+        } catch (InvalidWarehouseException e) {
+            mainFrame.showAlert(e.getMessage());
         }
     }
-
 
     private void simulate() {
 
@@ -137,6 +142,7 @@ public class Controller {
             public void run() {
                 mainFrame.getSimulationFrameController().start(environment.getBestInRun());
                 mainFrame.getSlider().setMax(mainFrame.getSimulationFrameController().getTimeline().getTotalDuration().toMillis());
+                mainFrame.tabPane.getSelectionModel().select(1);
                 mainFrame.getSimulationFrameController().getTimeline().setOnFinished(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent actionEvent) {
@@ -146,8 +152,6 @@ public class Controller {
                 });
             }
         });
-
-
     }
 
     private void loadWarehouseLayout() {
@@ -161,6 +165,7 @@ public class Controller {
 
                 this.environment.loadWarehouseFile(JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
                 this.mainFrame.showInformation("Warehouse layout imported successfully");
+                this.mainFrame.tabPane.getSelectionModel().select(1);
                 this.mainFrame.manageButtons(false,false,true,true,true,true,true);
             }
 
@@ -168,6 +173,9 @@ public class Controller {
             e.printStackTrace();
         } catch (ValidationException e) {
             mainFrame.showAlert("Incorrect warehouse file format");
+        } catch (InvalidWarehouseException e) {
+            this.mainFrame.manageButtons(false,true,true,true,true,true,true);
+            mainFrame.showAlert(e.getMessage());
         }
     }
 
@@ -193,6 +201,9 @@ public class Controller {
             e.printStackTrace();
         } catch (ValidationException e) {
             mainFrame.showAlert("Incorrect picks file format");
+        } catch (InvalidWarehouseException e) {
+            this.mainFrame.manageButtons(false,true,true,true,true,true,true);
+            mainFrame.showAlert(e.getMessage());
         }
     }
 
@@ -235,7 +246,6 @@ public class Controller {
         }
     }
 
-
     private SelectionMethod<PickingIndividual, PickingGAProblem> getSelectionMethod() {
         switch (mainFrame.getGaFrameController().selectionMethodFieldSelection.getValue()) {
             case Tournament:
@@ -245,7 +255,6 @@ public class Controller {
         }
         return null;
     }
-
 
     private Recombination<PickingIndividual, PickingGAProblem> getRecombinationMethod() {
 

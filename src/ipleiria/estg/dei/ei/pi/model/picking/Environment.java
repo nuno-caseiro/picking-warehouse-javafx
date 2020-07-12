@@ -7,6 +7,7 @@ import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.Individual;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidNodeException;
+import ipleiria.estg.dei.ei.pi.utils.exceptions.InvalidWarehouseException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,8 +53,10 @@ public class Environment<I extends Individual<? extends GAProblem>> {
     }
 
 
-    public void loadWarehouseFile(JsonObject jsonLayout) {
+    public void loadWarehouseFile(JsonObject jsonLayout) throws InvalidWarehouseException {
         this.jsonLayout = jsonLayout;
+        this.graph.createGeneralGraph(jsonLayout);
+        fireCreateEnvironment();
     }
 
     public Experiment<ExperimentsFactory, GAProblem> getExperiment() {
@@ -64,7 +67,7 @@ public class Environment<I extends Individual<? extends GAProblem>> {
         this.experiment = experiment;
     }
 
-    public void loadGraph(JsonObject jsonPicks) throws InvalidNodeException {
+    public void loadGraph(JsonObject jsonPicks) throws InvalidNodeException, InvalidWarehouseException {
         this.graph.createGraphFromFile(this.jsonLayout, jsonPicks);
         fireCreateEnvironment();
         fireCreateSimulationPicks();
