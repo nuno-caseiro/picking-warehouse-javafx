@@ -353,6 +353,7 @@ public class SimulationFrameController implements Initializable, EnvironmentList
         createLayout();
         this.offload=offLoad;
         createOffLoad(offLoad);
+        this.simulationStackPane.getChildren().add(group);
     }
 
     private void adjustSizes() {
@@ -367,7 +368,6 @@ public class SimulationFrameController implements Initializable, EnvironmentList
     public void createSimulationPicks(List<PickingPick> pickNodes) {
         this.graphPicks= pickNodes;
         createPicks();
-        this.simulationStackPane.getChildren().add(group);
     }
 
     public boolean isFirstTime() {
