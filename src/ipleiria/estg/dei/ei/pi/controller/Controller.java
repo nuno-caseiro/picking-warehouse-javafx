@@ -71,49 +71,59 @@ public class Controller {
     }
 
     private void runExperiments() {
-        if(mainFrame.getExperimentsFrameController().handleErrors().equals("success")) {
-            FileChooser fileChooser = new FileChooser();
-            File selectedFile = fileChooser.showOpenDialog(Window.getWindows().get(0));
-            if(selectedFile!=null){
-                mainFrame.getExperimentsFrameController().getRunExperimentsButton().setDisable(true);
-                mainFrame.getExperimentsFrameController().getStopExperiments().setDisable(false);
-            }
-            workerExperiments = new SwingWorker<Void, Void>() {
-                @Override
-                protected Void doInBackground() throws Exception {
-                    try {
-                        mainFrame.getExperimentsFrameController().getProgressBar().setProgress(0);
-                        mainFrame.getExperimentsFrameController().setRunsProgress(0);
-                        if(environment.getExperiment() != null){
-                            environment.getExperiment().setStopped(false);
-                        }
-                        if (selectedFile != null) {
-                            ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(mainFrame.getExperimentsFrameController(), JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
-                            mainFrame.getExperimentsFrameController().setAllRuns(experimentsFactory.getCountAllRuns());
-                            while (experimentsFactory.hasMoreExperiments() ) {
-                                if(environment.getExperiment() != null && environment.getExperiment().isStopped()){
-                                    break;
-                                }
-                                environment.setExperiment(experimentsFactory.nextExperiment());
-                                environment.getExperiment().run();
+        try{
+            if(mainFrame.getExperimentsFrameController().handleErrors().equals("success")) {
+                FileChooser fileChooser = new FileChooser();
+                File selectedFile = fileChooser.showOpenDialog(Window.getWindows().get(0));
+                if(selectedFile!=null){
+                    JSONValidator.validateJSON(Files.readString(Path.of(selectedFile.getPath())), getClass().getResourceAsStream("/warehouseSchema.json"));
+                    mainFrame.getExperimentsFrameController().getRunExperimentsButton().setDisable(true);
+                    mainFrame.getExperimentsFrameController().getStopExperiments().setDisable(false);
+                }
+                workerExperiments = new SwingWorker<Void, Void>() {
+                    @Override
+                    protected Void doInBackground() throws Exception {
+                        try {
+                            mainFrame.getExperimentsFrameController().getProgressBar().setProgress(0);
+                            mainFrame.getExperimentsFrameController().setRunsProgress(0);
+                            if(environment.getExperiment() != null){
+                                environment.getExperiment().setStopped(false);
                             }
+                            if (selectedFile != null) {
+                                ExperimentsFactory experimentsFactory = new PickingExperimentsFactory(mainFrame.getExperimentsFrameController(), JsonParser.parseReader(new FileReader(selectedFile.getAbsolutePath())).getAsJsonObject());
+                                mainFrame.getExperimentsFrameController().setAllRuns(experimentsFactory.getCountAllRuns());
+                                while (experimentsFactory.hasMoreExperiments() ) {
+                                    if(environment.getExperiment() != null && environment.getExperiment().isStopped()){
+                                        break;
+                                    }
+                                    environment.setExperiment(experimentsFactory.nextExperiment());
+                                    environment.getExperiment().run();
+                                }
+                                if(environment.getExperiment().isStopped()){
+                                    mainFrame.getExperimentsFrameController().progressBar.setProgress(0);
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace(System.err);
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace(System.err);
+                        return null;
                     }
-                    return null;
-                }
 
-                @Override
-                protected void done() {
-                    super.done();
-                    mainFrame.getExperimentsFrameController().getRunExperimentsButton().setDisable(false);
-                    mainFrame.getExperimentsFrameController().getStopExperiments().setDisable(true);
-                }
-            };
-            workerExperiments.execute();
-        }else{
-            mainFrame.showAlert(mainFrame.getExperimentsFrameController().handleErrors());
+                    @Override
+                    protected void done() {
+                        super.done();
+                        mainFrame.getExperimentsFrameController().getRunExperimentsButton().setDisable(false);
+                        mainFrame.getExperimentsFrameController().getStopExperiments().setDisable(true);
+                    }
+                };
+                workerExperiments.execute();
+            }else{
+                mainFrame.showAlert(mainFrame.getExperimentsFrameController().handleErrors());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ValidationException e) {
+            mainFrame.showAlert("Incorrect warehouse file format");
         }
     }
 

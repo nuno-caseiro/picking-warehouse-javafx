@@ -534,6 +534,7 @@ public class ExperimentsFrameController implements Initializable, GAListener {
     public void runEnded(GeneticAlgorithm geneticAlgorithm) {
         runsProgress++;
         progressBar.setProgress(runsProgress/allRuns);
+
     }
 
     @Override
