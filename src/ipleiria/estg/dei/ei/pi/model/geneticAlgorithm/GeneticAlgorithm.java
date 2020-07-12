@@ -104,6 +104,10 @@ public class GeneticAlgorithm<I extends Individual<? extends GAProblem>, P exten
         }
     }
 
+    public boolean isStopped() {
+        return stopped;
+    }
+
     @Override
     public String toString() {
         return "Population size: " + this.populationSize + "\n" +

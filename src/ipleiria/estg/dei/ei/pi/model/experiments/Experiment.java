@@ -1,5 +1,6 @@
 package ipleiria.estg.dei.ei.pi.model.experiments;
 
+import ipleiria.estg.dei.ei.pi.gui.ExperimentsFrameController;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GAProblem;
 import ipleiria.estg.dei.ei.pi.model.geneticAlgorithm.GeneticAlgorithm;
 import ipleiria.estg.dei.ei.pi.utils.exceptions.ValueNotFoundException;
@@ -17,6 +18,7 @@ public class Experiment <E extends ExperimentsFactory, P extends GAProblem> {
     private final String experimentHeader;
     private final String experimentValues;
     private boolean stopped;
+    private ExperimentsFrameController experimentsFrameController;
 
     public Experiment(
             E factory,
