@@ -73,6 +73,10 @@ public class Controller {
 
     private void runExperiments() {
         try{
+            if(mainFrame.getExperimentsFrameController().getNrRunsAreaInt()<=0){
+                mainFrame.getExperimentsFrameController().showAlert("Number of runs cannot be <= 0");
+                return;
+            }
             if(mainFrame.getExperimentsFrameController().handleErrors().equals("success")) {
                 FileChooser fileChooser = new FileChooser();
                 File selectedFile = fileChooser.showOpenDialog(Window.getWindows().get(0));

@@ -179,7 +179,6 @@ public class ExperimentsFrameController implements Initializable, GAListener {
         selectExpInput.setViewOrder(-1);
     }
 
-
     public String handleErrors(){
         StringBuilder error= new StringBuilder();
         if(getNrRunsAreaInt()==0)
@@ -319,12 +318,14 @@ public class ExperimentsFrameController implements Initializable, GAListener {
             updateActualItems();
         }
         if(actualParameterGUI.getControl().getId().equals(intExpInput.getId())) {
-            if(!actualParameterGUI.getParameters().contains(intExpInput.getText().trim()) && !intExpInput.getText().trim().isEmpty() && Integer.parseInt(intExpInput.getText().trim())!=0){
+            if(!actualParameterGUI.getParameters().contains(intExpInput.getText().trim()) && !intExpInput.getText().trim().isEmpty() && Integer.parseInt(intExpInput.getText().trim())>0 ){
                 if ((actualParameterGUI.getId().equals("population size") && Integer.parseInt(intExpInput.getText().trim())%2!=0)){
-                    showAlert("Value must be even");
+                    showAlert("Value must be even and cannot be <= 0");
                 }else{
                     actualParameterGUI.getParameters().add(intExpInput.getText().trim());
                 }
+            }else{
+                showAlert("Value already exists on actual parameters or cannot be <= 0");
             }
             updateActualItems();
         }
