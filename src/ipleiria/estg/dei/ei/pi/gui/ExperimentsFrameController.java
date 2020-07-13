@@ -269,23 +269,39 @@ public class ExperimentsFrameController implements Initializable, GAListener {
             selectExpInput.setViewOrder(-1);
             intExpInput.setViewOrder(0);
             decimalExpInput.setViewOrder(0);
+
+            List<String> l = actualParameterGUI.getParameters();
+            List<String> available;
             switch (actualParameterField){
                 case "selectionMethodArea":
+                    available  = (List<String>) availableParameters.get("Selection");
+                    available.removeIf(l::contains);
+
                     selectExpInput.getItems().addAll((Collection<? extends String>) availableParameters.get("Selection"));
                     break;
                 case "recombinationMethodArea":
+                    available = (List<String>) availableParameters.get("Recombination");
+                    available.removeIf(l::contains);
                     selectExpInput.getItems().addAll((Collection<? extends String>) availableParameters.get("Recombination"));
                     break;
                 case "mutationMethodArea":
+                    available = (List<String>) availableParameters.get("Mutation");
+                    available.removeIf(l::contains);
                     selectExpInput.getItems().addAll((Collection<? extends String>) availableParameters.get("Mutation"));
                     break;
                 case "collisionsHandlingArea":
+                    available = (List<String>) availableParameters.get("CollisionsHandling");
+                    available.removeIf(l::contains);
                     selectExpInput.getItems().addAll((Collection<? extends String>) availableParameters.get("CollisionsHandling"));
                     break;
                 case "weightLimitationArea":
+                    available = (List<String>) availableParameters.get("WeightLimitations");
+                    available.removeIf(l::contains);
                     selectExpInput.getItems().addAll((Collection<? extends String>) availableParameters.get("WeightLimitations"));
                     break;
                 case "statisticsArea":
+                    available = (List<String>) availableParameters.get("Statistics");
+                    available.removeIf(l::contains);
                     selectExpInput.getItems().addAll((Collection<? extends String>) availableParameters.get("Statistics"));
                     break;
             }
@@ -314,6 +330,39 @@ public class ExperimentsFrameController implements Initializable, GAListener {
         if(actualParameterGUI.getControl().getId().equals(selectExpInput.getId())){
             if(!actualParameterGUI.getParameters().contains(selectExpInput.getSelectionModel().getSelectedItem()) && selectExpInput.getSelectionModel().getSelectedItem()!=null){
                 actualParameterGUI.getParameters().add(selectExpInput.getSelectionModel().getSelectedItem());
+                List<String> available;
+                switch (actualParameterField){
+                    case "selectionMethodArea":
+                        available  = (List<String>) availableParameters.get("Selection");
+                        available.remove(selectExpInput.getSelectionModel().getSelectedItem());
+
+                        break;
+                    case "recombinationMethodArea":
+                        available = (List<String>) availableParameters.get("Recombination");
+                        available.remove(selectExpInput.getSelectionModel().getSelectedItem());
+
+                        break;
+                    case "mutationMethodArea":
+                        available = (List<String>) availableParameters.get("Mutation");
+                        available.remove(selectExpInput.getSelectionModel().getSelectedItem());
+
+                        break;
+                    case "collisionsHandlingArea":
+                        available = (List<String>) availableParameters.get("CollisionsHandling");
+                        available.remove(selectExpInput.getSelectionModel().getSelectedItem());
+
+                        break;
+                    case "weightLimitationArea":
+                        available = (List<String>) availableParameters.get("WeightLimitations");
+                        available.remove(selectExpInput.getSelectionModel().getSelectedItem());
+
+                        break;
+                    case "statisticsArea":
+                        available = (List<String>) availableParameters.get("Statistics");
+                        available.remove(selectExpInput.getSelectionModel().getSelectedItem());
+                        break;
+                }
+                selectExpInput.getItems().remove(selectExpInput.getSelectionModel().getSelectedItem());
             }
             updateActualItems();
         }
@@ -334,12 +383,12 @@ public class ExperimentsFrameController implements Initializable, GAListener {
                 if(Double.parseDouble(decimalExpInput.getText().trim())==0){
                     showAlert("Value cannot be 0");
                 }else if(actualParameterGUI.getId().equals("selective pressure") && Double.parseDouble(decimalExpInput.getText().trim())<1.0 || Double.parseDouble(decimalExpInput.getText().trim())>2.0){
-                        showAlert("Value must be between 1.0 and 2.0");
+                    showAlert("Value must be between 1.0 and 2.0");
                 } else if ((actualParameterGUI.getId().equals("recombination probability") || actualParameterGUI.getId().equals("mutation probability")) && (Double.parseDouble(decimalExpInput.getText().trim())<0.0 || Double.parseDouble(decimalExpInput.getText().trim())>1.0) ){
-                        showAlert("Value must be between 0.0 and 1.0");
+                    showAlert("Value must be between 0.0 and 1.0");
                 }else{
 
-                 actualParameterGUI.getParameters().add(decimalExpInput.getText().trim());
+                    actualParameterGUI.getParameters().add(decimalExpInput.getText().trim());
                 }
             }
             updateActualItems();
@@ -349,8 +398,55 @@ public class ExperimentsFrameController implements Initializable, GAListener {
         actualParameterGUI.getTextArea().setText(listsToString(actualParameterGUI.getParameters()));
     }
 
-    public void remove(){
+    public void remove() {
         actualParameterGUI.getParameters().remove(actualParameters.getSelectionModel().getSelectedItem());
+        List<String> available;
+        switch (actualParameterField) {
+            case "selectionMethodArea":
+                available = (List<String>) availableParameters.get("Selection");
+                if(actualParameters.getSelectionModel().getSelectedItem()!=null){
+                    available.add(actualParameters.getSelectionModel().getSelectedItem());
+                }
+                break;
+            case "recombinationMethodArea":
+                available = (List<String>) availableParameters.get("Recombination");
+                if(actualParameters.getSelectionModel().getSelectedItem()!=null){
+                    available.add(actualParameters.getSelectionModel().getSelectedItem());
+                }
+
+                break;
+            case "mutationMethodArea":
+                available = (List<String>) availableParameters.get("Mutation");
+                if(actualParameters.getSelectionModel().getSelectedItem()!=null){
+                    available.add(actualParameters.getSelectionModel().getSelectedItem());
+                }
+
+                break;
+            case "collisionsHandlingArea":
+                available = (List<String>) availableParameters.get("CollisionsHandling");
+                if(actualParameters.getSelectionModel().getSelectedItem()!=null) {
+                    available.add(actualParameters.getSelectionModel().getSelectedItem());
+                }
+                break;
+            case "weightLimitationArea":
+                available = (List<String>) availableParameters.get("WeightLimitations");
+                if(actualParameters.getSelectionModel().getSelectedItem()!=null) {
+                    available.add(actualParameters.getSelectionModel().getSelectedItem());
+                }
+                break;
+            case "statisticsArea":
+                available = (List<String>) availableParameters.get("Statistics");
+                if(actualParameters.getSelectionModel().getSelectedItem()!=null){
+
+                    available.add(actualParameters.getSelectionModel().getSelectedItem());
+                }
+
+                break;
+        }
+        if(actualParameters.getSelectionModel().getSelectedItem()!=null){
+
+            selectExpInput.getItems().add(actualParameters.getSelectionModel().getSelectedItem());
+        }
         updateActualItems();
         actualParameterGUI.getTextArea().setText(listsToString(actualParameterGUI.getParameters()));
     }
@@ -358,7 +454,7 @@ public class ExperimentsFrameController implements Initializable, GAListener {
     public void updateActualItems(){
         actualParameters.getItems().clear();
         if(actualParameterGUI.getParameters().size()!=0){
-        actualParameters.getItems().addAll(actualParameterGUI.getParameters());
+            actualParameters.getItems().addAll(actualParameterGUI.getParameters());
         }
     }
 
