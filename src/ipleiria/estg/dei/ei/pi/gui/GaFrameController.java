@@ -261,16 +261,16 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
 
     public String handleErrors(){
         StringBuilder error= new StringBuilder();
-        if(getSeedGaField()==0)
+        if(getSeedGaField()==0 || getSeedGaField()<0 )
             error.append("Seed value").append(errors(1));
 
-        if (getPopSizeField()==0 || getPopSizeField()%2!=0 )
+        if (getPopSizeField()==0 || getPopSizeField()%2!=0 || getPopSizeField()<0)
             error.append("Population size").append(errors(4));
 
-        if(getGenerationsField()==0)
+        if(getGenerationsField()==0 || getGenerationsField()<0)
             error.append("# of generations").append(errors(1));
 
-        if(getTournamentSizeField()==0 || getTournamentSizeField()>getPopSizeField() )
+        if(getTournamentSizeField()==0 || getTournamentSizeField()>getPopSizeField() || getTournamentSizeField()<0)
             error.append("Tournament size").append(errors(5));
 
         if(getSelectivePressureField()==0 || getSelectivePressureField()<1.0 || getSelectivePressureField()>2.0)
@@ -282,10 +282,10 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
         if(getMutationProbField()==0 || getMutationProbField()<0 || getMutationProbField()>1)
             error.append("Selective probability").append(errors(3));
 
-        if(getTimeWeightField()==0)
+        if(getTimeWeightField()==0 || getTimeWeightField()<0)
             error.append("Time weight").append(errors(1));
 
-        if(getCollisionWeightField()==0)
+        if(getCollisionWeightField()==0 || getCollisionWeightField()<0)
             error.append("Collisions weight").append(errors(1));
 
         if(error.length()==0){
@@ -298,15 +298,15 @@ public class GaFrameController implements Initializable, GAListener<PickingIndiv
     public String errors(int i){
         switch (i){
             case 1:
-                return " cannot be empty or 0\n";
+                return " cannot be empty or <= 0 \n";
             case 2:
                 return " must be between 1 and 2 and cannot be empty\n";
             case 3:
                 return " must be between 0 and 1 and cannot be empty\n";
             case 4:
-                return " must be even and cannot be empty\n";
+                return " must be even and cannot be empty or <= 0\n";
             case 5:
-                return " must be less than population size and not empty\n";
+                return " must be less than population size and not empty or <= 0\n";
 
         }
         return null;
